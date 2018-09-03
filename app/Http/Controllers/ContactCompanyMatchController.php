@@ -11,8 +11,13 @@ class ContactCompanyMatchController extends Controller
 {
     public function index(Request $request){
         $response = array();
-        $contacts = Contacts::where('process_for_contact_match',0)->take(10)->get();
+        $limit = 50;
+        $contacts = Contacts::where('process_for_contact_match','not processed')->take($limit)->get();
         if($contacts->count() > 0){
+            $new_insert_in_match = 0;
+            $already_exist_in_match = 0;
+            $already_in_company_not_found = 0;
+            $new_in_company_not_found = 0;
             foreach($contacts AS $contact){
                 $comapanies = CompaniesWithDomain::where('company_linkedin_profile',$contact->company_url)->get();
                 if($comapanies->count() > 0){
@@ -35,18 +40,47 @@ class ContactCompanyMatchController extends Controller
                         $matched_contact->employee_size = $company->employee_size;
                         $save_as = $matched_contact->save();
                         if($save_as == 1){
-                            $contact->process_for_contact_match = 1;
+                            $new_insert_in_match ++;
+                            $contact->process_for_contact_match = 'matched';
                             $contact->save();
                         }
                     }
                 }else{
-                    $company_without_domain = new CompaniesWithoutDomain();
-                    $company_without_domain->company_linkedin_profile = $contact->company_url;
-                    $company_without_domain->save();
+                    $comapany_without_domain = CompaniesWithoutDomain::where('company_linkedin_profile',$contact->company_url)->where('company_name',$contact->company_name)->get();
+                    if($comapany_without_domain->count() > 0){
+                        $already_in_company_not_found ++;
+                        $contact_count = $comapany_without_domain->first()->contacts_count;
+                        $comapany_without_domain->first()->contacts_count = $comapany_without_domain->first()->contacts_count + 1;
+                        $comapany_without_domain->first()->save();
+                        $contact->process_for_contact_match = 'company not found';
+                        $contact->save();
+                    }else{
+                        $comapany_without_domain = new CompaniesWithoutDomain();
+                        $comapany_without_domain->company_linkedin_profile = $contact->company_url;
+                        $comapany_without_domain->company_name = $contact->company_name;
+                        $comapany_without_domain->contacts_count = 1;
+                        if($comapany_without_domain->save() == 1){
+                            $new_in_company_not_found ++;
+                            $contact->process_for_contact_match = 'company not found';
+                            $contact->save();
+                        }
+                    }
                 }
             }
+           $response['status'] = "Success";
+           $response['message'] = "Processed Successfully"; 
+           $response['stats'] = array(
+               "Record Processing Limit"=>$limit,
+               "Found Record For Processing"=>$contacts->count(),
+               "New In Match"=>$new_insert_in_match,
+               "Already In Match"=>$already_exist_in_match,
+               "New In Domain Not Found"=>$new_in_company_not_found,
+               "Already Exist In Domain Not Found"=>$already_in_company_not_found
+                   );
         }else{
-            
+           $response['status'] = "Fail";
+           $response['message'] = "No record found for processing";
         }
+        return view('contactcompanymatch')->with("response",$response);
     }
 }

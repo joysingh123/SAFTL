@@ -21,4 +21,8 @@ Route::post('importcompaniesdata',"ImportDataController@importComapniesWithDomai
 Route::get('importcontactdata',"ImportDataController@importContactView");
 Route::post('importcontactdata',"ImportDataController@importContactData")->name('importcontactdata');
 
+
+Route::get('importemaildata',"ImportDataController@importEmailView");
+Route::post('importemaildata',"ImportDataController@importEmailData")->name('importemaildata');
+
 Route::get('contactcompanymatch',"ContactCompanyMatchController@index");

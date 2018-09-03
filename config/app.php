@@ -211,6 +211,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'UtilString' => App\Helpers\UtilString::class,
+        'UtilConstant' => App\Helpers\UtilConstant::class,
     ],
 
 ];

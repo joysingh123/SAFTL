@@ -30,12 +30,45 @@ class UtilString {
     }
 
     public static function get_company_id_from_url($url) {
-        if ($url != "") {
+        if (!self::is_empty_string($url)) {
             $parts = parse_url($url);
             parse_str($parts['query'], $query);
             return $query['companyId'];
         }
         return 0;
+    }
+    public static function starts_with($haystack, $needle) {
+        $length = strlen($needle);
+        return (substr($haystack, 0, $length) === $needle);
+    }
+
+    public static function ends_with($haystack, $needle) {
+        $length = strlen($needle);
+        if ($length == 0) {
+            return true;
+        }
+        return (substr($haystack, -$length) === $needle);
+    }
+    
+    public static function is_empty_string($str) {
+        if ($str == NULL || strlen(trim($str)) == 0) {
+            return true;
+        }
+        return false;
+    }
+    
+    public static function contains($haystack, $needle) {
+        if (strpos($haystack, $needle) !== false) {
+            return true;
+        }
+        return false;
+    }
+    
+    public static function is_email($email){
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          return true;
+        }
+        return false;
     }
 }
 ?>
