@@ -70,6 +70,22 @@ class UtilString {
         }
         return false;
     }
+    
+    public static function explode_email_string($str){
+        $explode_array = UtilConstant::$EXPLODE_EMAIL_VALUE;
+        $explode = array();
+        foreach($explode_array AS $ea){
+            if(self::contains($str, $ea)){
+                $explode['explode_data'] = explode($ea, $str);
+                $explode['explode_by'] = $ea;
+                break;
+            }
+        }
+        if(count($explode) > 0){
+            return $explode;
+        }
+        return $str;
+    } 
 }
 ?>
 

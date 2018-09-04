@@ -26,3 +26,4 @@ Route::get('importemaildata',"ImportDataController@importEmailView");
 Route::post('importemaildata',"ImportDataController@importEmailData")->name('importemaildata');
 
 Route::get('contactcompanymatch',"ContactCompanyMatchController@index");
+Route::get('makeemailformat',"MakeEmailFormatController@index");
