@@ -40,6 +40,10 @@ class MakeEmailFormatController extends Controller {
                         $explode_sign = $email_first_part_info['explode_by'];
                         $email_format .= UtilConstant::FIRST_NAME . $explode_sign . UtilConstant::LAST_NAME;
                     }
+                    if ($email_first_part_info['explode_data'][0] == $first_name && $email_first_part_info['explode_data'][1] != $last_name) {
+                        $explode_sign = $email_first_part_info['explode_by'];
+                        $email_format .= UtilConstant::FIRST_NAME . $explode_sign . UtilConstant::LAST_NAME;
+                    }
                     if ($email_first_part_info['explode_data'][0] == $last_name && $email_first_part_info['explode_data'][1] == $first_name) {
                         $explode_sign = $email_first_part_info['explode_by'];
                         $email_format .= UtilConstant::LAST_NAME . $explode_sign . UtilConstant::FIRST_NAME;
@@ -98,7 +102,7 @@ class MakeEmailFormatController extends Controller {
             if (strlen($email_format) > 0) {
                 return $email_format;
             }else{
-               return "Email Formate Not Found"; 
+               return "Email Format Not Found"; 
             }
         } else {
             return "Invalid Email";
