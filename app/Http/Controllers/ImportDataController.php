@@ -119,6 +119,8 @@ class ImportDataController extends Controller {
     }
 
     public function importContactData(Request $request) {
+        ini_set('max_execution_time', 300);
+        ini_set('memory_limit', -1);
         $this->validate($request, array(
             'file' => 'required'
         ));
@@ -134,10 +136,9 @@ class ImportDataController extends Controller {
                     $inserted = 0;
                     $campaign_id_not_exist = 0;
                     $invalid_name = 0;
+                    $invalid_array = array();
                     foreach ($data as $key => $value) {
-                        if (UtilString::is_empty_string($value->full_name) && UtilString::is_empty_string($value->company_url) && UtilString::is_empty_string($value->company_name) && UtilString::is_empty_string($value->job_title)) {
-                            
-                        } else {
+                        if (!UtilString::is_empty_string($value->full_name) && !UtilString::is_empty_string($value->company_url)) {
                             $company_id = UtilString::get_company_id_from_url($value->company_url);
                             $first_name = "";
                             $last_name = "";
@@ -153,14 +154,22 @@ class ImportDataController extends Controller {
                             } else {
                                 $invalid_name ++;
                             }
+                            $first_name = trim($first_name);
+                            $last_name = trim($last_name);
                             if ($company_id <= 0) {
                                 $status = "invalid";
                                 $campaign_id_not_exist ++;
                             }
-                            $full_name = ($value->full_name != "") ? $value->full_name : "";
-                            $job_title = ($value->title != "") ? $value->title : "";
-                            $company_name = ($value->company != "") ? $value->company : "";
-                            $contact_exist = Contacts::where('full_name', $full_name)->where('job_title', $job_title)->where('company_name', $company_name)->count();
+                            $full_name = ($value->full_name != "") ? trim($value->full_name) : "";
+                            $job_title = ($value->title != "") ? trim($value->title) : "";
+                            $company_name = ($value->company != "") ? trim($value->company) : "";
+                            $contact_exist = 0;
+                            try {
+                                $contact_exist = Contacts::where('full_name', $full_name)->where('job_title', $job_title)->where('company_name', $company_name)->count();
+                            }catch(\Illuminate\Database\QueryException $ex){
+                                $contact_exist = 0;
+                                $invalid_array[] = $value;
+                            }
                             if ($contact_exist == 0) {
                                 $inserted ++;
                                 $insert[] = [
@@ -193,7 +202,8 @@ class ImportDataController extends Controller {
                         "duplicate" => $duplicate,
                         "inserted" => $inserted,
                         "campaign_id_not_exist" => $campaign_id_not_exist,
-                        "invalid_name" => $invalid_name
+                        "invalid_name" => $invalid_name,
+                        "invalid_array"=>$invalid_array
                     );
                     Session::flash('stats_data', $stats_data);
                     return back();
@@ -220,8 +230,9 @@ class ImportDataController extends Controller {
                     $new_insert = 0;
                     $already_exist = 0;
                     $invalid = 0;
+                    $emails_not_load = array();
                     foreach ($data as $key => $value) {
-                        if(UtilString::is_email($value->email)){
+                        if(UtilString::is_email($value->email) && !UtilString::contains($value->email,"@gmail.com") && !UtilString::is_empty_string(UtilString::trim_string($value->first_name)) && !UtilString::is_empty_string(UtilString::trim_string($value->last_name))){
                             $email_exist = AvailableEmail::where('email', $value->email)->count();
                             if ($email_exist == 0) {
                                 $insert[] = [
@@ -240,6 +251,7 @@ class ImportDataController extends Controller {
                             }
                         }else{
                             $invalid ++;
+                            $emails_not_load[] = $value;
                         }
                     }
                     if (!empty($insert)) {
@@ -254,7 +266,8 @@ class ImportDataController extends Controller {
                     $stats_data = array(
                         "duplicate" => $already_exist,
                         "inserted" => $new_insert,
-                        "invalid_email" => $invalid
+                        "invalid_email" => $invalid,
+                        "emails_not_load" => $emails_not_load
                     );
                     Session::flash('stats_data', $stats_data);
                     return back();

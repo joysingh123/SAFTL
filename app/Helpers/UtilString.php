@@ -3,7 +3,7 @@ namespace App\Helpers;
 class UtilString {
     
     public static function trim_string($str) {
-        $str = trim($str, '",()');
+        $str = trim($str, '",(),-');
         return $str;
     }
 
@@ -30,7 +30,7 @@ class UtilString {
     }
 
     public static function get_company_id_from_url($url) {
-        if (!self::is_empty_string($url)) {
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
             $parts = parse_url($url);
             parse_str($parts['query'], $query);
             return $query['companyId'];
