@@ -12,6 +12,7 @@ use Session;
 use App\Helpers\UtilString;
 use App\Helpers\UtilConstant;
 use App\AvailableEmail;
+use App\Helpers\UtilDebug;
 
 class ImportDataController extends Controller {
 
@@ -22,7 +23,7 @@ class ImportDataController extends Controller {
     public function importContactView() {
         return view('addcompaniescontact');
     }
-    
+
     public function importEmailView() {
         return view('addemaildata');
     }
@@ -128,9 +129,7 @@ class ImportDataController extends Controller {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
-                $data = Excel::load($path, function($reader) {
-                            
-                        })->get();
+                $data = Excel::load($path, function($reader) {})->get();
                 if (!empty($data) && $data->count()) {
                     $duplicate = 0;
                     $inserted = 0;
@@ -138,55 +137,62 @@ class ImportDataController extends Controller {
                     $invalid_name = 0;
                     $invalid_array = array();
                     foreach ($data as $key => $value) {
-                        if (!UtilString::is_empty_string($value->full_name) && !UtilString::is_empty_string($value->company_url)) {
-                            $company_id = UtilString::get_company_id_from_url($value->company_url);
-                            $first_name = "";
-                            $last_name = "";
-                            $status = "invalid";
-                            $explode_name = explode(" ", $value->full_name);
-                            if (count($explode_name) == 1) {
-                                $first_name = $explode_name[0];
-                                $status = "valid";
-                            } else if (count($explode_name) == 2) {
-                                $first_name = $explode_name[0];
-                                $last_name = $explode_name[1];
-                                $status = "valid";
-                            } else {
-                                $invalid_name ++;
-                            }
-                            $first_name = trim($first_name);
-                            $last_name = trim($last_name);
-                            if ($company_id <= 0) {
+                        if (!UtilString::contains($value, "\u")) {
+                            if (!UtilString::is_empty_string($value->full_name) && !UtilString::is_empty_string($value->company_url)) {
+                                $company_id = UtilString::get_company_id_from_url($value->company_url);
+                                $full_name = trim($value->full_name);
+                                $job_title = ($value->title != "") ? trim($value->title) : "";
+                                $company_name = ($value->company != "") ? trim($value->company) : "";
+                                $experience = ($value->experience != "") ? trim($value->experience) : "";
+                                $location = ($value->location != "") ? trim($value->location) : "";
+                                $profile_link = ($value->profile_link != "") ? $value->profile_link : "";
+                                $company_url = ($company_id > 0) ? "https://www.linkedin.com/company/$company_id/" : "";
+                                $first_name = "";
+                                $last_name = "";
                                 $status = "invalid";
-                                $campaign_id_not_exist ++;
+
+                                //logic for firs name and last name
+                                $explode_name = explode(" ", $value->full_name);
+                                if (count($explode_name) == 1) {
+                                    $first_name = $explode_name[0];
+                                    $status = "valid";
+                                } else if (count($explode_name) == 2) {
+                                    $first_name = $explode_name[0];
+                                    $last_name = $explode_name[1];
+                                    $status = "valid";
+                                } else {
+                                    $invalid_name ++;
+                                }
+                                if ($company_id <= 0) {
+                                    $status = "invalid";
+                                    $campaign_id_not_exist ++;
+                                }
+                                try {
+                                    $contact_exist = Contacts::where('full_name', $full_name)->where('job_title', $job_title)->where('company_name', $company_name)->count();
+                                } catch (\Illuminate\Database\QueryException $ex) {
+                                    $contact_exist = 0;
+                                    $invalid_array[] = $value;
+                                }
+                                if ($contact_exist == 0) {
+                                    $inserted ++;
+                                    $insert[] = [
+                                        'full_name' => $full_name,
+                                        'first_name' => $first_name,
+                                        'last_name' => $last_name,
+                                        'company_name' => $company_name,
+                                        'job_title' => $job_title,
+                                        'experience' => $experience,
+                                        'location' => $location,
+                                        'profile_link' => $profile_link,
+                                        'company_url' => $company_url,
+                                        'status' => $status,
+                                    ];
+                                } else {
+                                    $duplicate ++;
+                                }
                             }
-                            $full_name = ($value->full_name != "") ? trim($value->full_name) : "";
-                            $job_title = ($value->title != "") ? trim($value->title) : "";
-                            $company_name = ($value->company != "") ? trim($value->company) : "";
-                            $contact_exist = 0;
-                            try {
-                                $contact_exist = Contacts::where('full_name', $full_name)->where('job_title', $job_title)->where('company_name', $company_name)->count();
-                            }catch(\Illuminate\Database\QueryException $ex){
-                                $contact_exist = 0;
-                                $invalid_array[] = $value;
-                            }
-                            if ($contact_exist == 0) {
-                                $inserted ++;
-                                $insert[] = [
-                                    'full_name' => $full_name,
-                                    'first_name' => $first_name,
-                                    'last_name' => $last_name,
-                                    'company_name' => $company_name,
-                                    'job_title' => $job_title,
-                                    'experience' => ($value->experience != "") ? $value->experience : "",
-                                    'location' => ($value->location != "") ? $value->location : "",
-                                    'profile_link' => ($value->profile_link != "") ? $value->profile_link : "",
-                                    'company_url' => ($company_id > 0) ? "https://www.linkedin.com/company/$company_id/" : "",
-                                    'status' => $status,
-                                ];
-                            } else {
-                                $duplicate ++;
-                            }
+                        } else {
+                            $invalid_array[] = $value;
                         }
                     }
                     if (!empty($insert)) {
@@ -214,8 +220,8 @@ class ImportDataController extends Controller {
             }
         }
     }
-    
-    public function importEmailData(Request $request){
+
+    public function importEmailData(Request $request) {
         $this->validate($request, array(
             'file' => 'required'
         ));
@@ -232,7 +238,7 @@ class ImportDataController extends Controller {
                     $invalid = 0;
                     $emails_not_load = array();
                     foreach ($data as $key => $value) {
-                        if(UtilString::is_email($value->email) && !UtilString::contains($value->email,"@gmail.com") && !UtilString::is_empty_string(UtilString::trim_string($value->first_name)) && !UtilString::is_empty_string(UtilString::trim_string($value->last_name))){
+                        if (UtilString::is_email($value->email) && !UtilString::contains($value->email, "@gmail.com") && !UtilString::is_empty_string(UtilString::trim_string($value->first_name)) && !UtilString::is_empty_string(UtilString::trim_string($value->last_name))) {
                             $email_exist = AvailableEmail::where('email', $value->email)->count();
                             if ($email_exist == 0) {
                                 $insert[] = [
@@ -249,7 +255,7 @@ class ImportDataController extends Controller {
                             } else {
                                 $already_exist ++;
                             }
-                        }else{
+                        } else {
                             $invalid ++;
                             $emails_not_load[] = $value;
                         }
