@@ -42,78 +42,8 @@ class ImportDataController extends Controller {
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
                 $data = Excel::load($path, function($reader) {})->get();
+                echo $data;
                 
-                if (!empty($data) && $data->count()) {
-                    $duplicate = 0;
-                    $inserted = 0;
-                    $domain_not_exist = 0;
-                    $domain_not_found = array();
-                    foreach ($data as $key => $value) {
-
-                        if (!UtilString::contains($value->company_domain, ".")) {
-                            $domain_not_exist ++;
-                            $domain_not_found[] = [
-                                'company_linkedin_profile' => $value->company_linkedin_profile,
-                                'company_domain' => $value->company_domain,
-                                'company_name' => $value->company_name,
-                                'employee_count_at_linkedin' => $value->employee_count_at_linkedin,
-                                'industry' => $value->industry,
-                                'city' => $value->city,
-                                'employee_size' => $value->employee_size,
-                                'country' => $value->country
-                            ];
-                        } else {
-                            $company_linkedin_profile = ($value->company_linkedin_profile != "") ? $value->company_linkedin_profile : "";
-                            $company_domain = ($value->company_domain != "") ? $value->company_domain : "";
-                            $company_name = ($value->company_name != "") ? $value->company_name : "";
-                            $employee_count_at_linkedin = ($value->employee_count_at_linkedin != "") ? (int) $value->employee_count_at_linkedin : 0;
-                            $industry = ($value->industry != "") ? $value->industry : "";
-                            $city = ($value->city != "") ? $value->city : "";
-                            $employee_size = ($value->employee_size != "") ? $value->employee_size : "";
-                            $country = ($value->country != "") ? $value->country : "";
-                            $company_linkedin_profile = UtilString::clean_string($company_linkedin_profile);
-                            $company_domain = UtilString::clean_string($company_domain);
-                            $company_name = UtilString::clean_string($company_name);
-                            $industry = UtilString::clean_string($industry);
-                            $city = UtilString::clean_string($city);
-                            $employee_size = UtilString::clean_string($employee_size);
-                            $country = UtilString::clean_string($country);
-                            $contact_exist = CompaniesWithDomain::where('company_linkedin_profile', $company_linkedin_profile)->where('company_domain', $company_domain)->count();
-                            if ($contact_exist == 0) {
-                                $insert[] = [
-                                    'company_linkedin_profile' => $company_linkedin_profile,
-                                    'company_domain' => UtilString::get_domain_from_url($company_domain),
-                                    'company_name' => $company_name,
-                                    'employee_count_at_linkedin' => $employee_count_at_linkedin,
-                                    'industry' => $industry,
-                                    'city' => $city,
-                                    'employee_size' => $employee_size,
-                                    'country' => $country
-                                ];
-                                $inserted ++;
-                            } else {
-                                $duplicate ++;
-                            }
-                        }
-                    }
-                    if (!empty($insert)) {
-                        $insertData = DB::table('companies_with_domain')->insert($insert);
-                        if ($insertData) {
-                            Session::flash('success', 'Your Data has successfully imported');
-                        } else {
-                            Session::flash('error', 'Error inserting the data..');
-                            return back();
-                        }
-                    }
-                }
-                $stats_data = array(
-                    "duplicate" => $duplicate,
-                    "inserted" => $inserted,
-                    "domain_not_exist" => $domain_not_exist,
-                    "domain_not_found" => $domain_not_found
-                );
-                Session::flash('stats_data', $stats_data);
-                return back();
             } else {
                 Session::flash('error', 'File is a ' . $extension . ' file.!! Please upload a valid xls file..!!');
                 return back();
