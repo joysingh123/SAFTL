@@ -80,7 +80,7 @@
       <tr>
         <th>New Inserted</th>
         <th>Duplicate</th>
-        <th>Invalid Record</th> 
+        <th>Junk Contact</th> 
         <th>Company Id Not Exist</th>
         <th>Name Found Invalid</th>
       </tr>
@@ -100,7 +100,7 @@
 <br>
 <br>
 <div class="container">
-  <h2>Junk Conatct</h2>         
+  <h2>Junk Contact</h2>         
   <table class="table">
     <thead>
       <tr>
@@ -113,8 +113,9 @@
       </tr>
     </thead>
     <tbody>
-      @foreach($stats_data['invalid_array'] AS $data)
+      @foreach($stats_data['invalid_array'] AS $k=>$data)
       <tr>
+        <td>{{$k}}</td>
         <td>{{$data->full_name}}</td>
         <td>{{$data->title}}</td>
         <td>{{$data->company}}</td>
