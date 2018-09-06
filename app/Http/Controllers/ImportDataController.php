@@ -150,6 +150,9 @@ class ImportDataController extends Controller {
                                 $experience = ($value->experience != "") ? trim($value->experience) : "";
                                 $location = ($value->location != "") ? trim($value->location) : "";
                                 $profile_link = ($value->profile_link != "") ? $value->profile_link : "";
+                                $tag = ($value->tag != "") ? $value->tag : "";
+                                $title_level = ($value->title_level != "") ? $value->title_level : "";
+                                $department = ($value->department != "") ? $value->department : "";
                                 $company_url = ($company_id > 0) ? "https://www.linkedin.com/company/$company_id/" : "";
                                 $first_name = "";
                                 $last_name = "";
@@ -190,6 +193,9 @@ class ImportDataController extends Controller {
                                         'location' => $location,
                                         'profile_link' => $profile_link,
                                         'company_url' => $company_url,
+                                        'tag' => $tag,
+                                        'title_level' => $title_level,
+                                        'department' => $department,
                                         'status' => $status,
                                     ];
                                 } else {
