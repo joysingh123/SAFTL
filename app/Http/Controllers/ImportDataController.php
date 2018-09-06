@@ -34,8 +34,9 @@ class ImportDataController extends Controller {
         ini_set('mysql.connect_timeout', 300);
         ini_set('default_socket_timeout', 300);
         $this->validate($request, array(
-            'file' => 'required | max:10240'
+            'file' => 'required'
         ));
+        
         if ($request->hasFile('file')) {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
@@ -126,7 +127,7 @@ class ImportDataController extends Controller {
         ini_set('mysql.connect_timeout', 300);
         ini_set('default_socket_timeout', 300);
         $this->validate($request, array(
-            'file' => 'required | max:10240'
+            'file' => 'required'
         ));
         if ($request->hasFile('file')) {
             $extension = File::extension($request->file->getClientOriginalName());
@@ -236,7 +237,7 @@ class ImportDataController extends Controller {
 
     public function importEmailData(Request $request) {
         $this->validate($request, array(
-            'file' => 'required | max:10240'
+            'file' => 'required'
         ));
         if ($request->hasFile('file')) {
             $extension = File::extension($request->file->getClientOriginalName());
