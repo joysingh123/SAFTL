@@ -29,27 +29,28 @@ class ImportDataController extends Controller {
     }
 
     public function importComapniesWithDomainData(Request $request) {
-        dd($request->input());
-//        ini_set('max_execution_time', 600);
-//        ini_set('memory_limit', -1);
-//        ini_set('mysql.connect_timeout', 300);
-//        ini_set('default_socket_timeout', 300);
-//        $this->validate($request, array(
-//            'file' => 'required'
-//        ));
-//        
-//        if ($request->hasFile('file')) {
-//            $extension = File::extension($request->file->getClientOriginalName());
-//            if ($extension == "xlsx" || $extension == "xls") {
-//                $path = $request->file->getRealPath();
-//                $data = Excel::load($path, function($reader) {})->get();
-//                echo $data;
-//                
-//            } else {
-//                Session::flash('error', 'File is a ' . $extension . ' file.!! Please upload a valid xls file..!!');
-//                return back();
-//            }
-//        }
+        ini_set('max_execution_time', 600);
+        ini_set('memory_limit', -1);
+        ini_set('mysql.connect_timeout', 300);
+        ini_set('default_socket_timeout', 300);
+        $this->validate($request, array(
+            'file' => 'required'
+        ));
+        
+        if ($request->hasFile('file')) {
+            $extension = File::extension($request->file->getClientOriginalName());
+            if ($extension == "xlsx" || $extension == "xls") {
+                $path = $request->file->getRealPath();
+                $data = Excel::load($path, function($reader) {})->get();
+                echo $data;
+                
+            } else {
+                Session::flash('error', 'File is a ' . $extension . ' file.!! Please upload a valid xls file..!!');
+                return back();
+            }
+        }else{
+            echo "test";
+        }
     }
 
     public function importContactData(Request $request) {
