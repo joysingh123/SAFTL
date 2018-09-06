@@ -104,6 +104,7 @@
   <table class="table">
     <thead>
       <tr>
+        <th>#</th>
         <th>Full Name</th>
         <th>Job Title</th>
         <th>Company</th> 
@@ -115,7 +116,7 @@
     <tbody>
       @foreach($stats_data['invalid_array'] AS $k=>$data)
       <tr>
-        <td>{{$k}}</td>
+        <td>{{$k + 1}}</td>
         <td>{{$data->full_name}}</td>
         <td>{{$data->title}}</td>
         <td>{{$data->company}}</td>
