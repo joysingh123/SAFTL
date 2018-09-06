@@ -29,7 +29,7 @@ class ImportDataController extends Controller {
     }
 
     public function importComapniesWithDomainData(Request $request) {
-        ini_set('max_execution_time', 300);
+        ini_set('max_execution_time', 600);
         ini_set('memory_limit', -1);
         ini_set('mysql.connect_timeout', 300);
         ini_set('default_socket_timeout', 300);
