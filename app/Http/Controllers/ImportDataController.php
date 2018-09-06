@@ -35,12 +35,9 @@ class ImportDataController extends Controller {
         if ($request->hasFile('file')) {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
-
                 $path = $request->file->getRealPath();
-                $data = Excel::load($path, function($reader) {
-                            
-                        })->get();
-
+                $data = Excel::load($path, function($reader) {})->get();
+                
                 if (!empty($data) && $data->count()) {
                     $duplicate = 0;
                     $inserted = 0;
@@ -120,8 +117,10 @@ class ImportDataController extends Controller {
     }
 
     public function importContactData(Request $request) {
-        ini_set('max_execution_time', 600);
+        ini_set('max_execution_time', 300);
         ini_set('memory_limit', -1);
+        ini_set('mysql.connect_timeout', 300);
+        ini_set('default_socket_timeout', 300);
         $this->validate($request, array(
             'file' => 'required'
         ));
@@ -135,6 +134,7 @@ class ImportDataController extends Controller {
                     $inserted = 0;
                     $campaign_id_not_exist = 0;
                     $invalid_name = 0;
+                    $invalid_record = 0;
                     $invalid_array = array();
                     foreach ($data as $key => $value) {
                         if (!UtilString::contains($value, "\u")) {
@@ -151,7 +151,7 @@ class ImportDataController extends Controller {
                                 $last_name = "";
                                 $status = "invalid";
 
-                                //logic for firs name and last name
+                                //logic for first name and last name
                                 $explode_name = explode(" ", $value->full_name);
                                 if (count($explode_name) == 1) {
                                     $first_name = $explode_name[0];
@@ -172,6 +172,7 @@ class ImportDataController extends Controller {
                                 } catch (\Illuminate\Database\QueryException $ex) {
                                     $contact_exist = 0;
                                     $invalid_array[] = $value;
+                                    $invalid_record ++;
                                 }
                                 if ($contact_exist == 0) {
                                     $inserted ++;
@@ -192,6 +193,7 @@ class ImportDataController extends Controller {
                                 }
                             }
                         } else {
+                            $invalid_record ++;
                             $invalid_array[] = $value;
                         }
                     }
@@ -209,7 +211,8 @@ class ImportDataController extends Controller {
                         "inserted" => $inserted,
                         "campaign_id_not_exist" => $campaign_id_not_exist,
                         "invalid_name" => $invalid_name,
-                        "invalid_array"=>$invalid_array
+                        "invalid_record" => $invalid_record,
+                        "invalid_array" => $invalid_array
                     );
                     Session::flash('stats_data', $stats_data);
                     return back();
@@ -229,9 +232,7 @@ class ImportDataController extends Controller {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
-                $data = Excel::load($path, function($reader) {
-                            
-                        })->take(500)->get();
+                $data = Excel::load($path, function($reader) {})->take(500)->get();
                 if (!empty($data) && $data->count()) {
                     $new_insert = 0;
                     $already_exist = 0;

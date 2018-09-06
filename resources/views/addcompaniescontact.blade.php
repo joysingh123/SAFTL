@@ -80,6 +80,7 @@
       <tr>
         <th>New Inserted</th>
         <th>Duplicate</th>
+        <th>Invalid Record</th> 
         <th>Company Id Not Exist</th>
         <th>Name Found Invalid</th>
       </tr>
@@ -88,12 +89,44 @@
       <tr>
         <td>{{$stats_data['inserted']}}</td>
         <td>{{$stats_data['duplicate']}}</td>
+        <td>{{$stats_data['invalid_record']}}</td>
         <td>{{$stats_data['campaign_id_not_exist']}}</td>
         <td>{{$stats_data['invalid_name']}}</td>
       </tr>
     </tbody>
   </table>
 </div>
+@if(count($stats_data['invalid_array']) > 0)
+<br>
+<br>
+<div class="container">
+  <h2>Junk Conatct</h2>         
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Job Title</th>
+        <th>Company</th> 
+        <th>Location</th>
+        <th>Experiance</th>
+        <th>Company Url</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach($stats_data['invalid_array'] AS $data)
+      <tr>
+        <td>{{$data->full_name}}</td>
+        <td>{{$data->title}}</td>
+        <td>{{$data->company}}</td>
+        <td>{{$data->location}}</td>
+        <td>{{$data->experience}}</td>
+        <td>{{$data->company_url}}</td>
+      </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
+@endif
 @endif
 </div>
 </body>
