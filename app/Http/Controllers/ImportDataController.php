@@ -61,16 +61,19 @@ class ImportDataController extends Controller {
                         } else {
                             $duplicate[] = $value;
                             if (!UtilString::contains($value, "\u")) {
-                                if (UtilString::contains($value->company_domain, ".")) {
-                                    $company_linkedin_profile = ($value->company_linkedin_profile != "") ? $value->company_linkedin_profile : "";
+                                if ((isset($value->company_domain) && isset($value->linkedin_id)) && (UtilString::contains($value->company_domain, ".") && $value->linkedin_id > 0)) {
+                                    $linkedin_id = ($value->linkedin_id != "") ? $value->linkedin_id : "";
+                                    $linkedin_url = ($value->linkedin_url != "") ? $value->linkedin_url : "";
                                     $company_domain = ($value->company_domain != "") ? $value->company_domain : "";
                                     $company_name = ($value->company_name != "") ? $value->company_name : "";
+                                    $company_type = ($value->company_type != "") ? $value->company_type : "";
                                     $employee_count_at_linkedin = ($value->employee_count_at_linkedin != "") ? (int) $value->employee_count_at_linkedin : 0;
                                     $industry = ($value->industry != "") ? $value->industry : "";
                                     $city = ($value->city != "") ? $value->city : "";
+                                    $postal_code = ($value->postal_code != "") ? $value->postal_code : "";
                                     $employee_size = ($value->employee_size != "") ? $value->employee_size : "";
                                     $country = ($value->country != "") ? $value->country : "";
-                                    $company_linkedin_profile = UtilString::clean_string($company_linkedin_profile);
+                                    $linkedin_url = UtilString::clean_string($linkedin_url);
                                     $company_domain = UtilString::clean_string($company_domain);
                                     $company_domain = UtilString::get_domain_from_url($company_domain);
                                     $company_name = UtilString::clean_string($company_name);
@@ -78,15 +81,18 @@ class ImportDataController extends Controller {
                                     $city = UtilString::clean_string($city);
                                     $employee_size = UtilString::clean_string($employee_size);
                                     $country = UtilString::clean_string($country);
-                                    $contact_exist = CompaniesWithDomain::where('company_linkedin_profile', $company_linkedin_profile)->where('company_domain', $company_domain)->count();
+                                    $contact_exist = CompaniesWithDomain::where('linkedin_id', $linkedin_id)->where('company_domain', $company_domain)->count();
                                     if ($contact_exist == 0) {
                                         $insert_array = [
-                                            'company_linkedin_profile' => $company_linkedin_profile,
+                                            'linkedin_id' => $linkedin_id,
+                                            'linkedin_url' => $linkedin_url,
                                             'company_domain' => $company_domain,
                                             'company_name' => $company_name,
+                                            'company_type' => $company_type,
                                             'employee_count_at_linkedin' => $employee_count_at_linkedin,
                                             'industry' => $industry,
                                             'city' => $city,
+                                            'postal_code' => $postal_code,
                                             'employee_size' => $employee_size,
                                             'country' => $country
                                         ];
@@ -98,12 +104,15 @@ class ImportDataController extends Controller {
                                 } else {
                                     $domain_not_exist ++;
                                     $domain_not_found[] = [
-                                        'company_linkedin_profile' => $value->company_linkedin_profile,
+                                        'linkedin_id' => $value->linkedin_id,
+                                        'linkedin_url' => $value->linkedin_url,
                                         'company_domain' => $value->company_domain,
                                         'company_name' => $value->company_name,
+                                        'company_type' => $value->company_type,
                                         'employee_count_at_linkedin' => $value->employee_count_at_linkedin,
                                         'industry' => $value->industry,
                                         'city' => $value->city,
+                                        'postal_code' => $value->postal_code,
                                         'employee_size' => $value->employee_size,
                                         'country' => $value->country
                                     ];
@@ -111,12 +120,15 @@ class ImportDataController extends Controller {
                             } else {
                                 $junk_count ++;
                                 $junk_data_array[] = [
-                                    'company_linkedin_profile' => $value->company_linkedin_profile,
+                                    'linkedin_id' => $value->linkedin_id,
+                                    'linkedin_url' => $value->linkedin_url,
                                     'company_domain' => $value->company_domain,
                                     'company_name' => $value->company_name,
+                                    'company_type' => $value->company_type,
                                     'employee_count_at_linkedin' => $value->employee_count_at_linkedin,
                                     'industry' => $value->industry,
                                     'city' => $value->city,
+                                    'postal_code' => $value->postal_code,
                                     'employee_size' => $value->employee_size,
                                     'country' => $value->country
                                 ];
@@ -183,8 +195,8 @@ class ImportDataController extends Controller {
                         } else {
                             $duplicate_array[] = strtolower($value);
                             if (!UtilString::contains($value, "\u")) {
-                                if (!UtilString::is_empty_string($value->full_name) && !UtilString::is_empty_string($value->company_url)) {
-                                    $company_id = UtilString::get_company_id_from_url($value->company_url);
+                                if (!UtilString::is_empty_string($value->full_name) && (isset($value->linkedin_id) && $value->linkedin_id > 0)) {
+                                    $linkedin_id = $value->linkedin_id;
                                     $full_name = trim($value->full_name);
                                     $job_title = ($value->title != "") ? trim($value->title) : "";
                                     $company_name = ($value->company != "") ? trim($value->company) : "";
@@ -194,7 +206,6 @@ class ImportDataController extends Controller {
                                     $tag = ($value->tag != "") ? $value->tag : "";
                                     $title_level = ($value->title_level != "") ? $value->title_level : "";
                                     $department = ($value->department != "") ? $value->department : "";
-                                    $company_url = ($company_id > 0) ? "https://www.linkedin.com/company/$company_id/" : "";
                                     $first_name = "";
                                     $last_name = "";
                                     $status = "invalid";
@@ -211,7 +222,7 @@ class ImportDataController extends Controller {
                                     } else {
                                         $invalid_name ++;
                                     }
-                                    if ($company_id <= 0) {
+                                    if ($linkedin_id <= 0) {
                                         $status = "invalid";
                                         $campaign_id_not_exist ++;
                                     }
@@ -225,6 +236,7 @@ class ImportDataController extends Controller {
                                     if ($contact_exist == 0) {
                                         $inserted ++;
                                         $insert[] = [
+                                            'linkedin_id' => $linkedin_id,
                                             'full_name' => $full_name,
                                             'first_name' => $first_name,
                                             'last_name' => $last_name,
@@ -233,7 +245,6 @@ class ImportDataController extends Controller {
                                             'experience' => $experience,
                                             'location' => $location,
                                             'profile_link' => $profile_link,
-                                            'company_url' => $company_url,
                                             'tag' => $tag,
                                             'title_level' => $title_level,
                                             'department' => $department,

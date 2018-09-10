@@ -80,12 +80,16 @@
   <h2>Instruction</h2>         
   <ul>
       <li>Excel Sheet Should have column 
-          <span class="excel-column">[Company_LinkedIN_Profile, 
+          <span class="excel-column">[
+          Linkedin Id, 
+          Linkedin url, 
           Company_Domain, 
           Company_Name, 
+          Company_Type, 
           Employee_Count_at_LinkedIN, 
           Industry, 
-          City, 
+          City,
+          Postal Code
           Employee_Size, 
           Country] .
           </span>
@@ -132,12 +136,15 @@
   <table class="table">
     <thead>
       <tr>
-        <th>Company Linkedin Profile</th>
+        <th>Linkedin Id</th>
+        <th>Linkedin Url</th>
         <th>Company Domain</th>
         <th>Company Name</th>
+        <th>Company Type</th>
         <th>Employee Count At Linkedin</th>
         <th>Industry</th>
         <th>City</th>
+        <th>Postal Code</th>
         <th>Employee Size</th>
         <th>Country</th>
       </tr>
@@ -145,12 +152,15 @@
     <tbody>
       @foreach($stats_data['domain_not_found'] AS $c)
       <tr>
-        <td>{{$c['company_linkedin_profile']}}</td>
+        <td>{{$c['linkedin_id']}}</td>
+        <td>{{$c['linkedin_url']}}</td>
         <td>{{$c['company_domain']}}</td>
         <td>{{$c['company_name']}}</td>
+        <td>{{$c['company_type']}}</td>
         <td>{{$c['employee_count_at_linkedin']}}</td>
         <td>{{$c['industry']}}</td>
         <td>{{$c['city']}}</td>
+        <td>{{$c['postal_code']}}</td>
         <td>{{$c['employee_size']}}</td>
         <td>{{$c['country']}}</td>
       </tr>
@@ -166,12 +176,15 @@
   <table class="table">
     <thead>
       <tr>
-        <th>Company Linkedin Profile</th>
+        <th>Linkedin Id</th>
+        <th>Linkedin Url</th>
         <th>Company Domain</th>
         <th>Company Name</th>
+        <th>Company Type</th>
         <th>Employee Count At Linkedin</th>
         <th>Industry</th>
         <th>City</th>
+        <th>Postal Code</th>
         <th>Employee Size</th>
         <th>Country</th>
       </tr>
@@ -179,12 +192,15 @@
     <tbody>
       @foreach($stats_data['junk_data_array'] AS $c)
       <tr>
-        <td>{{$c['company_linkedin_profile']}}</td>
+        <td>{{$c['linkedin_id']}}</td>
+        <td>{{$c['linkedin_url']}}</td>
         <td>{{$c['company_domain']}}</td>
         <td>{{$c['company_name']}}</td>
+        <td>{{$c['company_type']}}</td>
         <td>{{$c['employee_count_at_linkedin']}}</td>
         <td>{{$c['industry']}}</td>
         <td>{{$c['city']}}</td>
+        <td>{{$c['postal_code']}}</td>
         <td>{{$c['employee_size']}}</td>
         <td>{{$c['country']}}</td>
       </tr>

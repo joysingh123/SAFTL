@@ -80,14 +80,14 @@
   <ul>
       <li>Excel Sheet Should have column 
           <span class="excel-column">[
+          LinkedIn Id,
           Full Name, 
           Title,
           Company, 
           Experience, 
           Location, 
           Industry, 
-          Profile link, 
-          Company url
+          Profile link
           ] .
           </span>
       </li>
@@ -137,6 +137,7 @@
     <thead>
       <tr>
         <th>#</th>
+        <th>LinkedIn Id</th>
         <th>Full Name</th>
         <th>Job Title</th>
         <th>Company</th> 
@@ -149,6 +150,7 @@
       @foreach($stats_data['invalid_array'] AS $k=>$data)
       <tr>
         <td>{{$k + 1}}</td>
+        <td>{{$data->linkedin_id}}</td>
         <td>{{$data->full_name}}</td>
         <td>{{$data->title}}</td>
         <td>{{$data->company}}</td>
