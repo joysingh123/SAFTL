@@ -7,15 +7,18 @@ use App\AvailableEmail;
 use App\Helpers\UtilString;
 use App\Helpers\UtilDebug;
 use App\Helpers\UtilConstant;
+use App\EmailFormat;
+use App\MatchedContact;
+use DB;
+use Session;
 
 class MakeEmailFormatController extends Controller {
 
     public function index(Request $request) {
-        $email_data = AvailableEmail::where('status', '')->get();
+        $email_data = AvailableEmail::where('status', '')->take(500)->get();
         if($email_data->count() > 0){
             foreach ($email_data AS $d){
-//                UtilDebug::print_message("$d", $this->getEmailFormate($d));
-                $this->getEmailFormate($d);
+                UtilDebug::print_r_array("$d", $this->getEmailFormate($d));
             }
         }else{
             UtilDebug::print_message("Sorry", "No Email Found For Processing.");
@@ -23,7 +26,7 @@ class MakeEmailFormatController extends Controller {
     }
 
     public function getEmailFormate($data) {
-//        UtilDebug::print_message("data", $data);
+        $response = array();
         $email = strtolower($data->email);
         $company_domain = trim($data->company_domain);
         $first_name = strtolower(trim($data->first_name));
@@ -60,15 +63,13 @@ class MakeEmailFormatController extends Controller {
                                 $email_format .= UtilConstant::FIRST_NAME_FIRST_TWO_CHARACTER;
                             }else if($first_part == $last_name_first_two_char){
                                 $email_format .= UtilConstant::LAST_NAME_FIRST_TWO_CHARACTER;
-                            }else{
-                                
                             }
                         }
                     }
                     //explode processing
                     
                     $explode_by = (isset($email_first_part_info['explode_by'])) ? $email_first_part_info['explode_by'] : "";
-                    if($explode_by != ""){
+                    if($explode_by != "" && $email_format != ""){
                         $email_format .= $explode_by;
                     }
                     
@@ -90,13 +91,11 @@ class MakeEmailFormatController extends Controller {
                                 $email_format .= UtilConstant::FIRST_NAME_FIRST_TWO_CHARACTER;
                             }else if($second_part == $last_name_first_two_char){
                                 $email_format .= UtilConstant::LAST_NAME_FIRST_TWO_CHARACTER;
-                            }else{
-                                
                             }
                         }
                     }
                 } else {
-                    UtilDebug::print_r_array("$data", $email_first_part_info);
+//                    UtilDebug::print_r_array("$data", $email_first_part_info);
                     if (UtilString::contains($email_first_part_info, $first_name) && UtilString::contains($email_first_part_info, $last_name)) {
 //                        UtilDebug::print_r_array("$data", $email_first_part_info);
                         $str_pos = stripos($email_first_part_info, $first_name);
@@ -143,13 +142,49 @@ class MakeEmailFormatController extends Controller {
                 }
             }
             if (strlen($email_format) > 0) {
+                $response['status']="success";
+                $response['Message'] = "formate available";
+                $response['formate'] = $email_format;
+                $company_domain = $data->company_domain;
+                $formate_exist = EmailFormat::where('company_domain', $company_domain)->where('email_format', $email_format)->count();
+                if($formate_exist == 0){
+                        $insert[] = [
+                                    'sample_email' => $data->email,
+                                    'first_name' => $data->first_name,
+                                    'last_name' => $data->last_name,
+                                    'company_domain' => $company_domain,
+                                    'email_format' => "$email_format",
+                                    'status' => "success"
+                                ];
+                        $insertData = DB::table('email_format')->insert($insert);
+                        $matched_contact = MatchedContact::where('domain',$data->company_domain)->where('email_format_available','no')->get();
+                        if($matched_contact->count() > 0){
+                            $matched_contact = $matched_contact->first();
+                            $matched_contact->email_format_available = 'yes';
+                            $matched_contact->save();
+                        }
+                        if ($insertData) {
+                            $response['Message'] = "Inserted";
+                            $data->status = "Email  Format Created";
+                            $data->save();
+                        } else {
+                           $response['Message'] = "Error inserting the data..";
+                        }
+                        
+                }else{
+                    $data->status = "Email  Format Created";
+                    $data->save();
+                    $response['Message'] = "Already Exist";
+                }
                 return $email_format;
             }else{
-               return "Email Format Not Found"; 
+                $response['status']="fail";
+                $response['Message'] = "Email Format Not Found";
             }
         } else {
-            return "Invalid Email";
+            $response['status']="fail";
+            $response['Message'] = "Invalid Email";
         }
+        return $response;
     }
-
 }

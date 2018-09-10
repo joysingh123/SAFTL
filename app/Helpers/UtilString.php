@@ -30,12 +30,13 @@ class UtilString {
     }
 
     public static function get_company_id_from_url($url) {
+        $company_id = 0;
         if (filter_var($url, FILTER_VALIDATE_URL)) {
             $parts = parse_url($url);
             parse_str($parts['query'], $query);
-            return $query['companyId'];
+                $company_id = str_replace("/", "", $query['companyId']);
         }
-        return 0;
+        return $company_id;
     }
     public static function starts_with($haystack, $needle) {
         $length = strlen($needle);

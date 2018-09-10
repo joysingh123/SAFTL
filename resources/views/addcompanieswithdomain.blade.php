@@ -87,9 +87,11 @@
           Industry, 
           City, 
           Employee_Size, 
-          Country]
+          Country] .
           </span>
       </li>
+      <li>Excel Sheet should not have more then one sheet .</li>
+      <li>Excel Sheet should have contains max 10,000 records.</li>
   </ul>
 </div>
 @endif

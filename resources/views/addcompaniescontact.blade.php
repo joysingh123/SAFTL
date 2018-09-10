@@ -20,6 +20,13 @@
         margin: 0;
         padding: 5%
     }
+    .excel-column{
+        font-size: small;
+        font-style: oblique;
+        font-family: sans-serif;
+        font-weight: 400;
+        color: black;
+    }
 </style>
 </head>
 <body>
@@ -66,6 +73,29 @@
     <input type="submit" class="btn btn-primary btn-lg" style="margin-top: 3%">
 </form>
 
+@if(!Session::has('stats_data'))
+<br>
+<div class="container">
+  <h2>Instruction</h2>         
+  <ul>
+      <li>Excel Sheet Should have column 
+          <span class="excel-column">[
+          Full Name, 
+          Title,
+          Company, 
+          Experience, 
+          Location, 
+          Industry, 
+          Profile link, 
+          Company url
+          ] .
+          </span>
+      </li>
+      <li>Excel Sheet should not have more then one sheet .</li>
+      <li>Excel Sheet should have contains max 10,000 records.</li>
+  </ul>
+</div>
+@endif
 @if(Session::has('stats_data'))
 
 @php
@@ -80,6 +110,7 @@
       <tr>
         <th>New Inserted</th>
         <th>Duplicate</th>
+        <th>Duplicate In Sheet</th>
         <th>Junk Contact</th> 
         <th>Company Id Not Exist</th>
         <th>Name Found Invalid</th>
@@ -89,6 +120,7 @@
       <tr>
         <td>{{$stats_data['inserted']}}</td>
         <td>{{$stats_data['duplicate']}}</td>
+        <td>{{$stats_data['duplicate_in_sheet']}}</td>
         <td>{{$stats_data['invalid_record']}}</td>
         <td>{{$stats_data['campaign_id_not_exist']}}</td>
         <td>{{$stats_data['invalid_name']}}</td>
