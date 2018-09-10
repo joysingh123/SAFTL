@@ -79,13 +79,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Import Your Data
-                </div>
-
-                <div class="links">
-                    <a href="/importcompaniesdata">Companies With Domain Import</a>
-                    <a href="/importcontactdata">Contact Import</a>
-                    <a href="/importemaildata">Email Import For Format Generation</a>
+                    Welcome
                 </div>
             </div>
         </div>

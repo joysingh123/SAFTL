@@ -1,163 +1,133 @@
-<!doctype html>
-<html lang="{{ app()->getLocale() }}">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ URL::to('css/app.css') }}">
+@extends('layouts.app')
 
-        <title>Email Excel Import csv and XLS file in Database</title>
+@section('content')
+<div class="container">
+    <h2 class="text-center">
+        Email Import
+    </h2>
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+    @if ( Session::has('success') )
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <strong>{{ Session::get('success') }}</strong>
+    </div>
+    @endif
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-weight: 100;
-                margin: 0;
-                padding: 5%
-            }
-            .excel-column{
-                font-size: small;
-                font-style: oblique;
-                font-family: sans-serif;
-                font-weight: 400;
-                color: black;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h2 class="text-center">
-                Email Import
-            </h2>
+    @if ( Session::has('error') )
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <strong>{{ Session::get('error') }}</strong>
+    </div>
+    @endif
 
-            @if ( Session::has('success') )
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <strong>{{ Session::get('success') }}</strong>
-            </div>
-            @endif
-
-            @if ( Session::has('error') )
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <strong>{{ Session::get('error') }}</strong>
-            </div>
-            @endif
-
-            @if (count($errors) > 0)
-            <div class="alert alert-danger">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                <div>
-                    @foreach ($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-
-            <form action="{{ route('importemaildata') }}" method="POST" enctype="multipart/form-data">
-                {{ csrf_field() }}
-                Choose your xls File : <input type="file" name="file" class="form-control">
-
-                <input type="submit" class="btn btn-primary btn-lg" style="margin-top: 3%">
-            </form>
-
-            @if(!Session::has('stats_data'))
-            <br>
-            <div class="container">
-                <h2>Instruction</h2>         
-                <ul>
-                    <li>Excel Sheet Should have column 
-                        <span class="excel-column">[
-                            Email, 
-                            Company_Name, 
-                            Domain, 
-                            First Name, 
-                            Last Name, 
-                            Country, 
-                            Job Title] .
-                        </span>
-                    </li>
-                    <li>Excel Sheet should not have more then one sheet .</li>
-                    <li>Excel Sheet should have contains max 10,000 records.</li>
-                </ul>
-            </div>
-            @endif
-
-            @if(Session::has('stats_data'))
-
-            @php
-            $stats_data = Session::get('stats_data')
-            @endphp
-            <br>
-            <br>
-            <div class="container">
-                <h2>Email Stats</h2>         
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>New Inserted</th>
-                            <th>Duplicate</th>
-                            <th>Duplicate In Sheet</th>
-                            <th>Email Found Invalid</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{$stats_data['inserted']}}</td>
-                            <td>{{$stats_data['duplicate']}}</td>
-                            <td>{{$stats_data['duplicate_in_sheet']}}</td>
-                            <td>{{$stats_data['invalid_email']}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            @if(count($stats_data['emails_not_load']) > 0)
-            <br>
-            <br>
-            <div class="container">
-                <h2>Email Not Loaded</h2>         
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>Company Name</th>
-                            <th>domain</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Country</th>
-                            <th>Job Title</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($stats_data['emails_not_load'] AS $enl)
-                        <tr>
-                            <td>{{$enl['email']}}</td>
-                            <td>{{$enl['company_name']}}</td>
-                            <td>{{$enl['domain']}}</td>
-                            <td>{{$enl['first_name']}}</td>
-                            <td>{{$enl['last_name']}}</td>
-                            <td>{{$enl['country']}}</td>
-                            <td>{{$enl['job_title']}}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @endif
-            @endif
+    @if (count($errors) > 0)
+    <div class="alert alert-danger">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <div>
+            @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+            @endforeach
         </div>
-    </body>
-</html>
+    </div>
+    @endif
+
+    <form action="{{ route('importemaildata') }}" method="POST" enctype="multipart/form-data">
+        {{ csrf_field() }}
+        Choose your xls File : <input type="file" name="file" class="form-control">
+
+        <input type="submit" class="btn btn-primary btn-lg" style="margin-top: 3%">
+    </form>
+
+    @if(!Session::has('stats_data'))
+    <br>
+    <div class="container">
+        <h2>Instruction</h2>         
+        <ul>
+            <li>Excel Sheet Should have column 
+                <span class="excel-column">[
+                    Email, 
+                    Company_Name, 
+                    Domain, 
+                    First Name, 
+                    Last Name, 
+                    Country, 
+                    Job Title] .
+                </span>
+            </li>
+            <li>Excel Sheet should not have more then one sheet .</li>
+            <li>Excel Sheet should have contains max 10,000 records.</li>
+        </ul>
+    </div>
+    @endif
+
+    @if(Session::has('stats_data'))
+
+    @php
+    $stats_data = Session::get('stats_data')
+    @endphp
+    <br>
+    <br>
+    <div class="container">
+        <h2>Email Stats</h2>         
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>New Inserted</th>
+                    <th>Duplicate</th>
+                    <th>Duplicate In Sheet</th>
+                    <th>Email Found Invalid</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{$stats_data['inserted']}}</td>
+                    <td>{{$stats_data['duplicate']}}</td>
+                    <td>{{$stats_data['duplicate_in_sheet']}}</td>
+                    <td>{{$stats_data['invalid_email']}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    @if(count($stats_data['emails_not_load']) > 0)
+    <br>
+    <br>
+    <div class="container">
+        <h2>Email Not Loaded</h2>         
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Company Name</th>
+                    <th>domain</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Country</th>
+                    <th>Job Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($stats_data['emails_not_load'] AS $enl)
+                <tr>
+                    <td>{{$enl['email']}}</td>
+                    <td>{{$enl['company_name']}}</td>
+                    <td>{{$enl['domain']}}</td>
+                    <td>{{$enl['first_name']}}</td>
+                    <td>{{$enl['last_name']}}</td>
+                    <td>{{$enl['country']}}</td>
+                    <td>{{$enl['job_title']}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endif
+    @endif
+</div>
+@endsection
