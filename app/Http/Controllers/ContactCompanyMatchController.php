@@ -21,13 +21,14 @@ class ContactCompanyMatchController extends Controller
             $new_in_company_not_found = 0;
             foreach($contacts AS $contact){
 //                UtilDebug::print_message("contact", $contact);
-                $comapanies = CompaniesWithDomain::where('company_linkedin_profile',$contact->company_url)->get();
+                $comapanies = CompaniesWithDomain::where('linkedin_id',$contact->linkedin_id)->get();
                 if($comapanies->count() > 0){
                     $company =  $comapanies->first();
-                    $matched_contact_exist = MatchedContact::where('full_name',$contact->full_name)->where('company_linkedin_page',$company->company_linkedin_profile)->where('job_title',$contact->job_title)->where('company_name',$company->company_name)->count();
+                    $matched_contact_exist = MatchedContact::where('full_name',$contact->full_name)->where('linkedin_id',$company->linkedin_id)->where('job_title',$contact->job_title)->where('company_name',$company->company_name)->count();
                     if($matched_contact_exist == 0){
                         $matched_contact = new MatchedContact();
                         $matched_contact->contact_id = $contact->id;
+                        $matched_contact->linkedin_id = $contact->linkedin_id;
                         $matched_contact->full_name = $contact->full_name;
                         $matched_contact->first_name = $contact->first_name;
                         $matched_contact->last_name = $contact->last_name;
@@ -37,7 +38,6 @@ class ContactCompanyMatchController extends Controller
                         $matched_contact->location = $contact->location;
                         $matched_contact->profile_link = $contact->profile_link;
                         $matched_contact->industry = $company->industry;
-                        $matched_contact->company_linkedin_page = $company->company_linkedin_profile;
                         $matched_contact->city = $company->city;
                         $matched_contact->domain = $company->company_domain;
                         $matched_contact->employee_size = $company->employee_size;
@@ -52,7 +52,7 @@ class ContactCompanyMatchController extends Controller
                         }
                     }
                 }else{
-                    $comapany_without_domain = CompaniesWithoutDomain::where('company_linkedin_profile',$contact->company_url)->where('company_name',$contact->company_name)->get();
+                    $comapany_without_domain = CompaniesWithoutDomain::where('linkedin_id',$contact->linkedin_id)->where('company_name',$contact->company_name)->get();
                     if($comapany_without_domain->count() > 0){
                         $already_in_company_not_found ++;
                         $contact_count = $comapany_without_domain->first()->contacts_count;
@@ -62,7 +62,7 @@ class ContactCompanyMatchController extends Controller
                         $contact->save();
                     }else{
                         $comapany_without_domain = new CompaniesWithoutDomain();
-                        $comapany_without_domain->company_linkedin_profile = $contact->company_url;
+                        $comapany_without_domain->linkedin_id = $contact->linkedin_id;
                         $comapany_without_domain->company_name = $contact->company_name;
                         $comapany_without_domain->contacts_count = 1;
                         if($comapany_without_domain->save() == 1){
