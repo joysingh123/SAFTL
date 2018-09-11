@@ -65,11 +65,11 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        
+        //'password' => Hash::make($data['password']);
         $user =  User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => $data['password'],
         ]);
         if(isset($data['roles'])){
             $role_r = Role::where('id', '=', $data['roles'])->firstOrFail();
