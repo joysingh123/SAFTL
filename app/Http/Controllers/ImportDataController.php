@@ -197,8 +197,9 @@ class ImportDataController extends Controller {
                         } else {
                             $duplicate_array[] = strtolower($value);
                             if (!UtilString::contains($value, "\u")) {
-                                if (!UtilString::is_empty_string($value->full_name) && (isset($value->linkedin_id) && $value->linkedin_id > 0)) {
-                                    $linkedin_id = $value->linkedin_id;
+                                if (!UtilString::is_empty_string($value->full_name) && !UtilString::is_empty_string($value->company_url)) {
+                                    $company_id = UtilString::get_company_id_from_url($value->company_url);
+                                    $linkedin_id = $company_id;
                                     $full_name = trim($value->full_name);
                                     $job_title = ($value->title != "") ? trim($value->title) : "";
                                     $company_name = ($value->company != "") ? trim($value->company) : "";

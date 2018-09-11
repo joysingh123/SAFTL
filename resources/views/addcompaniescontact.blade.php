@@ -51,14 +51,17 @@
         <ul>
             <li>Excel Sheet Should have column 
                 <span class="excel-column">[
-                    LinkedIn Id,
                     Full Name, 
                     Title,
                     Company, 
                     Experience, 
                     Location, 
                     Industry, 
-                    Profile link
+                    Profile link,
+                    Tag,
+                    Title Level,
+                    Department,
+                    Company Url
                     ] .
                 </span>
             </li>
