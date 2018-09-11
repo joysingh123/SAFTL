@@ -13,9 +13,10 @@ use App\Helpers\UtilString;
 use App\Helpers\UtilConstant;
 use App\AvailableEmail;
 use App\Helpers\UtilDebug;
+use Illuminate\Support\Facades\Auth;
 
 class ImportDataController extends Controller {
-
+    
     public function importComapniesWithDomainView() {
         return view('addcompanieswithdomain');
     }
@@ -84,6 +85,7 @@ class ImportDataController extends Controller {
                                     $contact_exist = CompaniesWithDomain::where('linkedin_id', $linkedin_id)->where('company_domain', $company_domain)->count();
                                     if ($contact_exist == 0) {
                                         $insert_array = [
+                                            'user_id' => Auth::id(),
                                             'linkedin_id' => $linkedin_id,
                                             'linkedin_url' => $linkedin_url,
                                             'company_domain' => $company_domain,
@@ -236,6 +238,7 @@ class ImportDataController extends Controller {
                                     if ($contact_exist == 0) {
                                         $inserted ++;
                                         $insert[] = [
+                                            'user_id' => Auth::id(),
                                             'linkedin_id' => $linkedin_id,
                                             'full_name' => $full_name,
                                             'first_name' => $first_name,
@@ -319,6 +322,7 @@ class ImportDataController extends Controller {
                                 $email_exist = AvailableEmail::where('email', $value->email)->count();
                                 if ($email_exist == 0) {
                                     $insert[] = [
+                                        'user_id' => Auth::id(),
                                         'email' => $value->email,
                                         'company_name' => (UtilString::is_empty_string($value->company_name)) ? "" : $value->company_name,
                                         'company_domain' => (UtilString::is_empty_string($value->domain)) ? "" : $value->domain,
