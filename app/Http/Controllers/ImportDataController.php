@@ -43,6 +43,7 @@ class ImportDataController extends Controller {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
+                $data = array();
                 $data = Excel::load($path, function($reader) {})->get();
                 if (!empty($data) && $data->count() <= 5000) {
                     $duplicate_in_sheet = 0;
