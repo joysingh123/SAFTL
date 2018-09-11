@@ -43,10 +43,8 @@ class ImportDataController extends Controller {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
-                $data = Excel::load($path, function($reader) {
-                            
-                        })->get();
-                if (!empty($data) && $data->count()) {
+                $data = Excel::load($path, function($reader) {})->get();
+                if (!empty($data) && $data->count() <= 5000) {
                     $duplicate_in_sheet = 0;
                     $already_exist_in_db = 0;
                     $inserted = 0;
@@ -138,7 +136,10 @@ class ImportDataController extends Controller {
                         }
                     }
                     if (!empty($insert)) {
-                        $insertData = DB::table('companies_with_domain')->insert($insert);
+                        $insert_chunk = array_chunk($insert, 1000);
+                        foreach($insert_chunk AS $ic){
+                            $insertData = DB::table('companies_with_domain')->insert($ic);
+                        }
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
                         } else {
@@ -146,6 +147,9 @@ class ImportDataController extends Controller {
                             return back();
                         }
                     }
+                }else{
+                    Session::flash('error', 'The Sheet contains Only 5,00 records');
+                    return back();
                 }
                 $stats_data = array(
                     "inserted" => $inserted,
