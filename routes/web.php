@@ -16,18 +16,18 @@ Route::get('/', function () {
 });
 
 Route::get('importcompaniesdata',"ImportDataController@importComapniesWithDomainView")->middleware(['auth','isAdmin']);
-Route::post('importcompaniesdata',"ImportDataController@importComapniesWithDomainData")->name('importcompaniesdata')->middleware('auth');
+Route::post('importcompaniesdata',"ImportDataController@importComapniesWithDomainData")->name('importcompaniesdata')->middleware(['auth','isAdmin']);
 
 Route::get('importcontactdata',"ImportDataController@importContactView")->middleware('auth');
 Route::post('importcontactdata',"ImportDataController@importContactData")->name('importcontactdata')->middleware('auth');
 
 
-Route::get('importemaildata',"ImportDataController@importEmailView")->middleware('auth');
-Route::post('importemaildata',"ImportDataController@importEmailData")->name('importemaildata')->middleware('auth');
+Route::get('importemaildata',"ImportDataController@importEmailView")->middleware(['auth','isAdmin']);
+Route::post('importemaildata',"ImportDataController@importEmailData")->name('importemaildata')->middleware(['auth','isAdmin']);
 
-Route::get('contactcompanymatch',"ContactCompanyMatchController@index")->middleware('auth');
-Route::get('makeemailformat',"MakeEmailFormatController@index")->middleware('auth');
-Route::get('createemail',"CreateEmailController@index")->middleware('auth');
+Route::get('contactcompanymatch',"ContactCompanyMatchController@index")->middleware(['auth','isAdmin']);
+Route::get('makeemailformat',"MakeEmailFormatController@index")->middleware(['auth','isAdmin']);
+Route::get('createemail',"CreateEmailController@index")->middleware(['auth','isAdmin']);
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

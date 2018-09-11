@@ -53,6 +53,7 @@ class Handler extends ExceptionHandler
                 return response()->view('errors.custom', [], $exception->getStatusCode());
             }
         }
+        
         return parent::render($request, $exception);
     }
 }
