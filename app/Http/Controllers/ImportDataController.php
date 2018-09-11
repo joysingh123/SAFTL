@@ -149,7 +149,7 @@ class ImportDataController extends Controller {
                         }
                     }
                 }else{
-                    Session::flash('error', 'The Sheet contains Only 5,00 records');
+                    Session::flash('error', 'The Sheet contains Only 5,000 records');
                     return back();
                 }
                 $stats_data = array(
