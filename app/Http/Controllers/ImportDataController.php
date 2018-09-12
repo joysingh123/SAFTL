@@ -224,7 +224,7 @@ class ImportDataController extends Controller {
                                     $explode_name = explode(" ", $value->full_name);
                                     $insert_status = true;
                                     if ($first_name != "" && $last_name != "") {
-                                        
+                                        $status = "valid";
                                     } else {
                                         if (count($explode_name) == 1) {
                                             $first_name = $explode_name[0];
