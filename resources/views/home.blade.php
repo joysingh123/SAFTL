@@ -25,6 +25,16 @@
                     <div class="links">
                         <a href="/importemaildata">Email Import For Format Generation</a>
                     </div>
+                    
+                    <div class="links">
+                        <a href="/contactcompanymatch">Matched Contact</a>
+                    </div>
+                    <div class="links">
+                        <a href="/makeemailformat">Generate Email Formate</a>
+                    </div>
+                    <div class="links">
+                        <a href="/createemail">Create Email</a>
+                    </div>
                     @endrole
                 </div>
             </div>
