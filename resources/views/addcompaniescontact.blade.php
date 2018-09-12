@@ -42,12 +42,12 @@
         Choose your xls File : <input type="file" name="file" class="form-control">
 
         <input type="submit" class="btn btn-primary btn-lg" style="margin-top: 3%">
-    </form>
+    </form>		
 
     @if(!Session::has('stats_data'))
     <br>
     <div class="container">
-        <h2>Instruction</h2>         
+        <h2>Instruction</h2>   
         <ul>
             <li>Excel Sheet Should have column 
                 <span class="excel-column">[
@@ -58,15 +58,15 @@
                     Location, 
                     Industry, 
                     Profile link,
-                    Tag,
+<!--                    Tag,
                     Title Level,
-                    Department,
+                    Department,-->
                     Company Url
                     ] .
                 </span>
             </li>
             <li>Excel Sheet should not have more then one sheet .</li>
-            <li>Excel Sheet should have contains max 10,000 records.</li>
+            <li>Excel Sheet should have contains max 5,000 records.</li>
         </ul>
     </div>
     @endif
@@ -78,7 +78,14 @@
     <br>
     <br>
     <div class="container">
-        <h2>Conatct Stats</h2>         
+        <h2>Conatct Stats</h2>
+        <form action="{{ route('exportjunkcontactdata') }}" method="POST">
+        {{ csrf_field() }}
+        @foreach($stats_data['invalid_array'] AS $d)
+            <input type="hidden" name='data[]' value="{{$d}}">
+        @endforeach
+        <input type="submit" value='Download Junk Excel' class="btn btn-primary btn-lg" style="margin-top: 3%">
+        </form>
         <table class="table">
             <thead>
                 <tr>

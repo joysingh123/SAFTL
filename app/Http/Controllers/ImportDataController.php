@@ -384,8 +384,7 @@ class ImportDataController extends Controller {
     public function exportContactData($request){
         $data = $request->all();
         $type = "xlsx";
-        $data = Item::get()->toArray();
-        return Excel::create('itsolutionstuff_example', function($excel) use ($data) {
+        return Excel::create('junkdata', function($excel) use ($data) {
                                 $excel->sheet('mySheet', function($sheet) use ($data)
                                 {
                                     $sheet->fromArray($data);
