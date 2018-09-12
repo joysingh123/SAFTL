@@ -16,7 +16,7 @@ use App\Helpers\UtilDebug;
 use Illuminate\Support\Facades\Auth;
 
 class ImportDataController extends Controller {
-    
+
     public function importComapniesWithDomainView() {
         return view('addcompanieswithdomain');
     }
@@ -44,7 +44,9 @@ class ImportDataController extends Controller {
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
                 $data = array();
-                $data = Excel::load($path, function($reader) {})->get();
+                $data = Excel::load($path, function($reader) {
+                            
+                        })->get();
                 if (!empty($data) && $data->count() <= 5000) {
                     $duplicate_in_sheet = 0;
                     $already_exist_in_db = 0;
@@ -138,7 +140,7 @@ class ImportDataController extends Controller {
                     }
                     if (!empty($insert)) {
                         $insert_chunk = array_chunk($insert, 1000);
-                        foreach($insert_chunk AS $ic){
+                        foreach ($insert_chunk AS $ic) {
                             $insertData = DB::table('companies_with_domain')->insert($ic);
                         }
                         if ($insertData) {
@@ -148,7 +150,7 @@ class ImportDataController extends Controller {
                             return back();
                         }
                     }
-                }else{
+                } else {
                     Session::flash('error', 'The Sheet contains Only 5,000 records');
                     return back();
                 }
@@ -221,9 +223,9 @@ class ImportDataController extends Controller {
                                     //logic for first name and last name
                                     $explode_name = explode(" ", $value->full_name);
                                     $insert_status = true;
-                                    if($first_name != "" && $last_name != ""){
+                                    if ($first_name != "" && $last_name != "") {
                                         
-                                    }else{
+                                    } else {
                                         if (count($explode_name) == 1) {
                                             $first_name = $explode_name[0];
                                             $status = "valid";
@@ -248,7 +250,7 @@ class ImportDataController extends Controller {
                                         $invalid_array[] = $value;
                                         $invalid_record ++;
                                     }
-                                    if($insert_status){
+                                    if ($insert_status) {
                                         if ($contact_exist == 0) {
                                             $inserted ++;
                                             $insert[] = [
@@ -296,7 +298,7 @@ class ImportDataController extends Controller {
                         "invalid_record" => $invalid_record,
                         "invalid_array" => $invalid_array
                     );
-                    
+
                     Session::flash('stats_data', $stats_data);
                     return back();
                 }
@@ -321,7 +323,9 @@ class ImportDataController extends Controller {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
-                $data = Excel::load($path, function($reader) {})->get();
+                $data = Excel::load($path, function($reader) {
+                            
+                        })->get();
                 if (!empty($data) && $data->count()) {
                     $new_insert = 0;
                     $already_exist = 0;
@@ -380,16 +384,34 @@ class ImportDataController extends Controller {
             }
         }
     }
-    
-    public function exportContactData($request){
-        $data = $request->all();
-        $type = "xlsx";
-        return Excel::create('junkdata', function($excel) use ($data) {
-                                $excel->sheet('mySheet', function($sheet) use ($data)
-                                {
-                                    $sheet->fromArray($data);
-                                });
-		})->download($type);
+
+    public function exportContactData(Request $request) {
+        if ($request->has('data')) {
+            $data = $request->data;
+            $data_array[] = array("Full Name", "First Name", "Last Name", "Title", "Company", "Location", "Experience", "Profile Link", "Company Url");
+            foreach ($data AS $d) {
+                $d = json_decode($d,true);
+                $data_array[] =array(
+                    "Full Name" => (isset($d['full_name'])) ? $d['full_name'] : "",
+                    "First Name" => "",
+                    "Last Name" => "",
+                    "Title" => (isset($d['title'])) ? $d['title'] : "",
+                    "Company" => (isset($d['company'])) ? $d['company'] : "",
+                    "Location" => (isset($d['location'])) ? $d['location'] : "",
+                    "Experience" => (isset($d['experience'])) ? $d['experience'] : "",
+                    "Profile Link" => (isset($d['profile_link'])) ? $d['profile_link'] : "",
+                    "Company Url" => (isset($d['company_url'])) ? $d['company_url'] : ""
+                );
+            }
+            $type = "csv";
+            return Excel::create('junkdata', function($excel) use ($data_array) {
+                        $excel->sheet('mySheet', function($sheet) use ($data_array) {
+                            $sheet->fromArray($data_array, null, 'A1', false, false);
+                        });
+                    })->download($type);
+        } else {
+            echo "No data Found For Export";
+        }
     }
 
 }
