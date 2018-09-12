@@ -20,6 +20,7 @@ Route::post('importcompaniesdata',"ImportDataController@importComapniesWithDomai
 
 Route::get('importcontactdata',"ImportDataController@importContactView")->middleware('auth');
 Route::post('importcontactdata',"ImportDataController@importContactData")->name('importcontactdata')->middleware('auth');
+Route::post('exportjunkcontactdata',"ImportDataController@exportContactData")->name('exportjunkcontactdata');
 
 
 Route::get('importemaildata',"ImportDataController@importEmailView")->middleware(['auth','isAdmin']);

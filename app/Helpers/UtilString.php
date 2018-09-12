@@ -33,8 +33,20 @@ class UtilString {
         $company_id = 0;
         if (filter_var($url, FILTER_VALIDATE_URL)) {
             $parts = parse_url($url);
-            parse_str($parts['query'], $query);
-                $company_id = str_replace("/", "", $query['companyId']);
+            if(isset($parts['query'])){
+                parse_str($parts['query'], $query);
+                if(isset($query['companyId'])){
+                    $company_id = str_replace("/", "", $query['companyId']);
+                }
+            }else{
+                $company_id = str_replace("https://www.linkedin.com/sales/company/", "", $url);
+                $company_id = str_replace("/", "",$company_id);
+                if(is_numeric($company_id) && $company_id > 0){
+                    $company_id = $company_id;
+                }
+            }
+        }else if(is_numeric($url) && $url > 0){
+            $company_id = $url;
         }
         return $company_id;
     }

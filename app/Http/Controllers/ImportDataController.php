@@ -214,21 +214,28 @@ class ImportDataController extends Controller {
                                     $tag = ($value->tag != "") ? $value->tag : "";
                                     $title_level = ($value->title_level != "") ? $value->title_level : "";
                                     $department = ($value->department != "") ? $value->department : "";
-                                    $first_name = "";
-                                    $last_name = "";
+                                    $first_name = (isset($value->first_name)) ? $value->first_name : "";
+                                    $last_name = (isset($value->last_name)) ? $value->last_name : "";
                                     $status = "invalid";
 
                                     //logic for first name and last name
                                     $explode_name = explode(" ", $value->full_name);
-                                    if (count($explode_name) == 1) {
-                                        $first_name = $explode_name[0];
-                                        $status = "valid";
-                                    } else if (count($explode_name) == 2) {
-                                        $first_name = $explode_name[0];
-                                        $last_name = $explode_name[1];
-                                        $status = "valid";
-                                    } else {
-                                        $invalid_name ++;
+                                    $insert_status = true;
+                                    if($first_name != "" && $last_name != ""){
+                                        
+                                    }else{
+                                        if (count($explode_name) == 1) {
+                                            $first_name = $explode_name[0];
+                                            $status = "valid";
+                                        } else if (count($explode_name) == 2) {
+                                            $first_name = $explode_name[0];
+                                            $last_name = $explode_name[1];
+                                            $status = "valid";
+                                        } else {
+                                            $insert_status = false;
+                                            $invalid_name ++;
+                                            $invalid_array[] = $value;
+                                        }
                                     }
                                     if ($linkedin_id <= 0) {
                                         $status = "invalid";
@@ -241,26 +248,28 @@ class ImportDataController extends Controller {
                                         $invalid_array[] = $value;
                                         $invalid_record ++;
                                     }
-                                    if ($contact_exist == 0) {
-                                        $inserted ++;
-                                        $insert[] = [
-                                            'user_id' => Auth::id(),
-                                            'linkedin_id' => $linkedin_id,
-                                            'full_name' => $full_name,
-                                            'first_name' => $first_name,
-                                            'last_name' => $last_name,
-                                            'company_name' => $company_name,
-                                            'job_title' => $job_title,
-                                            'experience' => $experience,
-                                            'location' => $location,
-                                            'profile_link' => $profile_link,
-                                            'tag' => $tag,
-                                            'title_level' => $title_level,
-                                            'department' => $department,
-                                            'status' => $status,
-                                        ];
-                                    } else {
-                                        $duplicate ++;
+                                    if($insert_status){
+                                        if ($contact_exist == 0) {
+                                            $inserted ++;
+                                            $insert[] = [
+                                                'user_id' => Auth::id(),
+                                                'linkedin_id' => $linkedin_id,
+                                                'full_name' => $full_name,
+                                                'first_name' => $first_name,
+                                                'last_name' => $last_name,
+                                                'company_name' => $company_name,
+                                                'job_title' => $job_title,
+                                                'experience' => $experience,
+                                                'location' => $location,
+                                                'profile_link' => $profile_link,
+                                                'tag' => $tag,
+                                                'title_level' => $title_level,
+                                                'department' => $department,
+                                                'status' => $status,
+                                            ];
+                                        } else {
+                                            $duplicate ++;
+                                        }
                                     }
                                 }
                             } else {
@@ -287,6 +296,7 @@ class ImportDataController extends Controller {
                         "invalid_record" => $invalid_record,
                         "invalid_array" => $invalid_array
                     );
+                    
                     Session::flash('stats_data', $stats_data);
                     return back();
                 }
@@ -369,6 +379,18 @@ class ImportDataController extends Controller {
                 }
             }
         }
+    }
+    
+    public function exportContactData($request){
+        $data = $request->all();
+        $type = "xlsx";
+        $data = Item::get()->toArray();
+        return Excel::create('itsolutionstuff_example', function($excel) use ($data) {
+                                $excel->sheet('mySheet', function($sheet) use ($data)
+                                {
+                                    $sheet->fromArray($data);
+                                });
+		})->download($type);
     }
 
 }
