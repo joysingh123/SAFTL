@@ -71,8 +71,10 @@ class UtilString {
     }
     
     public static function contains($haystack, $needle) {
-        if (strpos($haystack, $needle) !== false) {
-            return true;
+        if($haystack != "" && $needle!= ""){
+            if (strpos($haystack, $needle) !== false) {
+                return true;
+            }
         }
         return false;
     }
