@@ -39,6 +39,8 @@ $(document).ready(function () {
                 }else{
                     $("#filterdata > div.card-body").html();
                     $("#filterdata > div.card-header").html("Total Result: "+msg.total);
+                    $("div#json_data").text(JSON.stringify(msg.data));
+                    
                     var table = "<table class='table'>";
                     table += "<thead>";
                     table += "<tr><th>#</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Domain</th><th>Email Validation Date</th><th>Email Status</th></tr>";
@@ -90,3 +92,21 @@ jQuery(document).ready(function () {
         source: origin+'/extractautocomplatedata/tag'
     });
 });
+
+function download_csv(){
+    var data = $("div#json_data").text();
+    var csv = 'First Name,Last Name,Email,Domain,Email Validation Date,Email Status\n';
+    var obj = JSON.parse(data);
+    obj.forEach(function(row) {
+        var data_array = [row.first_name,row.last_name,row.email,row.domain,row.email_validation_date,row.email_status];
+            csv += data_array.join(',');
+            csv += "\n";
+    });
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'data.csv';
+    hiddenElement.click();
+//    console.log(csv);
+//    alert(data);
+}

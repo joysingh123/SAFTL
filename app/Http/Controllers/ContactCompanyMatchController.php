@@ -12,7 +12,7 @@ class ContactCompanyMatchController extends Controller
 {
     public function index(Request $request){
         $response = array();
-        $limit = 500;
+        $limit = 2000;
         $contacts = Contacts::where('process_for_contact_match','not processed')->take($limit)->get();
         if($contacts->count() > 0){
             $new_insert_in_match = 0;

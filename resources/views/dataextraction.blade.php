@@ -67,7 +67,11 @@
             <br>
             <div class="card" id="filterdata">
                 <div class="card-header">Filter Data Result</div>
+                <button onclick="download_csv()">Download CSV</button>
                 <div class="card-body"></div>
+            </div>
+            <div id="json_data" style="display: none">
+                
             </div>
         </div>
     </div>
