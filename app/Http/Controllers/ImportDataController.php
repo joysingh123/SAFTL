@@ -72,9 +72,9 @@ class ImportDataController extends Controller {
                                     $employee_count_at_linkedin = ($value->employee_count_at_linkedin != "") ? (int) $value->employee_count_at_linkedin : 0;
                                     $industry = ($value->industry != "") ? $value->industry : "";
                                     $city = ($value->city != "") ? $value->city : "";
-                                    $postal_code = ($value->postal_code != "") ? $value->postal_code : "";
-                                    $employee_size = ($value->employee_size != "") ? $value->employee_size : "";
-                                    $country = ($value->country != "") ? $value->country : "";
+                                    $postal_code = ($value->postal_code != "") ? trim($value->postal_code) : "";
+                                    $employee_size = ($value->employee_size != "") ? trim($value->employee_size) : "";
+                                    $country = ($value->country != "") ? trim($value->country) : "";
                                     $linkedin_url = UtilString::clean_string($linkedin_url);
                                     $company_domain = UtilString::clean_string($company_domain);
                                     $company_domain = UtilString::get_domain_from_url($company_domain);
@@ -213,11 +213,11 @@ class ImportDataController extends Controller {
                                     $experience = ($value->experience != "") ? trim($value->experience) : "";
                                     $location = ($value->location != "") ? trim($value->location) : "";
                                     $profile_link = ($value->profile_link != "") ? $value->profile_link : "";
-                                    $tag = ($value->tag != "") ? $value->tag : "";
-                                    $title_level = ($value->title_level != "") ? $value->title_level : "";
-                                    $department = ($value->department != "") ? $value->department : "";
-                                    $first_name = (isset($value->first_name)) ? $value->first_name : "";
-                                    $last_name = (isset($value->last_name)) ? $value->last_name : "";
+                                    $tag = ($value->tag != "") ? trim($value->tag) : "";
+                                    $title_level = ($value->title_level != "") ? trim($value->title_level) : "";
+                                    $department = ($value->department != "") ? trim($value->department) : "";
+                                    $first_name = (isset($value->first_name)) ? trim($value->first_name) : "";
+                                    $last_name = (isset($value->last_name)) ? trim($value->last_name) : "";
                                     $status = "invalid";
 
                                     //logic for first name and last name

@@ -69,7 +69,7 @@ class RegisterController extends Controller
         $user =  User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => $data['password'],
+            'password' => Hash::make($data['password']),
         ]);
         if(isset($data['roles'])){
             $role_r = Role::where('id', '=', $data['roles'])->firstOrFail();

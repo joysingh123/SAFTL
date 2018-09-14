@@ -15,7 +15,7 @@ use Session;
 class MakeEmailFormatController extends Controller {
 
     public function index(Request $request) {
-        $email_data = AvailableEmail::where('status', '')->take(500)->get();
+        $email_data = AvailableEmail::where('status', '')->take(2000)->get();
         if($email_data->count() > 0){
             foreach ($email_data AS $d){
                 UtilDebug::print_r_array("$d", $this->getEmailFormate($d));
@@ -179,6 +179,8 @@ class MakeEmailFormatController extends Controller {
                 return $email_format;
             }else{
                 $response['status']="fail";
+                $data->status = "Email Format Not Found";
+                $data->save();
                 $response['Message'] = "Email Format Not Found";
             }
         } else {

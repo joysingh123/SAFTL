@@ -11,7 +11,7 @@
     <title>{{ config('app.name', 'Corporate Intelligence') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <!--<script src="{{ asset('js/app.js') }}" defer></script>-->
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -19,8 +19,13 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    
+
+    <!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
+    
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
 </head>
-<body>
+<body style="background-color: #f8fafc;">
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
@@ -34,7 +39,14 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        @role('Admin')
+                            <li class="nav-item">
+                                <a class="nav-link" href="">{{ __('Users') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('extractdata') }}">{{ __('Extraction') }}</a>
+                            </li>
+                        @endrole
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -80,5 +92,8 @@
             @yield('content')
         </main>
     </div>
+    <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="{{ asset('js/filter.js') }}"></script>
 </body>
 </html>

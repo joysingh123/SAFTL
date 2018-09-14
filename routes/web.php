@@ -22,6 +22,10 @@ Route::get('importcontactdata',"ImportDataController@importContactView")->middle
 Route::post('importcontactdata',"ImportDataController@importContactData")->name('importcontactdata')->middleware('auth');
 Route::post('exportjunkcontactdata',"ImportDataController@exportContactData")->name('exportjunkcontactdata');
 
+Route::get('extractdata',"ExtractDataController@extractDataView")->name('extractdata')->middleware(['auth','isAdmin']);
+Route::post('extractdata',"ExtractDataController@extractData")->name('extractdata')->middleware(['auth','isAdmin']);
+Route::get('extractautocomplatedata/{data}',"ExtractDataController@extractDataForAutoComplate")->middleware(['auth','isAdmin']);
+
 
 Route::get('importemaildata',"ImportDataController@importEmailView")->middleware(['auth','isAdmin']);
 Route::post('importemaildata',"ImportDataController@importEmailData")->name('importemaildata')->middleware(['auth','isAdmin']);
