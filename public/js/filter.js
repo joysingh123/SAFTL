@@ -67,25 +67,26 @@ $(document).ready(function () {
 
 });
 jQuery(document).ready(function () {
+    var origin = window.location.origin;
     $("#country").autocomplete({
-        source: 'http://localhost:8000/extractautocomplatedata/country'
+        source: origin+'/extractautocomplatedata/country'
     });
     $("#city").autocomplete({
-        source: 'http://localhost:8000/extractautocomplatedata/city'
+        source: origin+'/extractautocomplatedata/city'
     });
     $("#industry").autocomplete({
-        source: 'http://localhost:8000/extractautocomplatedata/industry'
+        source: origin+'/extractautocomplatedata/industry'
     });
     $("#department").autocomplete({
-        source: 'http://localhost:8000/extractautocomplatedata/department'
+        source: origin+'/extractautocomplatedata/department'
     });
     $("#title_level").autocomplete({
-        source: 'http://localhost:8000/extractautocomplatedata/titlelevel'
+        source: origin+'/extractautocomplatedata/titlelevel'
     });
     $("#employee_size").autocomplete({
-        source: 'http://localhost:8000/extractautocomplatedata/employeesize'
+        source: origin+'/extractautocomplatedata/employeesize'
     });
     $("#tag").autocomplete({
-        source: 'http://localhost:8000/extractautocomplatedata/tag'
+        source: origin+'/extractautocomplatedata/tag'
     });
 });
