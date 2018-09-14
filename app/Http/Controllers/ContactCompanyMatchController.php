@@ -38,7 +38,9 @@ class ContactCompanyMatchController extends Controller
                         $matched_contact->location = $contact->location;
                         $matched_contact->profile_link = $contact->profile_link;
                         $matched_contact->industry = $company->industry;
+                        $matched_contact->country = $company->country;
                         $matched_contact->city = $company->city;
+                        $matched_contact->postal_code = $company->postal_code;
                         $matched_contact->domain = $company->company_domain;
                         $matched_contact->employee_size = $company->employee_size;
                         $matched_contact->tag = $contact->tag;
