@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     $("#filterdata").hide();
+    $("#csvexportbutton").hide();
 
     $("#filterform").submit(function (event) {
         event.preventDefault();
@@ -16,7 +17,8 @@ $(document).ready(function () {
 //        console.log("valid_email: "+valid_email);
         var tag = $('#tag').val();
 //        console.log("country: "+country);
-        if (country != "" && city != "" && industry != "" && department != "") {
+        if ((country != "" && city != "") && (industry != "" && department != "") && (title_level != "" && employee_size != "" && tag != "") && (only_email || valid_email)) {
+            console.log(only_email);
             $("#filterdata > div.card-body").html("<h1>No, Filter Found</h1>");
             $("#filterdata").show();
         } else {
@@ -40,7 +42,7 @@ $(document).ready(function () {
                     $("#filterdata > div.card-body").html();
                     $("#filterdata > div.card-header").html("Total Result: "+msg.total);
                     $("div#json_data").text(JSON.stringify(msg.data));
-                    
+                    $("#csvexportbutton").show();
                     var table = "<table class='table'>";
                     table += "<thead>";
                     table += "<tr><th>#</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Domain</th><th>Email Validation Date</th><th>Email Status</th></tr>";

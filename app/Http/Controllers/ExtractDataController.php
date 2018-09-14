@@ -65,7 +65,7 @@ class ExtractDataController extends Controller
         $only_email = ($request->has("only_email")) ? $request->only_email : "false";
         $valid_email = ($request->has("valid_email")) ? $request->valid_email : "false";
         $tag =  ($request->has("department")) ? $request->tag : "";
-        if(!UtilString::is_empty_string($tag) || !UtilString::is_empty_string($employee_size) || !UtilString::is_empty_string($title_level) || !UtilString::is_empty_string($country) || !UtilString::is_empty_string($city) || !UtilString::is_empty_string($industry) || !UtilString::is_empty_string($department)){
+        if(($valid_email == "true" || $only_email == "true") || !UtilString::is_empty_string($tag) || !UtilString::is_empty_string($employee_size) || !UtilString::is_empty_string($title_level) || !UtilString::is_empty_string($country) || !UtilString::is_empty_string($city) || !UtilString::is_empty_string($industry) || !UtilString::is_empty_string($department)){
             $data = DB::table('matched_contacts')->
                     select('first_name','last_name','email','domain','email_validation_date','email_status');
             if(!UtilString::is_empty_string($country)){
@@ -107,7 +107,7 @@ class ExtractDataController extends Controller
             }
         }else{
             $response['status'] = "Fail";
-            $response['message'] = "No, filter selected";
+            $response['message'] = "No, data filter selected";
         }
         return response()->json($response);
     }
