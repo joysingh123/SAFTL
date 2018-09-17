@@ -440,15 +440,16 @@ class ImportDataController extends Controller {
                     $duplicate_in_sheet = 0;
                     $already_exist_in_db = 0;
                     $inserted = 0;
+                    $invalid = 0;
                     $duplicate = array();
                     $insert = array();
                     foreach ($data as $key => $value) {
                         if (isset($value->email)) {
-                            if (in_array($value->email, $duplicate)) {
+                            $email = trim($value->email);
+                            if (in_array($email, $duplicate)) {
                                 $duplicate_in_sheet ++;
                             }else{
-                                $duplicate[] = $value->email;
-                                $email = trim($value->email);
+                                $duplicate[] = $email;
                                 if (UtilString::is_email($email)) {
                                     $email_exist = BounceEmail::where('email', $email)->count();
                                     if ($email_exist == 0) {
@@ -460,6 +461,8 @@ class ImportDataController extends Controller {
                                     } else {
                                         $already_exist_in_db ++;
                                     }
+                                }else{
+                                    $invalid ++;
                                 }
                             }
                         }else {
@@ -487,7 +490,8 @@ class ImportDataController extends Controller {
                     "total" => $total,
                     "duplicate_in_sheet" => $duplicate_in_sheet,
                     "already_exist_in_db" => $already_exist_in_db,
-                    "inserted" => $inserted
+                    "inserted" => $inserted,
+                    "invalid" => $invalid
                 );
                 Session::flash('stats_data', $stats_data);
                 return back();

@@ -75,6 +75,7 @@
                     <th>New Inserted</th>
                     <th>Duplicate In Sheet</th>
                     <th>Already Exist</th>
+                    <th>Invalid</th>
                 </tr>
             </thead>
             <tbody>
@@ -83,6 +84,7 @@
                     <td>{{$stats_data['inserted']}}</td>
                     <td>{{$stats_data['duplicate_in_sheet']}}</td>
                     <td>{{$stats_data['already_exist_in_db']}}</td>
+                    <td>{{$stats_data['invalid']}}</td>
                 </tr>
             </tbody>
         </table>
