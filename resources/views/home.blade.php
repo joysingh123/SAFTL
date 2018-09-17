@@ -25,6 +25,9 @@
                     <div class="links">
                         <a href="/importemaildata">Email Import For Format Generation</a>
                     </div>
+                    <div class="links">
+                        <a href="/importbounceemaildata">Import Bounce Email</a>
+                    </div>
                     
                     <div class="links">
                         <a href="/contactcompanymatch">Matched Contact</a>

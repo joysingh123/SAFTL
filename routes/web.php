@@ -30,6 +30,9 @@ Route::get('extractautocomplatedata/{data}',"ExtractDataController@extractDataFo
 Route::get('importemaildata',"ImportDataController@importEmailView")->middleware(['auth','isAdmin']);
 Route::post('importemaildata',"ImportDataController@importEmailData")->name('importemaildata')->middleware(['auth','isAdmin']);
 
+Route::get('importbounceemaildata',"ImportDataController@importBounceEmailView")->middleware(['auth','isAdmin']);
+Route::post('importbounceemaildata',"ImportDataController@importBounceEmailData")->name('importbounceemaildata')->middleware(['auth','isAdmin']);
+
 Route::get('contactcompanymatch',"ContactCompanyMatchController@index")->middleware(['auth','isAdmin']);
 Route::get('makeemailformat',"MakeEmailFormatController@index")->middleware(['auth','isAdmin']);
 Route::get('createemail',"CreateEmailController@index")->middleware(['auth','isAdmin']);

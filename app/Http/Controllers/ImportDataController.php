@@ -13,6 +13,7 @@ use App\Helpers\UtilString;
 use App\Helpers\UtilConstant;
 use App\AvailableEmail;
 use App\Helpers\UtilDebug;
+use App\BounceEmail;
 use Illuminate\Support\Facades\Auth;
 
 class ImportDataController extends Controller {
@@ -27,6 +28,10 @@ class ImportDataController extends Controller {
 
     public function importEmailView() {
         return view('addemaildata');
+    }
+
+    public function importBounceEmailView() {
+        return view('addbounceemail');
     }
 
     public function importComapniesWithDomainData(Request $request) {
@@ -390,8 +395,8 @@ class ImportDataController extends Controller {
             $data = $request->data;
             $data_array[] = array("Full Name", "First Name", "Last Name", "Title", "Company", "Location", "Experience", "Profile Link", "Company Url");
             foreach ($data AS $d) {
-                $d = json_decode($d,true);
-                $data_array[] =array(
+                $d = json_decode($d, true);
+                $data_array[] = array(
                     "Full Name" => (isset($d['full_name'])) ? $d['full_name'] : "",
                     "First Name" => "",
                     "Last Name" => "",
@@ -411,6 +416,85 @@ class ImportDataController extends Controller {
                     })->download($type);
         } else {
             echo "No data Found For Export";
+        }
+    }
+
+    public function importBounceEmailData(Request $request) {
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', -1);
+        ini_set('upload_max_filesize', -1);
+        ini_set('post_max_size ', -1);
+        ini_set('mysql.connect_timeout', 300);
+        ini_set('default_socket_timeout', 300);
+        $this->validate($request, array(
+            'file' => 'required'
+        ));
+        if ($request->hasFile('file')) {
+            $extension = File::extension($request->file->getClientOriginalName());
+            if ($extension == "xlsx" || $extension == "xls") {
+                $path = $request->file->getRealPath();
+                $data = array();
+                $data = Excel::load($path, function($reader) {})->get();
+                if (!empty($data) && $data->count() <= 5000) {
+                    $total = $data->count();
+                    $duplicate_in_sheet = 0;
+                    $already_exist_in_db = 0;
+                    $inserted = 0;
+                    $duplicate = array();
+                    $insert = array();
+                    foreach ($data as $key => $value) {
+                        if (isset($value->email)) {
+                            if (in_array($value->email, $duplicate)) {
+                                $duplicate_in_sheet ++;
+                            }else{
+                                $duplicate[] = $value->email;
+                                $email = trim($value->email);
+                                if (UtilString::is_email($email)) {
+                                    $email_exist = BounceEmail::where('email', $email)->count();
+                                    if ($email_exist == 0) {
+                                        $insert_array = [
+                                            'email' => $email
+                                        ];
+                                        $insert[] = $insert_array;
+                                        $inserted ++;
+                                    } else {
+                                        $already_exist_in_db ++;
+                                    }
+                                }
+                            }
+                        }else {
+                            Session::flash('fail', 'sheet does not contain email filed');
+                            return back();
+                        }
+                    }
+                    if (!empty($insert)) {
+                        $insert_chunk = array_chunk($insert, 1000);
+                        foreach ($insert_chunk AS $ic) {
+                            $insertData = DB::table('bounce_email')->insert($ic);
+                        }
+                        if ($insertData) {
+                            Session::flash('success', 'Your Data has successfully imported');
+                        } else {
+                            Session::flash('error', 'Error inserting the data..');
+                            return back();
+                        }
+                    }
+                } else {
+                    Session::flash('error', 'The Sheet contains Only 5,000 records');
+                    return back();
+                }
+                $stats_data = array(
+                    "total" => $total,
+                    "duplicate_in_sheet" => $duplicate_in_sheet,
+                    "already_exist_in_db" => $already_exist_in_db,
+                    "inserted" => $inserted
+                );
+                Session::flash('stats_data', $stats_data);
+                return back();
+            } else {
+                Session::flash('error', 'File is a ' . $extension . ' file.!! Please upload a valid xls file..!!');
+                return back();
+            }
         }
     }
 
