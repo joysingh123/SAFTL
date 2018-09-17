@@ -16,11 +16,11 @@ class MakeEmailFormatController extends Controller {
 
     public function index(Request $request) {
         $email_data = AvailableEmail::where('status', '')->take(2000)->get();
-        if($email_data->count() > 0){
-            foreach ($email_data AS $d){
+        if ($email_data->count() > 0) {
+            foreach ($email_data AS $d) {
                 UtilDebug::print_r_array("$d", $this->getEmailFormate($d));
             }
-        }else{
+        } else {
             UtilDebug::print_message("Sorry", "No Email Found For Processing.");
         }
     }
@@ -43,95 +43,115 @@ class MakeEmailFormatController extends Controller {
                 $email_first_part_info = UtilString::explode_email_string($email_first_part);
                 if (is_array($email_first_part_info)) {
 //                    UtilDebug::print_r_array("$data->id", $email_first_part_info);
-                    
-                    
                     // first part processing
                     $first_part = (isset($email_first_part_info['explode_data'][0])) ? strtolower(trim($email_first_part_info['explode_data'][0])) : "";
-                    if(!UtilString::is_empty_string($first_part)){
-                        if(strlen($first_part) == 1){
-                            if($first_part == $first_name_first_char){
+                    if (!UtilString::is_empty_string($first_part)) {
+                        if (strlen($first_part) == 1) {
+                            if ($first_part == $first_name_first_char) {
                                 $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
-                            }else if($first_part == $last_name_first_char){
+                            } else if ($first_part == $last_name_first_char) {
                                 $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
                             }
-                        }else{
-                            if($first_part == $first_name){
+                        } else {
+                            if ($first_part == $first_name) {
                                 $email_format .= UtilConstant::FIRST_NAME;
-                            }else if($first_part == $last_name){
+                            } else if ($first_part == $last_name) {
                                 $email_format .= UtilConstant::LAST_NAME;
-                            }else if($first_part == $first_name_first_two_char){
+                            } else if ($first_part == $first_name_first_two_char) {
                                 $email_format .= UtilConstant::FIRST_NAME_FIRST_TWO_CHARACTER;
-                            }else if($first_part == $last_name_first_two_char){
+                            } else if ($first_part == $last_name_first_two_char) {
                                 $email_format .= UtilConstant::LAST_NAME_FIRST_TWO_CHARACTER;
                             }
                         }
                     }
                     //explode processing
-                    
+
                     $explode_by = (isset($email_first_part_info['explode_by'])) ? $email_first_part_info['explode_by'] : "";
-                    if($explode_by != "" && $email_format != ""){
+                    if ($explode_by != "" && $email_format != "") {
                         $email_format .= $explode_by;
                     }
-                    
+
                     // second part processing
                     $second_part = (isset($email_first_part_info['explode_data'][1])) ? strtolower(trim($email_first_part_info['explode_data'][1])) : "";
-                    if(!UtilString::is_empty_string($first_part)){
-                        if(strlen($second_part) == 1){
-                            if($second_part == $first_name_first_char){
+                    if (!UtilString::is_empty_string($first_part)) {
+                        if (strlen($second_part) == 1) {
+                            if ($second_part == $first_name_first_char) {
                                 $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
-                            }else if($second_part == $last_name_first_char){
+                            } else if ($second_part == $last_name_first_char) {
                                 $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
                             }
-                        }else{
-                            if($second_part == $first_name){
+                        } else {
+                            if ($second_part == $first_name) {
                                 $email_format .= UtilConstant::FIRST_NAME;
-                            }else if($second_part == $last_name){
+                            } else if ($second_part == $last_name) {
                                 $email_format .= UtilConstant::LAST_NAME;
-                            }else if($second_part == $first_name_first_two_char){
+                            } else if ($second_part == $first_name_first_two_char) {
                                 $email_format .= UtilConstant::FIRST_NAME_FIRST_TWO_CHARACTER;
-                            }else if($second_part == $last_name_first_two_char){
+                            } else if ($second_part == $last_name_first_two_char) {
                                 $email_format .= UtilConstant::LAST_NAME_FIRST_TWO_CHARACTER;
                             }
                         }
                     }
                 } else {
-//                    UtilDebug::print_r_array("$data", $email_first_part_info);
-                    if (UtilString::contains($email_first_part_info, $first_name) && UtilString::contains($email_first_part_info, $last_name)) {
-//                        UtilDebug::print_r_array("$data", $email_first_part_info);
-                        $str_pos = stripos($email_first_part_info, $first_name);
-                        if ($str_pos > 0) {
-                            $email_format .= UtilConstant::LAST_NAME . UtilConstant::FIRST_NAME;
-                        } else {
-                            $email_format .= UtilConstant::FIRST_NAME . UtilConstant::LAST_NAME;
+                    if (strlen($email_first_part_info) == 1) {
+                        if ($email_first_part_info == $first_name_first_char) {
+                            $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                        } else if ($email_first_part_info == $last_name_first_char) {
+                            $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
                         }
-                    }
-                    if (UtilString::contains($email_first_part_info, $first_name) && !UtilString::contains($email_first_part_info, $last_name)) {
+                    } else if (strlen($email_first_part_info) == 2) {
+                        $char_array = str_split($email_first_part_info);
+                        $firstchar = $char_array[0];
+                        $secondchar = $char_array[1];
+                        if ($firstchar == $first_name_first_char) {
+                            $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                        } else if ($firstchar == $last_name_first_char) {
+                            $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                        }
+                        if ($secondchar == $first_name_first_char) {
+                            $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                        } else if ($secondchar == $last_name_first_char) {
+                            $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                        }
+                    } else {
+//                    UtilDebug::print_r_array("$data", $email_first_part_info);
+                        if (UtilString::contains($email_first_part_info, $first_name) && UtilString::contains($email_first_part_info, $last_name)) {
 //                        UtilDebug::print_r_array("$data", $email_first_part_info);
-                        $replace_str = str_replace($first_name, "", $email_first_part_info);
-                        $str_pos = stripos($email_first_part_info, $first_name);
-                        $replace_str_len = strlen($replace_str);
-                        if ($replace_str_len == 0) {
-                            $email_format .= UtilConstant::FIRST_NAME;
-                        } else {
-                            if ($replace_str == $last_name_first_char && $str_pos > 0) {
-                                $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER . UtilConstant::FIRST_NAME;
-                            } else if ($replace_str == $last_name_first_char && $str_pos <= 0) {
-                                $email_format .= UtilConstant::FIRST_NAME . UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                            $str_pos = stripos($email_first_part_info, $first_name);
+                            if ($str_pos > 0) {
+                                $email_format .= UtilConstant::LAST_NAME . UtilConstant::FIRST_NAME;
+                            } else {
+                                $email_format .= UtilConstant::FIRST_NAME . UtilConstant::LAST_NAME;
                             }
                         }
-                    }
-                    if (UtilString::contains($email_first_part_info, $last_name) && !UtilString::contains($email_first_part_info, $first_name)) {
+                        if (UtilString::contains($email_first_part_info, $first_name) && !UtilString::contains($email_first_part_info, $last_name)) {
 //                        UtilDebug::print_r_array("$data", $email_first_part_info);
-                        $replace_str = str_replace($last_name, "", $email_first_part_info);
-                        $str_pos = stripos($email_first_part_info, $last_name);
-                        $replace_str_len = strlen($replace_str);
-                        if ($replace_str_len == 0) {
-                            $email_format .= UtilConstant::LAST_NAME;
-                        } else {
-                            if ($replace_str == $first_name_first_char && $str_pos > 0) {
-                                $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER . UtilConstant::LAST_NAME;
-                            } else if ($replace_str == $first_name_first_char && $str_pos <= 0) {
-                                $email_format .= UtilConstant::LAST_NAME . UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                            $replace_str = str_replace($first_name, "", $email_first_part_info);
+                            $str_pos = stripos($email_first_part_info, $first_name);
+                            $replace_str_len = strlen($replace_str);
+                            if ($replace_str_len == 0) {
+                                $email_format .= UtilConstant::FIRST_NAME;
+                            } else {
+                                if ($replace_str == $last_name_first_char && $str_pos > 0) {
+                                    $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER . UtilConstant::FIRST_NAME;
+                                } else if ($replace_str == $last_name_first_char && $str_pos <= 0) {
+                                    $email_format .= UtilConstant::FIRST_NAME . UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                                }
+                            }
+                        }
+                        if (UtilString::contains($email_first_part_info, $last_name) && !UtilString::contains($email_first_part_info, $first_name)) {
+//                        UtilDebug::print_r_array("$data", $email_first_part_info);
+                            $replace_str = str_replace($last_name, "", $email_first_part_info);
+                            $str_pos = stripos($email_first_part_info, $last_name);
+                            $replace_str_len = strlen($replace_str);
+                            if ($replace_str_len == 0) {
+                                $email_format .= UtilConstant::LAST_NAME;
+                            } else {
+                                if ($replace_str == $first_name_first_char && $str_pos > 0) {
+                                    $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER . UtilConstant::LAST_NAME;
+                                } else if ($replace_str == $first_name_first_char && $str_pos <= 0) {
+                                    $email_format .= UtilConstant::LAST_NAME . UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                                }
                             }
                         }
                     }
@@ -142,48 +162,49 @@ class MakeEmailFormatController extends Controller {
                 }
             }
             if (strlen($email_format) > 0) {
-                $response['status']="success";
+                $response['status'] = "success";
                 $response['Message'] = "formate available";
                 $response['formate'] = $email_format;
                 $company_domain = $data->company_domain;
                 $formate_exist = EmailFormat::where('company_domain', $company_domain)->where('email_format', $email_format)->count();
-                if($formate_exist == 0){
-                        $insert[] = [
-                                    'sample_email' => $data->email,
-                                    'first_name' => $data->first_name,
-                                    'last_name' => $data->last_name,
-                                    'company_domain' => $company_domain,
-                                    'email_format' => "$email_format",
-                                    'status' => "success"
-                                ];
-                        $insertData = DB::table('email_format')->insert($insert);
-                        $matched_contact = MatchedContact::where('domain',$data->company_domain)->where('email_format_available','no')->count();
-                        if($matched_contact > 0){
-                            MatchedContact::where('domain',$data->company_domain)->update(['email_format_available' => 'yes']);
-                        }
-                        if ($insertData) {
-                            $response['Message'] = "Inserted";
-                            $data->status = "Email  Format Created";
-                            $data->save();
-                        } else {
-                           $response['Message'] = "Error inserting the data..";
-                        }
-                        
-                }else{
-                    $data->status = "Email  Format Created";
+                if ($formate_exist == 0) {
+                    $insert[] = [
+                        'sample_email' => $data->email,
+                        'first_name' => $data->first_name,
+                        'last_name' => $data->last_name,
+                        'company_domain' => $company_domain,
+                        'email_format' => "$email_format",
+                        'status' => "success"
+                    ];
+                    $insertData = DB::table('email_format')->insert($insert);
+                    $matched_contact = MatchedContact::where('domain', $data->company_domain)->where('email_format_available', 'no')->count();
+                    if ($matched_contact > 0) {
+                        MatchedContact::where('domain', $data->company_domain)->update(['email_format_available' => 'yes']);
+                    }
+                    if ($insertData) {
+                        $response['Message'] = "Inserted";
+                        $data->status = "Email Format Created";
+                        $data->save();
+                    } else {
+                        $response['Message'] = "Error inserting the data..";
+                    }
+                } else {
+                    $data->status = "Email Format Created";
                     $data->save();
                     $response['Message'] = "Already Exist";
                 }
                 return $email_format;
-            }else{
-                $response['status']="fail";
+            } else {
+                $response['status'] = "fail";
                 $data->status = "Email Format Not Found";
                 $data->save();
                 $response['Message'] = "Email Format Not Found";
             }
         } else {
-            $response['status']="fail";
+            $response['status'] = "fail";
             $response['Message'] = "Invalid Email";
+            $data->status = "Email Format Not Found";
+            $data->save();
         }
         return $response;
     }
