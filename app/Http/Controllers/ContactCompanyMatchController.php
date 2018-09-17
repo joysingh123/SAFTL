@@ -11,6 +11,12 @@ use App\Helpers\UtilDebug;
 class ContactCompanyMatchController extends Controller
 {
     public function index(Request $request){
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', -1);
+        ini_set('upload_max_filesize', -1);
+        ini_set('post_max_size ', -1);
+        ini_set('mysql.connect_timeout', 600);
+        ini_set('default_socket_timeout', 600);
         $response = array();
         $limit = 2000;
         $contacts = Contacts::where('process_for_contact_match','not processed')->take($limit)->get();
@@ -52,6 +58,8 @@ class ContactCompanyMatchController extends Controller
                             $contact->process_for_contact_match = 'matched';
                             $contact->save();
                         }
+                    }else{
+                        $already_exist_in_match ++;
                     }
                 }else{
                     $comapany_without_domain = CompaniesWithoutDomain::where('linkedin_id',$contact->linkedin_id)->where('company_name',$contact->company_name)->get();

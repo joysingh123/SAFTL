@@ -157,11 +157,9 @@ class MakeEmailFormatController extends Controller {
                                     'status' => "success"
                                 ];
                         $insertData = DB::table('email_format')->insert($insert);
-                        $matched_contact = MatchedContact::where('domain',$data->company_domain)->where('email_format_available','no')->get();
-                        if($matched_contact->count() > 0){
-                            $matched_contact = $matched_contact->first();
-                            $matched_contact->email_format_available = 'yes';
-                            $matched_contact->save();
+                        $matched_contact = MatchedContact::where('domain',$data->company_domain)->where('email_format_available','no')->count();
+                        if($matched_contact > 0){
+                            MatchedContact::where('domain',$data->company_domain)->update(['email_format_available' => 'yes']);
                         }
                         if ($insertData) {
                             $response['Message'] = "Inserted";
