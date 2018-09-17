@@ -59,6 +59,8 @@ class ContactCompanyMatchController extends Controller
                             $contact->save();
                         }
                     }else{
+                        $contact->process_for_contact_match = 'matched';
+                        $contact->save();
                         $already_exist_in_match ++;
                     }
                 }else{
