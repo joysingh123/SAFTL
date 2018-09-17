@@ -13,7 +13,7 @@ use App\Emails;
 class CreateEmailController extends Controller {
 
     public function index(Request $request) {
-        $matched_contact = MatchedContact::where('email_status', null)->where('email_format_available', 'yes')->get();
+        $matched_contact = MatchedContact::where('email_status', null)->take(2000)->get();
         if ($matched_contact->count() > 0) {
             foreach ($matched_contact AS $mt) {
                 UtilDebug::print_message("mt", $mt);
@@ -57,11 +57,13 @@ class CreateEmailController extends Controller {
                         $mt->email_status = "created";
                         $mt->save();
                     }
+                }else{
+                    $mt->email_status = "email format not available";
+                    $mt->save();
                 }
             }
         }else{
             UtilDebug::print_message("Status", "No, Contact Found For Email Creation");
         }
     }
-
 }
