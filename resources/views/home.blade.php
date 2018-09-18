@@ -45,6 +45,12 @@
                                     <td><?php echo \App\Helpers\UtilString::IND_money_format($data['contacts_stats']['processed']); ?></td>
                                     <td><?php echo \App\Helpers\UtilString::IND_money_format($data['contacts_stats']['not_processed']); ?></td>
                                 </tr>
+                                <tr>
+                                    <td>Available Email</td>
+                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['available_email']['total']); ?></td>
+                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['available_email']['processed']); ?></td>
+                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['available_email']['not_processed']); ?></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
