@@ -52,22 +52,31 @@ class MakeEmailFormatController extends Controller {
                             } else if ($first_part == $last_name_first_char) {
                                 $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
                             }
+                        } else if (strlen($first_part) == 2) {
+                            $char_array = str_split($first_part);
+                            $firstchar = $char_array[0];
+                            $secondchar = $char_array[1];
+                            if ($firstchar == $first_name_first_char) {
+                                $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                            } else if ($firstchar == $last_name_first_char) {
+                                $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                            }
+                            if ($secondchar == $first_name_first_char) {
+                                $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                            } else if ($secondchar == $last_name_first_char) {
+                                $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                            }
                         } else {
                             if ($first_part == $first_name) {
                                 $email_format .= UtilConstant::FIRST_NAME;
                             } else if ($first_part == $last_name) {
                                 $email_format .= UtilConstant::LAST_NAME;
-                            } else if ($first_part == $first_name_first_two_char) {
-                                $email_format .= UtilConstant::FIRST_NAME_FIRST_TWO_CHARACTER;
-                            } else if ($first_part == $last_name_first_two_char) {
-                                $email_format .= UtilConstant::LAST_NAME_FIRST_TWO_CHARACTER;
                             }
                         }
                     }
                     //explode processing
-
                     $explode_by = (isset($email_first_part_info['explode_by'])) ? $email_first_part_info['explode_by'] : "";
-                    if ($explode_by != "" && $email_format != "") {
+                    if ($explode_by != "" && strlen($email_format) > 0) {
                         $email_format .= $explode_by;
                     }
 
@@ -80,15 +89,25 @@ class MakeEmailFormatController extends Controller {
                             } else if ($second_part == $last_name_first_char) {
                                 $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
                             }
+                        } else if (strlen($second_part) == 2) {
+                            $char_array = str_split($second_part);
+                            $firstchar = $char_array[0];
+                            $secondchar = $char_array[1];
+                            if ($firstchar == $first_name_first_char) {
+                                $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                            } else if ($firstchar == $last_name_first_char) {
+                                $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                            }
+                            if ($secondchar == $first_name_first_char) {
+                                $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                            } else if ($secondchar == $last_name_first_char) {
+                                $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                            }
                         } else {
                             if ($second_part == $first_name) {
                                 $email_format .= UtilConstant::FIRST_NAME;
                             } else if ($second_part == $last_name) {
                                 $email_format .= UtilConstant::LAST_NAME;
-                            } else if ($second_part == $first_name_first_two_char) {
-                                $email_format .= UtilConstant::FIRST_NAME_FIRST_TWO_CHARACTER;
-                            } else if ($second_part == $last_name_first_two_char) {
-                                $email_format .= UtilConstant::LAST_NAME_FIRST_TWO_CHARACTER;
                             }
                         }
                     }
@@ -179,7 +198,7 @@ class MakeEmailFormatController extends Controller {
                     $insertData = DB::table('email_format')->insert($insert);
                     $matched_contact = MatchedContact::where('domain', $data->company_domain)->where('email_format_available', 'no')->count();
                     if ($matched_contact > 0) {
-                        MatchedContact::where('domain', $data->company_domain)->update(['email_format_available' => 'yes']);
+                        MatchedContact::where('domain', $data->company_domain)->update(['email_status' => 'NULL','email_format_available' => 'yes']);
                     }
                     if ($insertData) {
                         $response['Message'] = "Inserted";
@@ -194,11 +213,6 @@ class MakeEmailFormatController extends Controller {
                     $response['Message'] = "Already Exist";
                 }
                 return $email_format;
-            } else {
-                $response['status'] = "fail";
-                $data->status = "Email Format Not Found";
-                $data->save();
-                $response['Message'] = "Email Format Not Found";
             }
         } else {
             $response['status'] = "fail";
@@ -208,4 +222,5 @@ class MakeEmailFormatController extends Controller {
         }
         return $response;
     }
+
 }
