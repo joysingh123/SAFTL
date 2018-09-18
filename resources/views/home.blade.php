@@ -30,14 +30,14 @@
                                 <tr>
                                     <td>Companies With Domain</td>
                                     <td><?php echo \App\Helpers\UtilString::IND_money_format($data['companies_data']['total']); ?></td>
-                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['companies_data']['processed']); ?></td>
-                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['companies_data']['not_processed']); ?></td>
+                                    <td><?php echo "N/A"; ?></td>
+                                    <td><?php echo "N/A"; ?></td>
                                 </tr>
                                 <tr>
                                     <td>Companies Without Domain</td>
                                     <td><?php echo \App\Helpers\UtilString::IND_money_format($data['cwd_data']['total']); ?></td>
-                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['cwd_data']['processed']); ?></td>
-                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['cwd_data']['not_processed']); ?></td>
+                                    <td><?php echo "N/A"; ?></td>
+                                    <td><?php echo "N/A"; ?></td>
                                 </tr>
                                 <tr>
                                     <td>Contacts</td>
