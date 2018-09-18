@@ -7,6 +7,8 @@ use App\Contacts;
 use App\CompaniesWithDomain;
 use App\CompaniesWithoutDomain;
 use App\AvailableEmail;
+use App\MatchedContact;
+use App\Emails;
 class HomeController extends Controller
 {
     /**
@@ -52,13 +54,23 @@ class HomeController extends Controller
         $available_email['processed'] = AvailableEmail::where('status',"!=","")->count();
         $available_email['not_processed'] = AvailableEmail::where('status',"=","")->count();
         
+        $matched_data = array();
+        $matched_data['total'] = MatchedContact::count();
+        $matched_data['email_created'] = MatchedContact::where('email_status',"=","created")->count();
+        $matched_data['not_processed'] = MatchedContact::whereNULL('email_status')->count();
         
+//        $emails = Emails::groupBy('matched_contact_id')->get();
         
+        $emails_data = array();
+        $emails_data['total'] = Emails::count();
+        $emails_data['unique_email'] = Emails::all()->groupBy('matched_contact_id')->count();
         
         $data['companies_data'] = $companies_data;
+        $data['emails_data'] = $emails_data;
         $data['cwd_data'] = $cwd_data;
         $data['contacts_stats'] = $contacts_data;
         $data['available_email'] = $available_email;
+        $data['matched_data'] = $matched_data;
         return view('home')->with('data',$data);
     }
 }
