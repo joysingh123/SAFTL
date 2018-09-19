@@ -12,6 +12,10 @@ use App\Emails;
 trait CreateEmailTraits {
     
     public function createEmail() {
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', -1);
+        ini_set('mysql.connect_timeout', 600);
+        ini_set('default_socket_timeout', 600);
         $response = array();
         $limit = 2000;
         $matched_contact = MatchedContact::where('email_format_available', 'yes')->whereNull('email_status')->take($limit)->get();
