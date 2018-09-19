@@ -62,8 +62,8 @@ class HomeController extends Controller
         $matched_data = array();
         $matched_data['total'] = MatchedContact::count();
         $matched_data['email_created'] = MatchedContact::where('email_status',"=","created")->count();
-        $matched_data['not_processed'] = MatchedContact::whereNULL('email_status')->count();
-        
+        $matched_data['not_processed'] = 0;
+        //MatchedContact::whereNULL('email_status')->count();
 //        $emails = Emails::groupBy('matched_contact_id')->get();
         
         $emails_data = array();
