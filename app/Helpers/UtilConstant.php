@@ -16,5 +16,13 @@ class UtilConstant {
     const FIRST_NAME_FIRST_TWO_CHARACTER = "FI";
     const LAST_NAME_FIRST_TWO_CHARACTER = "LA";
     
+    
+    // cron jobs
+    
+    
+    const MATCHED_CRON_JOB_NAME = "Matched Contacts";
+    const MATCHED_CRON_EMAIL_FORMAT = "Email Format";
+    const MATCHED_CRON_EMAIL_CREATE = "Email Create";
+    
 }
 ?>

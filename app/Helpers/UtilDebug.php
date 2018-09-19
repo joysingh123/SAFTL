@@ -34,7 +34,8 @@ class UtilDebug {
     }
     
     public static function debug($msg) {
-        print "DEBUG: " . $msg . "<br>\n";
+        $time = self::formatedDateTimeFull(self::getUpdateTime());
+        print "DEBUG:($time)" . $msg . "<br>\n";
     }
 
     public static function debug_no_nl($msg) {
