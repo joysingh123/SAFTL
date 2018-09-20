@@ -66,9 +66,6 @@ trait CreateEmailTraits {
                         $mt->email_status = "created";
                         $mt->save();
                     }
-                } else {
-                    $mt->email_status = "email format not available";
-                    $mt->save();
                 }
             }
             $response['status'] = "success";
