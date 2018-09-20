@@ -22,7 +22,7 @@ class CreateEmail extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Create Email For Matched Record';
 
     /**
      * Create a new command instance.

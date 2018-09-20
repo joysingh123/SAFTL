@@ -23,6 +23,7 @@ class UtilConstant {
     const MATCHED_CRON_JOB_NAME = "Matched Contacts";
     const MATCHED_CRON_EMAIL_FORMAT = "Email Format";
     const MATCHED_CRON_EMAIL_CREATE = "Email Create";
+    const CRON_EMAIL_VALIDATION = "Email Validation";
     
 }
 ?>

@@ -15,7 +15,10 @@ class Kernel extends ConsoleKernel
      */
 
     protected $commands = [
-        'App\Console\Commands\MatchedContacts'
+        'App\Console\Commands\MatchedContacts',
+        'App\Console\Commands\GenerateEmailFormat',
+        'App\Console\Commands\CreateEmail',
+        'App\Console\Commands\ValidateEmail'
     ];
 
     /**
@@ -67,6 +70,21 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_EMAIL_CREATE)->get();
+            return ($cronjobs->first()->is_run = 'yes' && $cronjobs->first()->current_status = "Not Running");
+        });
+        
+        //email validation
+        
+        $schedule->command('validate:email')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION)->get();
             return ($cronjobs->first()->is_run = 'yes' && $cronjobs->first()->current_status = "Not Running");
         });
         
