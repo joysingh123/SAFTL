@@ -18,7 +18,7 @@ trait GenerateEmailFormatTraits {
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $response = array();
-        $limit = 2000;
+        $limit = 1500;
         $email_data = AvailableEmail::where('status', '')->take($limit)->get();
         if ($email_data->count() > 0) {
             $total = $limit;

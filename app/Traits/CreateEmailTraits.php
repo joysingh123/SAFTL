@@ -17,7 +17,7 @@ trait CreateEmailTraits {
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $response = array();
-        $limit = 2000;
+        $limit = 1500;
         $matched_contact = MatchedContact::where('email_format_available', 'yes')->whereNull('email_status')->take($limit)->get();
         if ($matched_contact->count() > 0) {
             $total = $matched_contact->count();

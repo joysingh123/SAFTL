@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     {
         
         // matched contacts
-        $schedule->command('create:matchedcontact')->everyMinute()->withoutOverlapping()->before(function () {
+        $schedule->command('create:matchedcontact')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_JOB_NAME)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
@@ -42,7 +42,7 @@ class Kernel extends ConsoleKernel
         });
         
         //formate creation cron
-       $schedule->command('generate:emailformat')->everyMinute()->withoutOverlapping()->before(function () {
+       $schedule->command('generate:emailformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_EMAIL_FORMAT)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
@@ -57,7 +57,7 @@ class Kernel extends ConsoleKernel
         
         //email creation
         
-        $schedule->command('create:email')->everyMinute()->withoutOverlapping()->before(function () {
+        $schedule->command('create:email')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_EMAIL_CREATE)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();

@@ -16,7 +16,7 @@ trait ContactCompanyMatchTraits {
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $response = array();
-        $limit = 2000;
+        $limit = 1500;
         $contacts = Contacts::where('process_for_contact_match', 'not processed')->take($limit)->get();
         if ($contacts->count() > 0) {
             $new_insert_in_match = 0;
