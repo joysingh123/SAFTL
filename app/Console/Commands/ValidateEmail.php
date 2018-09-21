@@ -45,7 +45,7 @@ class ValidateEmail extends Command {
         foreach ($emails AS $email) {
             $email_for_validation = $email->email;
             $id = $email->id;
-            $url = "http://apilayer.net/api/check?access_key=c94bb6c9a7ea4e597eea2afd68404a78&email=$email_for_validation&smtp=1&format=1";
+            $url = "http://apilayer.net/api/check?access_key=e653479403313a7b464825a7b71aa7c1&email=$email_for_validation&smtp=1&format=1";
             $response = Curl::to($url)->get();
             $response_array = json_decode($response, TRUE);
             if (isset($response_array['email'])) {
