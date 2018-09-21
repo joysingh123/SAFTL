@@ -22,7 +22,7 @@ class GenerateEmailFormat extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Genearting Email Format For Matched Record';
 
     /**
      * Create a new command instance.
