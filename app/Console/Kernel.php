@@ -43,7 +43,10 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_JOB_NAME)->get();
-            return ($cronjobs->first()->is_run = 'yes' && $cronjobs->first()->current_status = "Not Running");
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
         });
         
         //formate creation cron
@@ -57,7 +60,10 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_EMAIL_FORMAT)->get();
-            return ($cronjobs->first()->is_run = 'yes' && $cronjobs->first()->current_status = "Not Running");
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
         });
         
         //email creation
@@ -72,7 +78,10 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_EMAIL_CREATE)->get();
-            return ($cronjobs->first()->is_run = 'yes' && $cronjobs->first()->current_status = "Not Running");
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
         });
         
         //email validation
