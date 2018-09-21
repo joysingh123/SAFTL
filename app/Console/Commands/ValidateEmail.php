@@ -41,7 +41,7 @@ class ValidateEmail extends Command {
      */
     public function handle() {
         UtilDebug::debug("start processing");
-        $emails = Emails::where('status', 'success')->take(10)->get();
+        $emails = Emails::where('status', 'success')->take(50)->get();
         foreach ($emails AS $email) {
             $email_for_validation = $email->email;
             $id = $email->id;
