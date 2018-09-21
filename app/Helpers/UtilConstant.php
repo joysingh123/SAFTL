@@ -24,6 +24,9 @@ class UtilConstant {
     const MATCHED_CRON_EMAIL_FORMAT = "Email Format";
     const MATCHED_CRON_EMAIL_CREATE = "Email Create";
     const CRON_EMAIL_VALIDATION = "Email Validation";
+    const CRON_SCRAPE_URL_HUNTER = "Scrape Url Hunter";
+    const CRON_SCRAPE_DOMAIN_HUNTER = "Scrape Domain Hunter";
+    const CRON_SCRAPE_DOMAIN_EMAIL_FORMAT = "Scrape Domain Email Format";
     
 }
 ?>

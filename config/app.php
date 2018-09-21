@@ -162,6 +162,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        Yangqi\Htmldom\HtmldomServiceProvider::class,
     ],
 
     /*
@@ -213,6 +214,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'UtilString' => App\Helpers\UtilString::class,
         'UtilConstant' => App\Helpers\UtilConstant::class,
+        'Htmldom' => Yangqi\Htmldom\Htmldom::class,
     ],
 
 ];
