@@ -61,7 +61,44 @@ class ScrapeUrlForDomainScrappingFromHunter extends Command {
                     $urls->first()->process_for_url_scrapping = 1;
                     $urls->first()->save();
                 } else {
-                    UtilDebug::debug("Process Processing : $url_for_processing");
+                    UtilDebug::debug("Process Processing : $url->id");
+                    if ($url->id <= 59) {
+                        $html = new \Htmldom($url_for_processing);
+                        $data = $html->find('section > div.container > div.row > div.col-md-12 > p');
+                        if (isset($data[1])) {
+                            if ($data[1]->plaintext == "Pages:") {
+                                $dom = $html->find('section > div.container > div.row > div.col-md-12 > p', 1)->nextSibling();
+                                $pages = array();
+                                while ($dom != null) {
+                                    $page_num = trim($dom->plaintext);
+                                    if (is_numeric($page_num)) {
+                                        $pages[] = $page_num;
+                                    }
+                                    $dom = $dom->nextSibling();
+                                }
+                                if (count($pages) > 0) {
+                                    for ($i = $pages[0]; $i <= $pages[count($pages) - 1]; $i++) {
+                                        $db_url = $url_for_processing . "/$i";
+                                        $exist_url = ScrapeUrls::where('url', $db_url)->get();
+                                        if ($exist_url->count() <= 0) {
+                                            $scrape_url = new ScrapeUrls();
+                                            $scrape_url->url = $db_url;
+                                            $scrape_url->from_where = 'hunter';
+                                            $scrape_url->save();
+                                        }
+                                    }
+                                    $url->process_for_url_scrapping = 1;
+                                    $url->save();
+                                }
+                            }
+                        } else {
+                            $url->process_for_url_scrapping = 1;
+                            $url->save();
+                        }
+                    } else {
+                        $url->process_for_url_scrapping = 1;
+                        $url->save();
+                    }
                 }
             }
         }
