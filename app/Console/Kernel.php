@@ -20,7 +20,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\CreateEmail',
         'App\Console\Commands\ValidateEmail',
         'App\Console\Commands\ScrapeUrlForDomainScrappingFromHunter',
-        'App\Console\Commands\ScrapeDomainFromUrlHunter'
+        'App\Console\Commands\ScrapeDomainFromUrlHunter',
+        'App\Console\Commands\EmailFormatPercentage'
     ];
 
     /**
@@ -129,6 +130,22 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_DOMAIN_HUNTER)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        $schedule->command('percentage:emailformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE)->get();
             if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
                 return true;
             }

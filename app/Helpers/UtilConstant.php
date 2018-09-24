@@ -27,6 +27,7 @@ class UtilConstant {
     const CRON_SCRAPE_URL_HUNTER = "Scrape Url Hunter";
     const CRON_SCRAPE_DOMAIN_HUNTER = "Scrape Domain Hunter";
     const CRON_SCRAPE_DOMAIN_EMAIL_FORMAT = "Scrape Domain Email Format";
+    const CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE = "Calculate Domain Email Format Percentage";
     
 }
 ?>

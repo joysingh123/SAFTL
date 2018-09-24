@@ -27,7 +27,6 @@ trait GenerateEmailFormatTraits {
             $formate_not_found = 0;
             foreach ($email_data AS $data) {
                 $email = strtolower($data->email);
-                $company_domain = trim($data->company_domain);
                 $first_name = strtolower(trim($data->first_name));
                 $last_name = strtolower(trim($data->last_name));
                 $first_name_first_char = substr($first_name, 0, 1);
@@ -35,10 +34,11 @@ trait GenerateEmailFormatTraits {
                 $first_name_first_two_char = substr($first_name, 0, 2);
                 $last_name_first_two_char = substr($last_name, 0, 2);
                 $email_format = "";
-
+                $company_domain = "";
                 if (UtilString::contains($email, '@')) {
                     $email_array = explode("@", $email);
                     if (count($email_array) > 0) {
+                        $company_domain = $email_array[1];
                         $email_first_part = (isset($email_array[0])) ? $email_array[0] : "";
                         $email_first_part_info = UtilString::explode_email_string($email_first_part);
                         if (is_array($email_first_part_info)) {
@@ -177,21 +177,24 @@ trait GenerateEmailFormatTraits {
                         }
                     }
                     if (strlen($email_format) > 0) {
-                        $company_domain = $data->company_domain;
-                        $formate_exist = EmailFormat::where('company_domain', $company_domain)->where('email_format', $email_format)->count();
-                        if ($formate_exist == 0) {
+                        $formate_exist = EmailFormat::where('company_domain', $company_domain)->where('email_format', $email_format)->get();
+                        $total_in_available_email = AvailableEmail::where('company_domain','=',$company_domain)->count();
+                        if ($formate_exist->count() == 0) {
                             $insert = [
                                 'sample_email' => $data->email,
                                 'first_name' => $data->first_name,
                                 'last_name' => $data->last_name,
                                 'company_domain' => $company_domain,
-                                'email_format' => "$email_format",
+                                'email_format' => $email_format,
+                                'format_count' => 1,
+                                'available_email_count' => $total_in_available_email,
+                                'source' => 'available_email',
                                 'status' => "success"
                             ];
                             $insertData = DB::table('email_format')->insert($insert);
-                            $matched_contact = MatchedContact::where('domain', $data->company_domain)->where('email_format_available', 'no')->count();
+                            $matched_contact = MatchedContact::where('domain', $company_domain)->where('email_format_available', 'no')->count();
                             if ($matched_contact > 0) {
-                                MatchedContact::where('domain', $data->company_domain)->update(['email_status' => NULL, 'email_format_available' => 'yes']);
+                                MatchedContact::where('domain', $company_domain)->update(['email_status' => NULL, 'email_format_available' => 'yes']);
                             }
                             if ($insertData) {
                                 $new_format_created ++;
@@ -200,6 +203,9 @@ trait GenerateEmailFormatTraits {
                             }
                         } else {
                             $data->status = "Email Format Created";
+                            $formate_exist->first()->format_count = $formate_exist->first()->format_count + 1;
+                            $formate_exist->first()->available_email_count = $total_in_available_email;
+                            $formate_exist->first()->save();
                             $data->save();
                             $already_exist ++;
                         }
