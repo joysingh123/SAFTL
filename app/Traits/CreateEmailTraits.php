@@ -10,7 +10,7 @@ use App\MatchedContact;
 use App\Emails;
 
 trait CreateEmailTraits {
-    
+
     public function createEmail() {
         ini_set('max_execution_time', -1);
         ini_set('memory_limit', -1);
@@ -24,7 +24,8 @@ trait CreateEmailTraits {
             $email_created = 0;
             $email_already_exist = 0;
             foreach ($matched_contact AS $mt) {
-                $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->get();
+                $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
+                
                 if ($available_format_for_domain->count() > 0) {
                     $matched_contact_id = $mt->id;
                     $first_name = strtolower($mt->first_name);
@@ -44,7 +45,22 @@ trait CreateEmailTraits {
                         UtilConstant::DOMAIN => $domain
                     );
                     $email_created_status = false;
-                    foreach ($available_format_for_domain AS $av) {
+                    $data = $available_format_for_domain->pluck('format_percentage')->values();
+                    $process_data = [];
+                    if (count($data) == 1) {
+                        $process_data = $available_format_for_domain;
+                    }
+                    if (count($data) == 2) {
+                        $process_count = $data[0] - $data[1];
+                        if ($process_count <= 40) {
+                            $process_data = $available_format_for_domain;
+                        } else {
+//                            UtilDebug::print_message("process_data in 1", $available_format_for_domain);
+                            $process_data = $available_format_for_domain->forget(1);
+//                            UtilDebug::print_message("process_data in 2", $process_data);
+                        }
+                    }
+                    foreach ($process_data AS $av) {
                         $email_format = $av->email_format;
                         $email_format = "$email_format";
                         $email = str_replace("'", "", strtr($email_format, $vars));
@@ -53,6 +69,7 @@ trait CreateEmailTraits {
                             $newemail = new Emails();
                             $newemail->matched_contact_id = $matched_contact_id;
                             $newemail->email = $email;
+                            $newemail->format_percentage = $av->format_percentage;
                             $newemail->status = "success";
                             $newemail->save();
                             $email_created_status = true;
@@ -70,7 +87,7 @@ trait CreateEmailTraits {
             }
             $response['status'] = "success";
             $response['data'] = array("Total" => $total, "Email Created" => $email_created, "Email Already Exist" => $email_already_exist);
-        }else{
+        } else {
             $response['status'] = "fail";
             $response['data'] = "No, Contact Found For Email Creation";
         }
@@ -78,4 +95,3 @@ trait CreateEmailTraits {
     }
 }
 ?>
-
