@@ -48,7 +48,7 @@ trait CreateEmailTraits {
                         $email_format = $av->email_format;
                         $email_format = "$email_format";
                         $email = str_replace("'", "", strtr($email_format, $vars));
-                        $email_already_exist = Emails::where('matched_contact_id', $matched_contact_id)->where('email', $email)->count();
+                        $email_already_exist = Emails::where('email', $email)->count();
                         if ($email_already_exist == 0) {
                             $newemail = new Emails();
                             $newemail->matched_contact_id = $matched_contact_id;
