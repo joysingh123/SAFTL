@@ -97,7 +97,10 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION)->get();
-            return ($cronjobs->first()->is_run = 'yes' && $cronjobs->first()->current_status = "Not Running");
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
         });
         
         //Hunter url scrapper
