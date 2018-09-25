@@ -178,7 +178,7 @@ trait GenerateEmailFormatTraits {
                     }
                     if (strlen($email_format) > 0) {
                         $formate_exist = EmailFormat::where('company_domain', $company_domain)->where('email_format', $email_format)->get();
-                        $total_in_available_email = AvailableEmail::where('company_domain','=',$company_domain)->count();
+                        $total_in_available_email = AvailableEmail::where('email', 'LIKE', "%@$company_domain%")->count();
                         if ($formate_exist->count() == 0) {
                             $insert = [
                                 'sample_email' => $data->email,
@@ -227,6 +227,7 @@ trait GenerateEmailFormatTraits {
         }
         return $response;
     }
+
 }
 ?>
 
