@@ -52,12 +52,11 @@ trait CreateEmailTraits {
                     }
                     if (count($data) == 2) {
                         $process_count = $data[0] - $data[1];
+                        
                         if ($process_count <= 40) {
                             $process_data = $available_format_for_domain;
                         } else {
-//                            UtilDebug::print_message("process_data in 1", $available_format_for_domain);
                             $process_data = $available_format_for_domain->forget(1);
-//                            UtilDebug::print_message("process_data in 2", $process_data);
                         }
                     }
                     foreach ($process_data AS $av) {
@@ -68,7 +67,7 @@ trait CreateEmailTraits {
                         if ($email_already_exist == 0) {
                             $newemail = new Emails();
                             $newemail->matched_contact_id = $matched_contact_id;
-                            $newemail->email = $email;
+                            $newemail->email = trim($email);
                             $newemail->format_percentage = $av->format_percentage;
                             $newemail->status = "success";
                             $newemail->save();
