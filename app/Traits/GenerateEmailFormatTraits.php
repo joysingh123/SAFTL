@@ -198,13 +198,14 @@ trait GenerateEmailFormatTraits {
                             }
                             if ($insertData) {
                                 $new_format_created ++;
+                                EmailFormat::where('company_domain', '=', $company_domain)->update(['available_email_count' => $total_in_available_email]);
                                 $data->status = "Email Format Created";
                                 $data->save();
                             }
                         } else {
                             $data->status = "Email Format Created";
                             $formate_exist->first()->format_count = $formate_exist->first()->format_count + 1;
-                            $formate_exist->first()->available_email_count = $total_in_available_email;
+                            EmailFormat::where('company_domain', '=', $company_domain)->update(['available_email_count' => $total_in_available_email]);
                             $formate_exist->first()->save();
                             $data->save();
                             $already_exist ++;
@@ -227,7 +228,6 @@ trait GenerateEmailFormatTraits {
         }
         return $response;
     }
-
 }
 ?>
 
