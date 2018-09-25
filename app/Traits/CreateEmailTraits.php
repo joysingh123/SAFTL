@@ -48,39 +48,46 @@ trait CreateEmailTraits {
                     $data = $available_format_for_domain->pluck('format_percentage')->values();
                     $process_data = [];
                     if (count($data) == 1) {
-                        $process_data = $available_format_for_domain;
+                        if($data[0] > 10){
+                            $process_data = $available_format_for_domain;
+                        }
                     }
                     if (count($data) == 2) {
-                        $process_count = $data[0] - $data[1];
-                        
-                        if ($process_count <= 40) {
-                            $process_data = $available_format_for_domain;
-                        } else {
+                        if($data[0] >= 10 && $data[1] <= 10){
                             $process_data = $available_format_for_domain->forget(1);
+                        }else if($data[0] > 10 && $data[1] > 10){
+                            $process_count = $data[0] - $data[1];
+                            if ($process_count <= 40) {
+                                $process_data = $available_format_for_domain;
+                            } else {
+                                $process_data = $available_format_for_domain->forget(1);
+                            }
                         }
                     }
-                    foreach ($process_data AS $av) {
-                        $email_format = $av->email_format;
-                        $email_format = "$email_format";
-                        $email = str_replace("'", "", strtr($email_format, $vars));
-                        $email_already_exist = Emails::where('email', $email)->count();
-                        if ($email_already_exist == 0) {
-                            $newemail = new Emails();
-                            $newemail->matched_contact_id = $matched_contact_id;
-                            $newemail->email = trim($email);
-                            $newemail->format_percentage = $av->format_percentage;
-                            $newemail->status = "success";
-                            $newemail->save();
-                            $email_created_status = true;
-                        } else {
-                            $email_created_status = true;
-                            $email_already_exist ++;
+                    if(count($process_data) > 0){
+                        foreach ($process_data AS $av) {
+                            $email_format = $av->email_format;
+                            $email_format = "$email_format";
+                            $email = str_replace("'", "", strtr($email_format, $vars));
+                            $email_already_exist = Emails::where('email', $email)->count();
+                            if ($email_already_exist == 0) {
+                                $newemail = new Emails();
+                                $newemail->matched_contact_id = $matched_contact_id;
+                                $newemail->email = trim($email);
+                                $newemail->format_percentage = $av->format_percentage;
+                                $newemail->status = "success";
+                                $newemail->save();
+                                $email_created_status = true;
+                            } else {
+                                $email_created_status = true;
+                                $email_already_exist ++;
+                            }
                         }
-                    }
-                    if ($email_created_status) {
-                        $email_created ++;
-                        $mt->email_status = "created";
-                        $mt->save();
+                        if ($email_created_status) {
+                            $email_created ++;
+                            $mt->email_status = "created";
+                            $mt->save();
+                        }
                     }
                 }
             }
