@@ -7,7 +7,7 @@ use App\CompaniesWithDomain;
 use App\CompaniesWithoutDomain;
 use App\MatchedContact;
 use App\Helpers\UtilDebug;
-
+use App\EmailFormat;
 trait ContactCompanyMatchTraits {
 
     public function matchContactCompany() {
@@ -50,6 +50,10 @@ trait ContactCompanyMatchTraits {
                         $matched_contact->tag = $contact->tag;
                         $matched_contact->title_level = $contact->title_level;
                         $matched_contact->department = $contact->department;
+                        $exist_in_email_format = EmailFormat::where('company_domain','=',trim($company->company_domain))->count();
+                        if($exist_in_email_format > 0){
+                            $matched_contact->email_format_available = 'yes';
+                        }
                         $save_as = $matched_contact->save();
                         if ($save_as == 1) {
                             $new_insert_in_match ++;
