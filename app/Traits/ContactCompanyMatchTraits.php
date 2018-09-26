@@ -28,8 +28,8 @@ trait ContactCompanyMatchTraits {
                 $comapanies = CompaniesWithDomain::where('linkedin_id', $contact->linkedin_id)->get();
                 if ($comapanies->count() > 0) {
                     $company = $comapanies->first();
-                    $matched_contact_exist = MatchedContact::where('full_name', $contact->full_name)->where('linkedin_id', $company->linkedin_id)->where('job_title', $contact->job_title)->where('company_name', $company->company_name)->count();
-                    if ($matched_contact_exist == 0) {
+                    $matched_contact_exist = MatchedContact::where('full_name', $contact->full_name)->where('linkedin_id', $company->linkedin_id)->where('job_title', $contact->job_title)->where('company_name', $company->company_name)->get();
+                    if ($matched_contact_exist->count() == 0) {
                         $matched_contact = new MatchedContact();
                         $matched_contact->contact_id = $contact->id;
                         $matched_contact->linkedin_id = $contact->linkedin_id;
@@ -50,11 +50,11 @@ trait ContactCompanyMatchTraits {
                         $matched_contact->tag = $contact->tag;
                         $matched_contact->title_level = $contact->title_level;
                         $matched_contact->department = $contact->department;
+                        $save_as = $matched_contact->save();
                         $exist_in_email_format = EmailFormat::where('company_domain','=',trim($company->company_domain))->count();
                         if($exist_in_email_format > 0){
-                            $matched_contact->email_format_available = 'yes';
+                            MatchedContact::where('domain', trim($company->company_domain))->update(['email_status' => NULL, 'email_format_available' => 'yes']);
                         }
-                        $save_as = $matched_contact->save();
                         if ($save_as == 1) {
                             $new_insert_in_match ++;
                             $contact->process_for_contact_match = 'matched';
@@ -63,6 +63,10 @@ trait ContactCompanyMatchTraits {
                     } else {
                         $contact->process_for_contact_match = 'matched';
                         $contact->save();
+                        $exist_in_email_format = EmailFormat::where('company_domain','=',trim($company->company_domain))->count();
+                        if($exist_in_email_format > 0){
+                            MatchedContact::where('domain', trim($company->company_domain))->update(['email_status' => NULL, 'email_format_available' => 'yes']);
+                        }
                         $already_exist_in_match ++;
                     }
                 } else {
