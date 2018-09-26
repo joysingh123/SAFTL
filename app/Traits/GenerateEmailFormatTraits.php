@@ -46,24 +46,34 @@ trait GenerateEmailFormatTraits {
                             $first_part = (isset($email_first_part_info['explode_data'][0])) ? strtolower(trim($email_first_part_info['explode_data'][0])) : "";
                             if (!UtilString::is_empty_string($first_part)) {
                                 if (strlen($first_part) == 1) {
-                                    if ($first_part == $first_name_first_char) {
+                                    if ($first_part == $first_name) {
+                                        $email_format .= UtilConstant::FIRST_NAME;
+                                    } else if ($first_part == $last_name) {
+                                        $email_format .= UtilConstant::LAST_NAME;
+                                    } else if ($first_part == $first_name_first_char) {
                                         $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
                                     } else if ($first_part == $last_name_first_char) {
                                         $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
                                     }
                                 } else if (strlen($first_part) == 2) {
-                                    $char_array = str_split($first_part);
-                                    $firstchar = $char_array[0];
-                                    $secondchar = $char_array[1];
-                                    if ($firstchar == $first_name_first_char) {
-                                        $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
-                                    } else if ($firstchar == $last_name_first_char) {
-                                        $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
-                                    }
-                                    if ($secondchar == $first_name_first_char) {
-                                        $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
-                                    } else if ($secondchar == $last_name_first_char) {
-                                        $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                                    if ($first_part == $first_name) {
+                                        $email_format .= UtilConstant::FIRST_NAME;
+                                    } else if ($first_part == $last_name) {
+                                        $email_format .= UtilConstant::LAST_NAME;
+                                    }else{
+                                        $char_array = str_split($first_part);
+                                        $firstchar = $char_array[0];
+                                        $secondchar = $char_array[1];
+                                        if ($firstchar == $first_name_first_char) {
+                                            $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                                        } else if ($firstchar == $last_name_first_char) {
+                                            $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                                        }
+                                        if ($secondchar == $first_name_first_char) {
+                                            $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                                        } else if ($secondchar == $last_name_first_char) {
+                                            $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                                        }
                                     }
                                 } else {
                                     if ($first_part == $first_name) {
@@ -83,13 +93,61 @@ trait GenerateEmailFormatTraits {
                             $second_part = (isset($email_first_part_info['explode_data'][1])) ? strtolower(trim($email_first_part_info['explode_data'][1])) : "";
                             if (!UtilString::is_empty_string($first_part)) {
                                 if (strlen($second_part) == 1) {
-                                    if ($second_part == $first_name_first_char) {
+                                    if ($second_part == $first_name) {
+                                        $email_format .= UtilConstant::FIRST_NAME;
+                                    } else if ($second_part == $last_name) {
+                                        $email_format .= UtilConstant::LAST_NAME;
+                                    }else if ($second_part == $first_name_first_char) {
                                         $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
                                     } else if ($second_part == $last_name_first_char) {
                                         $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
                                     }
                                 } else if (strlen($second_part) == 2) {
-                                    $char_array = str_split($second_part);
+                                    if ($second_part == $first_name) {
+                                        $email_format .= UtilConstant::FIRST_NAME;
+                                    } else if ($second_part == $last_name) {
+                                        $email_format .= UtilConstant::LAST_NAME;
+                                    }else{
+                                        $char_array = str_split($second_part);
+                                        $firstchar = $char_array[0];
+                                        $secondchar = $char_array[1];
+                                        if ($firstchar == $first_name_first_char) {
+                                            $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                                        } else if ($firstchar == $last_name_first_char) {
+                                            $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                                        }
+                                        if ($secondchar == $first_name_first_char) {
+                                            $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                                        } else if ($secondchar == $last_name_first_char) {
+                                            $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                                        }
+                                    }
+                                } else {
+                                    if ($second_part == $first_name) {
+                                        $email_format .= UtilConstant::FIRST_NAME;
+                                    } else if ($second_part == $last_name) {
+                                        $email_format .= UtilConstant::LAST_NAME;
+                                    }
+                                }
+                            }
+                        } else {
+                            if (strlen($email_first_part_info) == 1) {
+                                if ($email_first_part_info == $first_name) {
+                                    $email_format .= UtilConstant::FIRST_NAME;
+                                } else if ($email_first_part_info == $last_name) {
+                                    $email_format .= UtilConstant::LAST_NAME;
+                                } else if ($email_first_part_info == $first_name_first_char) {
+                                    $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
+                                } else if ($email_first_part_info == $last_name_first_char) {
+                                    $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
+                                }
+                            } else if (strlen($email_first_part_info) == 2) {
+                                if ($email_first_part_info == $first_name) {
+                                    $email_format .= UtilConstant::FIRST_NAME;
+                                } else if ($email_first_part_info == $last_name) {
+                                    $email_format .= UtilConstant::LAST_NAME;
+                                }else{
+                                    $char_array = str_split($email_first_part_info);
                                     $firstchar = $char_array[0];
                                     $secondchar = $char_array[1];
                                     if ($firstchar == $first_name_first_char) {
@@ -102,38 +160,9 @@ trait GenerateEmailFormatTraits {
                                     } else if ($secondchar == $last_name_first_char) {
                                         $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
                                     }
-                                } else {
-                                    if ($second_part == $first_name) {
-                                        $email_format .= UtilConstant::FIRST_NAME;
-                                    } else if ($second_part == $last_name) {
-                                        $email_format .= UtilConstant::LAST_NAME;
-                                    }
-                                }
-                            }
-                        } else {
-                            if (strlen($email_first_part_info) == 1) {
-                                if ($email_first_part_info == $first_name_first_char) {
-                                    $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
-                                } else if ($email_first_part_info == $last_name_first_char) {
-                                    $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
-                                }
-                            } else if (strlen($email_first_part_info) == 2) {
-                                $char_array = str_split($email_first_part_info);
-                                $firstchar = $char_array[0];
-                                $secondchar = $char_array[1];
-                                if ($firstchar == $first_name_first_char) {
-                                    $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
-                                } else if ($firstchar == $last_name_first_char) {
-                                    $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
-                                }
-                                if ($secondchar == $first_name_first_char) {
-                                    $email_format .= UtilConstant::FIRST_NAME_FIRST_CHARACTER;
-                                } else if ($secondchar == $last_name_first_char) {
-                                    $email_format .= UtilConstant::LAST_NAME_FIRST_CHARACTER;
                                 }
                             } else {
                                 if (UtilString::contains($email_first_part_info, $first_name) && UtilString::contains($email_first_part_info, $last_name)) {
-
                                     $str_pos = stripos($email_first_part_info, $first_name);
                                     if ($str_pos > 0) {
                                         $email_format .= UtilConstant::LAST_NAME . UtilConstant::FIRST_NAME;
@@ -173,7 +202,11 @@ trait GenerateEmailFormatTraits {
                         }
                         $email_second_part = (isset($email_array[1])) ? $email_array[1] : "";
                         if ($company_domain == trim($email_second_part) && strlen($email_format) > 0) {
-                            $email_format .= "@" . UtilConstant::DOMAIN;
+                            if(substr($email_format, -1) != "."){
+                                $email_format .= "@" . UtilConstant::DOMAIN;
+                            }else{
+                                $email_format = "";
+                            }
                         }
                     }
                     if (strlen($email_format) > 0) {
