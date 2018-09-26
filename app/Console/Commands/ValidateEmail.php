@@ -117,7 +117,7 @@ class ValidateEmail extends Command {
             $response['status']="fail";
             $response['status']="No, api enabled for email validation";
         }
-        return $response;
+        print_r($response);
         UtilDebug::debug("end processing");
     }
 }
