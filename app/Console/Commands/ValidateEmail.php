@@ -6,8 +6,12 @@ use Illuminate\Console\Command;
 use Ixudra\Curl\Facades\Curl;
 use App\Emails;
 use App\EmailValidation;
+use App\BounceEmail;
+use App\EmailValidationApi;
 use App\Helpers\UtilDebug;
 use App\Helpers\UtilString;
+use App\Helpers\UtilConstant;
+use App\Helpers\UtilEmailValidation;
 
 class ValidateEmail extends Command {
 
@@ -41,35 +45,78 @@ class ValidateEmail extends Command {
      */
     public function handle() {
         UtilDebug::debug("start processing");
-        $emails = Emails::where('status', 'success')->take(50)->get();
-        foreach ($emails AS $email) {
-            $email_for_validation = $email->email;
-            $id = $email->id;
-            $url = "http://apilayer.net/api/check?access_key=76238587d4c9cf17b1119be92bd4fc86&email=$email_for_validation&smtp=1&format=1";
-            $response = Curl::to($url)->get();
-            $response_array = json_decode($response, TRUE);
-            if (isset($response_array['email'])) {
-                $is_validate = EmailValidation::where('email_id', $id)->get();
-                if ($is_validate->count() <= 0) {
-                    $email_validate = new EmailValidation();
-                    $email_validate->email_id = $id;
-                    $email_validate->did_you_mean = $response_array['did_you_mean'];
-                    $email_validate->format_valid = $response_array['format_valid'];
-                    $email_validate->mx_found = $response_array['mx_found'];
-                    $email_validate->score = $response_array['score'];
-                    $email_validate->raw_data = $response;
-                    $email_validate->save();
-                    if ($email_validate->mx_found) {
-                        $email->status = 'valid';
-                        $email->save();
-                    } else {
-                        $email->status = 'invalid';
-                        $email->save();
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', -1);
+        ini_set('mysql.connect_timeout', 600);
+        ini_set('default_socket_timeout', 600);
+        $response = array();
+        $validation_api = EmailValidationApi::where('status','enable')->get();
+        $emails = Emails::where('status', 'success')->take(10)->get();
+        if($validation_api->count() > 0){
+            if($emails->count() > 0){
+                foreach($emails AS $email_record){
+                    $email = trim($email_record->email);
+                    $exist_in_email_validation = EmailValidation::where('email','=',$email)->count();
+                    $exist_in_bounce_email = BounceEmail::where('email','=',$email)->count();
+                    if($exist_in_email_validation <= 0 && $exist_in_bounce_email <= 0){
+                        foreach($validation_api AS $va){
+                            $api_name = $va->name;
+                            $api_url = $va->api_url;
+                            $api_key = $va->api_key;
+                            $email_validation_url = UtilEmailValidation::getValidationUrl($email,$api_name,$api_url,$api_key);
+                            $url = $email_validation_url['email_validation_url'];
+                            $response = Curl::to($url)->get();
+                            $response_array = json_decode($response,true);
+                            if(isset($response_array['email']) || isset($response_array['address'])){
+                                $email_status = "";
+                                if($email_validation_url['verified_by'] == UtilConstant::EMAIL_VALIDATION_API_MAILBOXLAYER_NAME){
+                                    if($response_array['smtp_check']){
+                                        $email_status = "valid";
+                                    }else if(!$response_array['smtp_check'] && $response_array['score'] > 0.48){
+                                        $email_status = "catch all";
+                                    }else{
+                                        $email_status = "invalid";
+                                    }
+                                }
+                                
+                                if($email_validation_url['verified_by'] == UtilConstant::EMAIL_VALIDATION_API_ZEROBOUNCE_NAME){
+                                    if($response_array['status'] == 'valid'){
+                                        $email_status = "valid";
+                                    }else if($response_array['status'] == 'catch-all'){
+                                        $email_status = "catch all";
+                                    }else{
+                                        $email_status = "invalid";
+                                    }
+                                }
+                                
+                                if(!UtilString::is_empty_string($email_status)){
+                                    $exist_in_email_validation = EmailValidation::where('email','=',$email)->count();
+                                    if($exist_in_email_validation <= 0){
+                                        $email_validation = new EmailValidation();
+                                        $email_validation->email = $email;
+                                        $email_validation->status = $email_status;
+                                        $email_validation->verified_by = $email_validation_url['verified_by'];
+                                        $email_validation->raw_data = $response;
+                                        $email_added = $email_validation->save();
+                                        if($email_added){
+                                            $email_record->status = $email_status;
+                                            $email_record->save();
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
                     }
                 }
+            }else{
+                $response['status']="fail";
+                $response['status']="No, email found for validation";
             }
+        }else{
+            $response['status']="fail";
+            $response['status']="No, api enabled for email validation";
         }
-        UtilDebug::debug("End processing");
+        UtilDebug::debug("end processing");
     }
-
 }
