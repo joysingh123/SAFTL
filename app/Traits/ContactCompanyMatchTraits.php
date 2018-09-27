@@ -53,7 +53,7 @@ trait ContactCompanyMatchTraits {
                         $save_as = $matched_contact->save();
                         $exist_in_email_format = EmailFormat::where('company_domain','=',trim($company->company_domain))->count();
                         if($exist_in_email_format > 0){
-                            MatchedContact::where('domain', trim($company->company_domain))->update(['email_status' => NULL, 'email_format_available' => 'yes']);
+                            MatchedContact::where('domain', trim($company->company_domain))->whereNull('email_status')->update(['email_status' => NULL, 'email_format_available' => 'yes']);
                         }
                         if ($save_as == 1) {
                             $new_insert_in_match ++;
@@ -65,7 +65,7 @@ trait ContactCompanyMatchTraits {
                         $contact->save();
                         $exist_in_email_format = EmailFormat::where('company_domain','=',trim($company->company_domain))->count();
                         if($exist_in_email_format > 0){
-                            MatchedContact::where('domain', trim($company->company_domain))->update(['email_status' => NULL, 'email_format_available' => 'yes']);
+                            MatchedContact::where('domain', trim($company->company_domain))->whereNull('email_status')->update(['email_status' => NULL, 'email_format_available' => 'yes']);
                         }
                         $already_exist_in_match ++;
                     }

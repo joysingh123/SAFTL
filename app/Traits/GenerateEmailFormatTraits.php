@@ -203,7 +203,11 @@ trait GenerateEmailFormatTraits {
                         $email_second_part = (isset($email_array[1])) ? $email_array[1] : "";
                         if ($company_domain == trim($email_second_part) && strlen($email_format) > 0) {
                             if(substr($email_format, -1) != "."){
-                                $email_format .= "@" . UtilConstant::DOMAIN;
+                                if(substr($email_format, 0,1) != "."){
+                                    $email_format .= "@" . UtilConstant::DOMAIN;
+                                }else{
+                                    $email_format = "";
+                                }
                             }else{
                                 $email_format = "";
                             }
@@ -227,7 +231,7 @@ trait GenerateEmailFormatTraits {
                             $insertData = DB::table('email_format')->insert($insert);
                             $matched_contact = MatchedContact::where('domain', $company_domain)->where('email_format_available', 'no')->count();
                             if ($matched_contact > 0) {
-                                MatchedContact::where('domain', $company_domain)->update(['email_status' => NULL, 'email_format_available' => 'yes']);
+                                MatchedContact::where('domain', $company_domain)->whereNull('email_status')->update(['email_status' => NULL, 'email_format_available' => 'yes']);
                             }
                             if ($insertData) {
                                 $new_format_created ++;
