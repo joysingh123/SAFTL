@@ -69,18 +69,20 @@ trait CreateEmailTraits {
                                 $email_format = $av->email_format;
                                 $email_format = "$email_format";
                                 $email = str_replace("'", "", strtr($email_format, $vars));
-                                $email_already_exist = Emails::where('email', $email)->count();
-                                if ($email_already_exist == 0) {
-                                    $newemail = new Emails();
-                                    $newemail->matched_contact_id = $matched_contact_id;
-                                    $newemail->email = trim($email);
-                                    $newemail->format_percentage = $av->format_percentage;
-                                    $newemail->status = "success";
-                                    $newemail->save();
-                                    $email_created_status = true;
-                                } else {
-                                    $email_created_status = true;
-                                    $email_already_exist ++;
+                                if(UtilString::is_email($email)){
+                                    $email_already_exist = Emails::where('email', $email)->count();
+                                    if ($email_already_exist == 0) {
+                                        $newemail = new Emails();
+                                        $newemail->matched_contact_id = $matched_contact_id;
+                                        $newemail->email = trim($email);
+                                        $newemail->format_percentage = $av->format_percentage;
+                                        $newemail->status = "success";
+                                        $newemail->save();
+                                        $email_created_status = true;
+                                    } else {
+                                        $email_created_status = true;
+                                        $email_already_exist ++;
+                                    }
                                 }
                             }
                             if ($email_created_status) {
