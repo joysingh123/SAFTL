@@ -69,7 +69,7 @@ class ImportDataController extends Controller {
                             $duplicate[] = $value;
                             if (!UtilString::contains($value, "\u")) {
                                 if ((isset($value->company_domain) && isset($value->linkedin_id)) && (UtilString::contains($value->company_domain, ".") && $value->linkedin_id > 0)) {
-                                    $linkedin_id = ($value->linkedin_id != "") ? $value->linkedin_id : "";
+                                    $linkedin_id = ($value->linkedin_id != "") ? $value->linkedin_id : 0;
                                     $linkedin_url = ($value->linkedin_url != "") ? $value->linkedin_url : "";
                                     $company_domain = ($value->company_domain != "") ? $value->company_domain : "";
                                     $company_name = ($value->company_name != "") ? $value->company_name : "";
@@ -344,22 +344,27 @@ class ImportDataController extends Controller {
                         } else {
                             $duplicate_array[] = $value;
                             if (UtilString::is_email($value->email) && !UtilString::contains($value->email, "@gmail.com") && !UtilString::is_empty_string(UtilString::trim_string($value->first_name)) && !UtilString::is_empty_string(UtilString::trim_string($value->last_name))) {
-                                $email_exist = AvailableEmail::where('email', $value->email)->count();
-                                if ($email_exist == 0) {
-                                    $insert[] = [
-                                        'user_id' => Auth::id(),
-                                        'email' => $value->email,
-                                        'company_name' => (UtilString::is_empty_string($value->company_name)) ? "" : $value->company_name,
-                                        'company_domain' => (UtilString::is_empty_string($value->domain)) ? "" : $value->domain,
-                                        'first_name' => (UtilString::is_empty_string($value->first_name)) ? "" : $value->first_name,
-                                        'last_name' => (UtilString::is_empty_string($value->last_name)) ? "" : $value->last_name,
-                                        'country' => (UtilString::is_empty_string($value->country)) ? "" : $value->country,
-                                        'job_title' => (UtilString::is_empty_string($value->job_title)) ? "" : strip_tags($value->job_title),
-                                        'status' => ""
-                                    ];
-                                    $new_insert ++;
-                                } else {
-                                    $already_exist ++;
+                                if (!UtilString::contains($value, "\u")) {
+                                    $email_exist = AvailableEmail::where('email', $value->email)->count();
+                                    if ($email_exist == 0) {
+                                        $insert[] = [
+                                            'user_id' => Auth::id(),
+                                            'email' => trim($value->email),
+                                            'company_name' => (UtilString::is_empty_string($value->company_name)) ? "" : trim($value->company_name),
+                                            'company_domain' => (UtilString::is_empty_string($value->domain)) ? "" : trim($value->domain),
+                                            'first_name' => (UtilString::is_empty_string($value->first_name)) ? "" : trim($value->first_name),
+                                            'last_name' => (UtilString::is_empty_string($value->last_name)) ? "" : trim($value->last_name),
+                                            'country' => (UtilString::is_empty_string($value->country)) ? "" : trim($value->country),
+                                            'job_title' => (UtilString::is_empty_string($value->job_title)) ? "" : strip_tags($value->job_title),
+                                            'status' => ""
+                                        ];
+                                        $new_insert ++;
+                                    } else {
+                                        $already_exist ++;
+                                    }
+                                }else{
+                                    $invalid ++;
+                                    $emails_not_load[] = $value;
                                 }
                             } else {
                                 $invalid ++;
