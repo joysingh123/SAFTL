@@ -109,6 +109,9 @@
                         <a href="/importemaildata">Email Import For Format Generation</a>
                     </div>
                     <div class="links">
+                        <a href="/importemaildatadump">Email Import Dump</a>
+                    </div>
+                    <div class="links">
                         <a href="/importbounceemaildata">Import Bounce Email</a>
                     </div>
 

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2 class="text-center">
-        Email Import
+        Email Data Import
     </h2>
 
     @if ( Session::has('success') )
@@ -37,7 +37,7 @@
     </div>
     @endif
 
-    <form action="{{ route('importemaildata') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('importemaildatadump') }}" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         Choose your xls File : <input type="file" name="file" class="form-control">
 
@@ -51,10 +51,9 @@
         <ul>
             <li>Excel Sheet Should have column 
                 <span class="excel-column">[
-                    Email, 
-                    Company Name,
-                    First Name, 
-                    Last Name, 
+                    Email,
+                    Full Name
+                    Company Name, 
                     Country, 
                     Job Title] .
                 </span>
@@ -103,10 +102,9 @@
             <thead>
                 <tr>
                     <th>Email</th>
+                    <th>Full Name</th>
                     <th>Company Name</th>
                     <th>domain</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
                     <th>Country</th>
                     <th>Job Title</th>
                 </tr>
@@ -115,10 +113,9 @@
                 @foreach($stats_data['emails_not_load'] AS $enl)
                 <tr>
                     <td>{{$enl['email']}}</td>
+                    <td>{{$enl['full_name']}}</td>
                     <td>{{$enl['company_name']}}</td>
                     <td>{{$enl['domain']}}</td>
-                    <td>{{$enl['first_name']}}</td>
-                    <td>{{$enl['last_name']}}</td>
                     <td>{{$enl['country']}}</td>
                     <td>{{$enl['job_title']}}</td>
                 </tr>

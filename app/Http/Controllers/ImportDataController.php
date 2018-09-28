@@ -14,6 +14,8 @@ use App\Helpers\UtilConstant;
 use App\AvailableEmail;
 use App\Helpers\UtilDebug;
 use App\BounceEmail;
+use App\EmailData;
+
 use Illuminate\Support\Facades\Auth;
 
 class ImportDataController extends Controller {
@@ -26,6 +28,10 @@ class ImportDataController extends Controller {
         return view('addcompaniescontact');
     }
 
+    public function importEmailDataImportView() {
+        return view('addemaildataimport');
+    }
+    
     public function importEmailView() {
         return view('addemaildata');
     }
@@ -331,7 +337,7 @@ class ImportDataController extends Controller {
                 $data = Excel::load($path, function($reader) {
                             
                         })->get();
-                if (!empty($data) && $data->count()) {
+                if (!empty($data) && $data->count() <= 5000) {
                     $new_insert = 0;
                     $already_exist = 0;
                     $already_exist_in_sheet = 0;
@@ -347,11 +353,13 @@ class ImportDataController extends Controller {
                                 if (!UtilString::contains($value, "\u")) {
                                     $email_exist = AvailableEmail::where('email', $value->email)->count();
                                     if ($email_exist == 0) {
+                                        $email_array = explode("@", $value->email);
+                                        $company_domain = trim($email_array[1]);
                                         $insert[] = [
                                             'user_id' => Auth::id(),
                                             'email' => trim($value->email),
                                             'company_name' => (UtilString::is_empty_string($value->company_name)) ? "" : trim($value->company_name),
-                                            'company_domain' => (UtilString::is_empty_string($value->domain)) ? "" : trim($value->domain),
+                                            'company_domain' => (UtilString::is_empty_string($company_domain)) ? "" : $company_domain,
                                             'first_name' => (UtilString::is_empty_string($value->first_name)) ? "" : trim($value->first_name),
                                             'last_name' => (UtilString::is_empty_string($value->last_name)) ? "" : trim($value->last_name),
                                             'country' => (UtilString::is_empty_string($value->country)) ? "" : trim($value->country),
@@ -389,6 +397,94 @@ class ImportDataController extends Controller {
                         "emails_not_load" => $emails_not_load
                     );
                     Session::flash('stats_data', $stats_data);
+                    return back();
+                }else {
+                    Session::flash('error', 'The Sheet contains Only 5,000 records');
+                    return back();
+                }
+            }
+        }
+    }
+    
+    public function importEmailDataDump(Request $request) {
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', -1);
+        ini_set('upload_max_filesize', -1);
+        ini_set('post_max_size ', -1);
+        ini_set('mysql.connect_timeout', 300);
+        ini_set('default_socket_timeout', 300);
+        $this->validate($request, array(
+            'file' => 'required'
+        ));
+        if ($request->hasFile('file')) {
+            $extension = File::extension($request->file->getClientOriginalName());
+            if ($extension == "xlsx" || $extension == "xls") {
+                $path = $request->file->getRealPath();
+                $data = Excel::load($path, function($reader) {
+                            
+                        })->get();
+                if (!empty($data) && $data->count() <= 5000) {
+                    $new_insert = 0;
+                    $already_exist = 0;
+                    $already_exist_in_sheet = 0;
+                    $invalid = 0;
+                    $emails_not_load = array();
+                    $duplicate_array = array();
+                    foreach ($data as $key => $value) {
+                        if (in_array($value, $duplicate_array)) {
+                            $already_exist_in_sheet ++;
+                        } else {
+                            $duplicate_array[] = $value;
+                            if (UtilString::is_email($value->email) && !UtilString::contains($value->email, "@gmail.com") && !UtilString::is_empty_string(UtilString::trim_string($value->full_name))) {
+                                if (!UtilString::contains($value, "\u")) {
+                                    $email_exist = EmailData::where('email', $value->email)->count();
+                                    if ($email_exist == 0) {
+                                        $email_array = explode("@", $value->email);
+                                        $company_domain = trim($email_array[1]);
+                                        $insert[] = [
+                                            'user_id' => Auth::id(),
+                                            'email' => trim($value->email),
+                                            'full_name' => (UtilString::is_empty_string($value->full_name)) ? "" : trim($value->full_name),
+                                            'company_name' => (UtilString::is_empty_string($value->company_name)) ? "" : trim($value->company_name),
+                                            'company_domain' => (UtilString::is_empty_string($company_domain)) ? "" : $company_domain,
+                                            'country' => (UtilString::is_empty_string($value->country)) ? "" : trim($value->country),
+                                            'job_title' => (UtilString::is_empty_string($value->job_title)) ? "" : strip_tags($value->job_title),
+                                            'status' => ""
+                                        ];
+                                        $new_insert ++;
+                                    } else {
+                                        $already_exist ++;
+                                    }
+                                }else{
+                                    $invalid ++;
+                                    $emails_not_load[] = $value;
+                                }
+                            } else {
+                                $invalid ++;
+                                $emails_not_load[] = $value;
+                            }
+                        }
+                    }
+                    if (!empty($insert)) {
+                        $insertData = DB::table('email_data')->insert($insert);
+                        if ($insertData) {
+                            Session::flash('success', 'Your Data has successfully imported');
+                        } else {
+                            Session::flash('error', 'Error inserting the data..');
+                            return back();
+                        }
+                    }
+                    $stats_data = array(
+                        "duplicate" => $already_exist,
+                        "duplicate_in_sheet" => $already_exist_in_sheet,
+                        "inserted" => $new_insert,
+                        "invalid_email" => $invalid,
+                        "emails_not_load" => $emails_not_load
+                    );
+                    Session::flash('stats_data', $stats_data);
+                    return back();
+                }else {
+                    Session::flash('error', 'The Sheet contains Only 5,000 records');
                     return back();
                 }
             }

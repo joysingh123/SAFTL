@@ -76,6 +76,7 @@ trait CreateEmailTraits {
                                 }
                             }
                             if (count($process_data) > 0) {
+                                $is_bounce = false;
                                 foreach ($process_data AS $av) {
                                     $email_format = $av->email_format;
                                     $email_format = "$email_format";
@@ -85,7 +86,7 @@ trait CreateEmailTraits {
                                         if ($email_already_exist == 0) {
                                             $is_exist_in_bounce = BounceEmail::where('email','=',$email)->get();
                                             if($is_exist_in_bounce->count() > 0){
-                                                $found_in_bounce ++;
+                                                $is_bounce = true;
                                             }else{
                                                 $newemail = new Emails();
                                                 $newemail->matched_contact_id = $matched_contact_id;
@@ -94,6 +95,7 @@ trait CreateEmailTraits {
                                                 $newemail->status = "success";
                                                 $newemail->save();
                                                 $email_created_status = true;
+                                                $is_bounce = false;
                                             }
                                         } else {
                                             $email_created_status = true;
@@ -104,6 +106,10 @@ trait CreateEmailTraits {
                                 if ($email_created_status) {
                                     $email_created ++;
                                     $mt->email_status = "created";
+                                    $mt->save();
+                                }
+                                if($is_bounce){
+                                    $mt->email_status = "bounce";
                                     $mt->save();
                                 }
                             }
