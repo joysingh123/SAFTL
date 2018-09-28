@@ -445,6 +445,8 @@ class ImportDataController extends Controller {
                                             'user_id' => Auth::id(),
                                             'email' => trim($value->email),
                                             'full_name' => (UtilString::is_empty_string($value->full_name)) ? "" : trim($value->full_name),
+                                            'first_name' => (UtilString::is_empty_string($value->first_name)) ? "" : trim($value->first_name),
+                                            'last_name' => (UtilString::is_empty_string($value->last_name)) ? "" : trim($value->last_name),
                                             'company_name' => (UtilString::is_empty_string($value->company_name)) ? "" : trim($value->company_name),
                                             'company_domain' => (UtilString::is_empty_string($company_domain)) ? "" : $company_domain,
                                             'country' => (UtilString::is_empty_string($value->country)) ? "" : trim($value->country),

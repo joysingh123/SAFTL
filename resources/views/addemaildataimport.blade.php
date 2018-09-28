@@ -52,7 +52,9 @@
             <li>Excel Sheet Should have column 
                 <span class="excel-column">[
                     Email,
-                    Full Name
+                    Full Name,
+                    First Name,
+                    Last Name,
                     Company Name, 
                     Country, 
                     Job Title] .
@@ -103,6 +105,8 @@
                 <tr>
                     <th>Email</th>
                     <th>Full Name</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
                     <th>Company Name</th>
                     <th>domain</th>
                     <th>Country</th>
@@ -114,6 +118,8 @@
                 <tr>
                     <td>{{$enl['email']}}</td>
                     <td>{{$enl['full_name']}}</td>
+                    <td>{{$enl['first_name']}}</td>
+                    <td>{{$enl['last_name']}}</td>
                     <td>{{$enl['company_name']}}</td>
                     <td>{{$enl['domain']}}</td>
                     <td>{{$enl['country']}}</td>
