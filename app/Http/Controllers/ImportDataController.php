@@ -444,6 +444,7 @@ class ImportDataController extends Controller {
                                         $insert[] = [
                                             'user_id' => Auth::id(),
                                             'email' => trim($value->email),
+                                            'linkedin_id' => (UtilString::is_empty_string($value->linkedin_id)) ? 0 : trim($value->linkedin_id),
                                             'full_name' => (UtilString::is_empty_string($value->full_name)) ? "" : trim($value->full_name),
                                             'first_name' => (UtilString::is_empty_string($value->first_name)) ? "" : trim($value->first_name),
                                             'last_name' => (UtilString::is_empty_string($value->last_name)) ? "" : trim($value->last_name),
@@ -605,5 +606,4 @@ class ImportDataController extends Controller {
             }
         }
     }
-
 }

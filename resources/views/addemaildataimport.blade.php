@@ -52,6 +52,7 @@
             <li>Excel Sheet Should have column 
                 <span class="excel-column">[
                     Email,
+                    LinkedIn Id,
                     Full Name,
                     First Name,
                     Last Name,
