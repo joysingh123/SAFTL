@@ -67,6 +67,24 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
+         //email format percentage
+        
+        $schedule->command('percentage:emailformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
         //email creation
         
         $schedule->command('create:email')->everyFiveMinutes()->withoutOverlapping()->before(function () {
@@ -133,22 +151,6 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_DOMAIN_HUNTER)->get();
-            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
-                return true;
-            }
-            return false;
-        });
-        
-        $schedule->command('percentage:emailformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE)->get();
-            $cronjobs->first()->current_status = "Running";
-            $cronjobs->first()->save();
-        })->after(function () {
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE)->get();
-            $cronjobs->first()->current_status = "Not Running";
-            $cronjobs->first()->save();
-        })->when(function(){
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE)->get();
             if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
                 return true;
             }
