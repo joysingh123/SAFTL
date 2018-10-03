@@ -453,7 +453,7 @@ class ImportDataController extends Controller {
                                             'industry' => (UtilString::is_empty_string($value->industry)) ? "" : trim($value->industry),
                                             'country' => (UtilString::is_empty_string($value->country)) ? "" : trim($value->country),
                                             'job_title' => (UtilString::is_empty_string($value->job_title)) ? "" : strip_tags($value->job_title),
-                                            'status' => ""
+                                            'status' => (UtilString::is_empty_string($value->status)) ? "" : trim($value->status)
                                         ];
                                         $new_insert ++;
                                     } else {

@@ -59,7 +59,9 @@
                     Company Name,
                     Industry,
                     Country, 
-                    Job Title] .
+                    Job Title,
+                    Status
+                    ] .
                 </span>
             </li>
             <li>Excel Sheet should not have more then one sheet .</li>
