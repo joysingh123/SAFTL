@@ -41,10 +41,14 @@ class RemoveEmail extends Command
      */
     public function handle(){
         UtilDebug::debug("start processing");
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', -1);
+        ini_set('mysql.connect_timeout', 600);
+        ini_set('default_socket_timeout', 600);
         $available_email = Emails::all(['email']);
         $email_array = $available_email->pluck('email');
         $plucked_all = $email_array->all();
-        $emails = AvailableEmail::whereIn('email',$plucked_all)->take(100)->get();
+        $emails = AvailableEmail::whereIn('email',$plucked_all)->take(10)->get();
         foreach($emails AS $email){
             $email_db = Emails::where('email',$email->email)->get();
             $matched_contact_id = $email_db->first()->matched_contact_id;
