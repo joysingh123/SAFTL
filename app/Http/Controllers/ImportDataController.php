@@ -449,6 +449,7 @@ class ImportDataController extends Controller {
                                             'last_name' => (UtilString::is_empty_string($value->last_name)) ? "" : trim($value->last_name),
                                             'company_name' => (UtilString::is_empty_string($value->company_name)) ? "" : trim($value->company_name),
                                             'company_domain' => (UtilString::is_empty_string($company_domain)) ? "" : $company_domain,
+                                            'industry' => (UtilString::is_empty_string($value->industry)) ? "" : trim($value->industry),
                                             'country' => (UtilString::is_empty_string($value->country)) ? "" : trim($value->country),
                                             'job_title' => (UtilString::is_empty_string($value->job_title)) ? "" : strip_tags($value->job_title),
                                             'status' => ""

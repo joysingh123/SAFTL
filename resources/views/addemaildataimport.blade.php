@@ -55,7 +55,8 @@
                     Full Name,
                     First Name,
                     Last Name,
-                    Company Name, 
+                    Company Name,
+                    Industry,
                     Country, 
                     Job Title] .
                 </span>
