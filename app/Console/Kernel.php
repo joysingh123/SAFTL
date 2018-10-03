@@ -18,9 +18,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\MatchedContacts',
         'App\Console\Commands\GenerateEmailFormat',
         'App\Console\Commands\CreateEmail',
+        'App\Console\Commands\RemoveEmail',
         'App\Console\Commands\ValidateEmail',
-        'App\Console\Commands\ScrapeUrlForDomainScrappingFromHunter',
-        'App\Console\Commands\ScrapeDomainFromUrlHunter',
         'App\Console\Commands\EmailFormatPercentage'
     ];
 
@@ -103,6 +102,24 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
+        // email remove
+        
+        $schedule->command('remove:email')->everyTenMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_REOMOVE_EMAIL_FROM_EMAILS)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_REOMOVE_EMAIL_FROM_EMAILS)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_REOMOVE_EMAIL_FROM_EMAILS)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
         //email validation
         
         $schedule->command('validate:email')->everyFiveMinutes()->withoutOverlapping()->before(function () {
@@ -123,39 +140,39 @@ class Kernel extends ConsoleKernel
         
         //Hunter url scrapper
         
-        $schedule->command('scrapeurl:hunter')->everyFiveMinutes()->withoutOverlapping()->before(function () {
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_URL_HUNTER)->get();
-            $cronjobs->first()->current_status = "Running";
-            $cronjobs->first()->save();
-        })->after(function () {
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_URL_HUNTER)->get();
-            $cronjobs->first()->current_status = "Not Running";
-            $cronjobs->first()->save();
-        })->when(function(){
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_URL_HUNTER)->get();
-            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
-                return true;
-            }
-            return false;
-        });
+//        $schedule->command('scrapeurl:hunter')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+//            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_URL_HUNTER)->get();
+//            $cronjobs->first()->current_status = "Running";
+//            $cronjobs->first()->save();
+//        })->after(function () {
+//            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_URL_HUNTER)->get();
+//            $cronjobs->first()->current_status = "Not Running";
+//            $cronjobs->first()->save();
+//        })->when(function(){
+//            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_URL_HUNTER)->get();
+//            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+//                return true;
+//            }
+//            return false;
+//        });
         
         //Hunter domain scrapper
         
-        $schedule->command('scrapedomain:hunter')->everyFiveMinutes()->withoutOverlapping()->before(function () {
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_DOMAIN_HUNTER)->get();
-            $cronjobs->first()->current_status = "Running";
-            $cronjobs->first()->save();
-        })->after(function () {
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_DOMAIN_HUNTER)->get();
-            $cronjobs->first()->current_status = "Not Running";
-            $cronjobs->first()->save();
-        })->when(function(){
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_DOMAIN_HUNTER)->get();
-            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
-                return true;
-            }
-            return false;
-        });
+//        $schedule->command('scrapedomain:hunter')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+//            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_DOMAIN_HUNTER)->get();
+//            $cronjobs->first()->current_status = "Running";
+//            $cronjobs->first()->save();
+//        })->after(function () {
+//            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_DOMAIN_HUNTER)->get();
+//            $cronjobs->first()->current_status = "Not Running";
+//            $cronjobs->first()->save();
+//        })->when(function(){
+//            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SCRAPE_DOMAIN_HUNTER)->get();
+//            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+//                return true;
+//            }
+//            return false;
+//        });
         
         //Hunter domain scrapper
         
