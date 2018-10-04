@@ -52,7 +52,7 @@ class RemoveEmail extends Command
         $available_array = $available_email->pluck('email');
         $available_all = $available_array->all();
         $result = array_intersect($emails_all,$available_all);
-        $result = array('Ravindra@prestigeconstructions.com','Rupali.Nimbalkar@sunteckindia.com','Sandip.Shah@lodhagroup.com','Satish.Shenoy@lodhagroup.com','Selvaraj.Ramasamy@lodhagroup.com','Shatrughan.Singh@lodhagroup.com','SreePremnath@rustomjee.com','Subrahmanya@casagrand.co.in','Sujit.Jadhav@lodhagroup.com','Tara.Giridhar@mantri.in','Tarique.Ahmad@propshop.org.in','TT@abbott.com,Varun@atsgreens.com','Vilas.Nidsoshi@lodhagroup.com');
+        $result = array('TT@abbott.com','Varun@atsgreens.com','Vilas.Nidsoshi@lodhagroup.com');
         if(count($result) > 0){
             foreach($result AS $email){
                 $email_db = Emails::where('email',$email)->get();
