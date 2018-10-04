@@ -42,6 +42,7 @@ trait CreateEmailTraits {
                     $mt->email_status = 'valid';
                     $mt->email_validation_date = '2018-09-01 00:00:00';
                     $mt->save();
+                    $found_in_available_email ++;
                 } else {
                     $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
                     if ($available_format_for_domain->count() > 0) {
@@ -108,6 +109,7 @@ trait CreateEmailTraits {
                                     $mt->email_status = "created";
                                     $mt->save();
                                 }else if($is_bounce){
+                                    $found_in_bounce ++;
                                     $mt->email_status = "bounce";
                                     $mt->save();
                                 }else{
