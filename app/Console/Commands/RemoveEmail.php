@@ -52,12 +52,12 @@ class RemoveEmail extends Command
         $available_array = $available_email->pluck('email');
         $available_all = $available_array->all();
         $result = array_intersect($emails_all,$available_all);
+        UtilDebug::print_message("totol processing result", count($result));
         if(count($result) > 0){
             foreach($result AS $email){
                 $email_db = Emails::where('email',$email)->get();
                 if($email_db->count() > 0){
                     $matched_contact_id = $email_db->first()->matched_contact_id;
-                    echo $matched_contact_id.",";
                     if($matched_contact_id > 0){
                         $matched_contact = MatchedContact::where('id',$matched_contact_id)->get();
                         if($matched_contact->count() > 0){
