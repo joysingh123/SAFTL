@@ -29,6 +29,7 @@ trait CreateEmailTraits {
             $email_already_exist = 0;
             foreach ($matched_contact AS $mt) {
                 $matched_contact_id = $mt->id;
+                echo $matched_contact_id.",";
                 $first_name = strtolower($mt->first_name);
                 $last_name = strtolower($mt->last_name);
                 $first_name_first_char = substr($first_name, 0, 1);
@@ -107,12 +108,18 @@ trait CreateEmailTraits {
                                     $email_created ++;
                                     $mt->email_status = "created";
                                     $mt->save();
-                                }
-                                if($is_bounce){
+                                }else if($is_bounce){
                                     $mt->email_status = "bounce";
+                                    $mt->save();
+                                }else{
+                                    $mt->email_status = "unrecognized";
                                     $mt->save();
                                 }
                             }
+                        }else{
+                            $email_status = (UtilString::is_empty_string($last_name)) ? 'last_name not found' : 'unrecognized';
+                            $mt->email_status = $email_status;
+                            $mt->save();
                         }
                     }
                 }
