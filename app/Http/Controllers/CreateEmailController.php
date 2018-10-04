@@ -12,6 +12,7 @@ class CreateEmailController extends Controller {
     public function index(Request $request) {
         UtilDebug::debug("start processing");
         $response = $this->createEmail();
-        UtilDebug::debug("End processing");
+        UtilDebug::print_r_array("stats", $response);
+        UtilDebug::debug("end processing");
     }
 }
