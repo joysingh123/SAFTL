@@ -20,7 +20,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\CreateEmail',
         'App\Console\Commands\RemoveEmail',
         'App\Console\Commands\ValidateEmail',
-        'App\Console\Commands\EmailFormatPercentage'
+        'App\Console\Commands\EmailFormatPercentage',
+        'App\Console\Commands\RemoveApiValidEmails'
     ];
 
     /**
@@ -114,6 +115,24 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_REOMOVE_EMAIL_FROM_EMAILS)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        //remove api valid email
+        
+        $schedule->command('remove:apivalidemail')->everyThirtyMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_REOMOVE_API_VALID_EMAIL_FROM_EMAILS)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_REOMOVE_API_VALID_EMAIL_FROM_EMAILS)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_REOMOVE_API_VALID_EMAIL_FROM_EMAILS)->get();
             if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
                 return true;
             }
