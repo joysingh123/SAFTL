@@ -29,7 +29,6 @@ trait CreateEmailTraits {
             $email_already_exist = 0;
             foreach ($matched_contact AS $mt) {
                 $matched_contact_id = $mt->id;
-                echo $matched_contact_id.",";
                 $first_name = strtolower($mt->first_name);
                 $last_name = strtolower($mt->last_name);
                 $first_name_first_char = substr($first_name, 0, 1);
