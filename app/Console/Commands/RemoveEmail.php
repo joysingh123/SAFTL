@@ -56,18 +56,20 @@ class RemoveEmail extends Command
         if(count($result) > 0){
             foreach($result AS $email){
                 $email_db = Emails::where('email',$email)->get();
-                $matched_contact_id = $email_db->first()->matched_contact_id;
-                echo $matched_contact_id.",";
-                if($matched_contact_id > 0){
-                    $matched_contact = MatchedContact::where('id',$matched_contact_id)->get();
-                    if($matched_contact->count() > 0){
-                        $mt = $matched_contact->first();
-                        $mt->email = $email_db->first()->email;
-                        $mt->email_status = 'valid';
-                        $mt->email_validation_date = '2018-09-01 00:00:00';
-                        $saved = $mt->save();
-                        if($saved){
-                           Emails::where('matched_contact_id',$matched_contact_id)->delete(); 
+                if($email_db->count() > 0){
+                    $matched_contact_id = $email_db->first()->matched_contact_id;
+                    echo $matched_contact_id.",";
+                    if($matched_contact_id > 0){
+                        $matched_contact = MatchedContact::where('id',$matched_contact_id)->get();
+                        if($matched_contact->count() > 0){
+                            $mt = $matched_contact->first();
+                            $mt->email = $email_db->first()->email;
+                            $mt->email_status = 'valid';
+                            $mt->email_validation_date = '2018-09-01 00:00:00';
+                            $saved = $mt->save();
+                            if($saved){
+                               Emails::where('matched_contact_id',$matched_contact_id)->delete(); 
+                            }
                         }
                     }
                 }
