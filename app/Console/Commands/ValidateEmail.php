@@ -49,11 +49,12 @@ class ValidateEmail extends Command {
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $response = array();
+        $limit = 500;
         $emails = DB::table('emails')
                         ->select('matched_contact_id', DB::raw("group_concat(email) AS emails"))
                         ->groupBy('matched_contact_id')
                         ->where('status', 'success')
-                        ->take(100)->get();
+                        ->take($limit)->get();
         if ($emails->count() > 0) {
             foreach ($emails AS $email_record) {
                 $matched_id = $email_record->matched_contact_id;
