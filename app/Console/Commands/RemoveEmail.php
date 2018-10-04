@@ -52,7 +52,7 @@ class RemoveEmail extends Command
         $available_array = $available_email->pluck('email');
         $available_all = $available_array->all();
         $result = array_intersect($emails_all,$available_all);
-        print_r($result);
+        $result = array('Abhay.Patil@koltepatil.com','Abhineet.Jain@omkar.com','Anand@puravankara.com','Arshad.Khan@omkar.com','Arun.Anand@shriramproperties.com','Arun.Bodupali@lavasa.com','Arvind.Subramanian@lodhagroup.com','Ashish.Dhami@kalpataru.com','Ashish.Joshi@omkar.com','Ashwini.Kumar@niteshestates.com','Gaurav.Vishwakarma@propshop.org.in','Girish.Kamble@lodhagroup.com','Gopal.Sarda@koltepatil.com','Gurmeet@atsgreens.com','Harish@ansalapi.com','Himanshu@ansalapi.com','Hiralal.Khobragade@sunteckindia.com ','Janhavi.Sukhtankar@lodhagroup.com','JavedShaikh@rustomjee.com','jeremie.howlett@sbimf.com','Kuntal.Shah@omkar.com','MukeshBharti@smcrealty.com','Mukund.Rathi@lavasa.com','Nishanth.Vishwanath@mantri.in','Praveen.Sood@lavasa.com','Ps@royalenfield.com','Quentin.Devotta@360realtors.com','Rahul.Maroo@omkar.com','Rakesh.Gupta@lodhagroup.com','Ranjana.Singh@emaar-india.com','Ranjana@emaar-india.com','Ravindra@prestigeconstructions.com','Rupali.Nimbalkar@sunteckindia.com','Sandip.Shah@lodhagroup.com','Satish.Shenoy@lodhagroup.com','Selvaraj.Ramasamy@lodhagroup.com','Shatrughan.Singh@lodhagroup.com','SreePremnath@rustomjee.com','Subrahmanya@casagrand.co.in','Sujit.Jadhav@lodhagroup.com','Tara.Giridhar@mantri.in','Tarique.Ahmad@propshop.org.in','TT@abbott.com,Varun@atsgreens.com','Vilas.Nidsoshi@lodhagroup.com');
         if(count($result) > 0){
             foreach($result AS $email){
                 $email_db = Emails::where('email',$email)->get();
