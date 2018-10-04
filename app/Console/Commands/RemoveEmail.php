@@ -52,6 +52,7 @@ class RemoveEmail extends Command
         $available_array = $available_email->pluck('email');
         $available_all = $available_array->all();
         $result = array_intersect($emails_all,$available_all);
+        print($result);
         if(count($result) > 0){
             foreach($result AS $email){
                 $email_db = Emails::where('email',$email)->get();
