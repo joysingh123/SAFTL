@@ -28,25 +28,25 @@ trait ContactCompanyMatchTraits {
                 $comapanies = CompaniesWithDomain::where('linkedin_id', $contact->linkedin_id)->get();
                 if ($comapanies->count() > 0) {
                     $company = $comapanies->first();
-                    $matched_contact_exist = MatchedContact::where('full_name', $contact->full_name)->where('linkedin_id', $company->linkedin_id)->where('job_title', $contact->job_title)->where('company_name', $company->company_name)->get();
+                    $matched_contact_exist = MatchedContact::where('full_name', trim($contact->full_name))->where('linkedin_id', trim($company->linkedin_id))->where('job_title', trim($contact->job_title))->where('company_name', trim($company->company_name))->get();
                     if ($matched_contact_exist->count() == 0) {
                         $matched_contact = new MatchedContact();
                         $matched_contact->contact_id = $contact->id;
-                        $matched_contact->linkedin_id = $contact->linkedin_id;
-                        $matched_contact->full_name = $contact->full_name;
-                        $matched_contact->first_name = $contact->first_name;
-                        $matched_contact->last_name = $contact->last_name;
-                        $matched_contact->job_title = $contact->job_title;
-                        $matched_contact->company_name = $company->company_name;
-                        $matched_contact->experience = $contact->experience;
-                        $matched_contact->location = $contact->location;
+                        $matched_contact->linkedin_id = trim($contact->linkedin_id);
+                        $matched_contact->full_name = trim($contact->full_name);
+                        $matched_contact->first_name = trim($contact->first_name);
+                        $matched_contact->last_name = trim($contact->last_name);
+                        $matched_contact->job_title = trim($contact->job_title);
+                        $matched_contact->company_name = trim($company->company_name);
+                        $matched_contact->experience = trim($contact->experience);
+                        $matched_contact->location = trim($contact->location);
                         $matched_contact->profile_link = $contact->profile_link;
-                        $matched_contact->industry = $company->industry;
-                        $matched_contact->country = $company->country;
-                        $matched_contact->city = $company->city;
-                        $matched_contact->postal_code = $company->postal_code;
-                        $matched_contact->domain = $company->company_domain;
-                        $matched_contact->employee_size = $company->employee_size;
+                        $matched_contact->industry = trim($company->industry);
+                        $matched_contact->country = trim($company->country);
+                        $matched_contact->city = trim($company->city);
+                        $matched_contact->postal_code = trim($company->postal_code);
+                        $matched_contact->domain = trim($company->company_domain);
+                        $matched_contact->employee_size = trim($company->employee_size);
                         $matched_contact->tag = $contact->tag;
                         $matched_contact->title_level = $contact->title_level;
                         $matched_contact->department = $contact->department;
@@ -109,4 +109,3 @@ trait ContactCompanyMatchTraits {
     }
 }
 ?>
-
