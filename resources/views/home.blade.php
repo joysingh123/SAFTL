@@ -63,6 +63,7 @@
                                 <tr>
                                     <th>Total</th>
                                     <th>Email Created</th>
+                                    <th>valid</th>
                                     <th>Not Processed</th>
                                 </tr>
                             </thead>
@@ -70,6 +71,7 @@
                                 <tr>
                                     <td><?php echo \App\Helpers\UtilString::IND_money_format($data['matched_data']['total']); ?></td>
                                     <td><?php echo \App\Helpers\UtilString::IND_money_format($data['matched_data']['email_created']); ?></td>
+                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['matched_data']['valid']); ?></td>
                                     <td><?php echo \App\Helpers\UtilString::IND_money_format($data['matched_data']['not_processed']); ?></td>
                                 </tr>
                             </tbody>
