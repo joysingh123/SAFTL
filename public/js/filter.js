@@ -73,25 +73,53 @@ $(document).ready(function () {
 jQuery(document).ready(function () {
     var origin = window.location.origin;
     $("#country").autocomplete({
-        source: origin+'/extractautocomplatedata/country'
+        source: origin+'/extractautocomplatedata/country',
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
     });
     $("#city").autocomplete({
-        source: origin+'/extractautocomplatedata/city'
+        source: origin+'/extractautocomplatedata/city',
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
     });
     $("#industry").autocomplete({
-        source: origin+'/extractautocomplatedata/industry'
+        source: origin+'/extractautocomplatedata/industry',
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
     });
     $("#department").autocomplete({
-        source: origin+'/extractautocomplatedata/department'
+        source: origin+'/extractautocomplatedata/department',
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
     });
     $("#title_level").autocomplete({
-        source: origin+'/extractautocomplatedata/titlelevel'
+        source: origin+'/extractautocomplatedata/titlelevel',
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
     });
     $("#employee_size").autocomplete({
-        source: origin+'/extractautocomplatedata/employeesize'
+        source: origin+'/extractautocomplatedata/employeesize',
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
     });
     $("#tag").autocomplete({
-        source: origin+'/extractautocomplatedata/tag'
+        source: origin+'/extractautocomplatedata/tag',
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
     });
 });
 
