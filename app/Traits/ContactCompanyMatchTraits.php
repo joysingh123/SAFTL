@@ -79,12 +79,17 @@ trait ContactCompanyMatchTraits {
                         $contact->process_for_contact_match = 'company not found';
                         $contact->save();
                     } else {
-                        $comapany_without_domain = new CompaniesWithoutDomain();
-                        $comapany_without_domain->linkedin_id = $contact->linkedin_id;
-                        $comapany_without_domain->company_name = $contact->company_name;
-                        $comapany_without_domain->contacts_count = 1;
-                        if ($comapany_without_domain->save() == 1) {
-                            $new_in_company_not_found ++;
+                        if($contact->linkedin_id > 0){
+                            $comapany_without_domain = new CompaniesWithoutDomain();
+                            $comapany_without_domain->linkedin_id = $contact->linkedin_id;
+                            $comapany_without_domain->company_name = $contact->company_name;
+                            $comapany_without_domain->contacts_count = 1;
+                            if ($comapany_without_domain->save() == 1) {
+                                $new_in_company_not_found ++;
+                                $contact->process_for_contact_match = 'company not found';
+                                $contact->save();
+                            }
+                        }else{
                             $contact->process_for_contact_match = 'company not found';
                             $contact->save();
                         }
