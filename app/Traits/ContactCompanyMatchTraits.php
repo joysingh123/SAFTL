@@ -70,7 +70,7 @@ trait ContactCompanyMatchTraits {
                         $already_exist_in_match ++;
                     }
                 } else {
-                    $comapany_without_domain = CompaniesWithoutDomain::where('linkedin_id', $contact->linkedin_id)->where('company_name', $contact->company_name)->get();
+                    $comapany_without_domain = CompaniesWithoutDomain::where('linkedin_id', $contact->linkedin_id)->get();
                     if ($comapany_without_domain->count() > 0) {
                         $already_in_company_not_found ++;
                         $contact_count = $comapany_without_domain->first()->contacts_count;
