@@ -78,7 +78,9 @@ class ValidateEmail extends Command {
                         Emails::where('matched_contact_id','=',$matched_id)->update(['status'=>$v_response['email_status']]);
                         break;
                     }else{
-                        $is_invalid = true;
+                        if($v_response['email_status'] != ""){
+                            $is_invalid = true;
+                        }
                     }
                 }
                 if($is_invalid){
