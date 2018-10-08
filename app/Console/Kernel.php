@@ -123,7 +123,7 @@ class Kernel extends ConsoleKernel
         
         //remove api valid email
         
-        $schedule->command('remove:apivalidemail')->everyThirtyMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('remove:apivalidemail')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_REOMOVE_API_VALID_EMAIL_FROM_EMAILS)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
