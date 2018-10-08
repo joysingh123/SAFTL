@@ -66,7 +66,6 @@
             </span>
         </li>
         <li>Excel Sheet should not have more then one sheet .</li>
-        <li>Excel Sheet should have contains max 5,000 records.</li>
     </ul>
 </div>
 @endif

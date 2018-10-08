@@ -45,8 +45,8 @@ class ImportDataController extends Controller {
         ini_set('memory_limit', -1);
         ini_set('upload_max_filesize', -1);
         ini_set('post_max_size ', -1);
-        ini_set('mysql.connect_timeout', 300);
-        ini_set('default_socket_timeout', 300);
+        ini_set('mysql.connect_timeout', 600);
+        ini_set('default_socket_timeout', 600);
         $this->validate($request, array(
             'file' => 'required'
         ));
@@ -55,10 +55,8 @@ class ImportDataController extends Controller {
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
                 $data = array();
-                $data = Excel::load($path, function($reader) {
-                            
-                        })->get();
-                if (!empty($data) && $data->count() <= 5000) {
+                $data = Excel::load($path, function($reader) { })->get();
+                if (!empty($data) && $data->count()) {
                     $duplicate_in_sheet = 0;
                     $already_exist_in_db = 0;
                     $inserted = 0;
@@ -94,7 +92,7 @@ class ImportDataController extends Controller {
                                     $city = UtilString::clean_string($city);
                                     $employee_size = UtilString::clean_string($employee_size);
                                     $country = UtilString::clean_string($country);
-                                    $contact_exist = CompaniesWithDomain::where('linkedin_id', $linkedin_id)->where('company_domain', $company_domain)->count();
+                                    $contact_exist = CompaniesWithDomain::where('linkedin_id', $linkedin_id)->count();
                                     if ($contact_exist == 0) {
                                         $insert_array = [
                                             'user_id' => Auth::id(),
@@ -150,7 +148,7 @@ class ImportDataController extends Controller {
                         }
                     }
                     if (!empty($insert)) {
-                        $insert_chunk = array_chunk($insert, 1000);
+                        $insert_chunk = array_chunk($insert, 100);
                         foreach ($insert_chunk AS $ic) {
                             $insertData = DB::table('companies_with_domain')->insert($ic);
                         }
@@ -161,9 +159,6 @@ class ImportDataController extends Controller {
                             return back();
                         }
                     }
-                } else {
-                    Session::flash('error', 'The Sheet contains Only 5,000 records');
-                    return back();
                 }
                 $stats_data = array(
                     "inserted" => $inserted,
@@ -197,10 +192,8 @@ class ImportDataController extends Controller {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
-                $data = Excel::load($path, function($reader) {
-                            
-                        })->get();
-                if (!empty($data) && $data->count()) {
+                $data = Excel::load($path, function($reader) {})->get();
+                if (!empty($data) && $data->count() < 20000) {
                     $duplicate = 0;
                     $duplicate_in_sheet = 0;
                     $inserted = 0;
@@ -292,7 +285,10 @@ class ImportDataController extends Controller {
                         }
                     }
                     if (!empty($insert)) {
-                        $insertData = DB::table('contacts')->insert($insert);
+                        $insert_chunk = array_chunk($insert, 100);
+                        foreach ($insert_chunk AS $ic) {
+                            $insertData = DB::table('contacts')->insert($ic);
+                        }
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
                         } else {
@@ -311,6 +307,9 @@ class ImportDataController extends Controller {
                     );
 
                     Session::flash('stats_data', $stats_data);
+                    return back();
+                }else{
+                    Session::flash('error', "The Sheet contains Only 20,000 records");
                     return back();
                 }
             } else {
@@ -337,7 +336,7 @@ class ImportDataController extends Controller {
                 $data = Excel::load($path, function($reader) {
                             
                         })->get();
-                if (!empty($data) && $data->count() <= 5000) {
+                if (!empty($data) && $data->count()) {
                     $new_insert = 0;
                     $already_exist = 0;
                     $already_exist_in_sheet = 0;
@@ -381,7 +380,10 @@ class ImportDataController extends Controller {
                         }
                     }
                     if (!empty($insert)) {
-                        $insertData = DB::table('available_email')->insert($insert);
+                        $insert_chunk = array_chunk($insert, 100);
+                        foreach ($insert_chunk AS $ic) {
+                            $insertData = DB::table('available_email')->insert($ic);
+                        }
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
                         } else {
@@ -397,9 +399,6 @@ class ImportDataController extends Controller {
                         "emails_not_load" => $emails_not_load
                     );
                     Session::flash('stats_data', $stats_data);
-                    return back();
-                }else {
-                    Session::flash('error', 'The Sheet contains Only 5,000 records');
                     return back();
                 }
             }
@@ -423,7 +422,7 @@ class ImportDataController extends Controller {
                 $data = Excel::load($path, function($reader) {
                             
                         })->get();
-                if (!empty($data) && $data->count() <= 5000) {
+                if (!empty($data) && $data->count()) {
                     $new_insert = 0;
                     $already_exist = 0;
                     $already_exist_in_sheet = 0;
@@ -470,7 +469,10 @@ class ImportDataController extends Controller {
                         }
                     }
                     if (!empty($insert)) {
-                        $insertData = DB::table('email_data')->insert($insert);
+                        $insert_chunk = array_chunk($insert, 100);
+                        foreach ($insert_chunk AS $ic) {
+                           $insertData = DB::table('email_data')->insert($ic);
+                        }
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
                         } else {
@@ -486,9 +488,6 @@ class ImportDataController extends Controller {
                         "emails_not_load" => $emails_not_load
                     );
                     Session::flash('stats_data', $stats_data);
-                    return back();
-                }else {
-                    Session::flash('error', 'The Sheet contains Only 5,000 records');
                     return back();
                 }
             }
@@ -540,7 +539,7 @@ class ImportDataController extends Controller {
                 $path = $request->file->getRealPath();
                 $data = array();
                 $data = Excel::load($path, function($reader) {})->get();
-                if (!empty($data) && $data->count() <= 5000) {
+                if (!empty($data) && $data->count()) {
                     $total = $data->count();
                     $duplicate_in_sheet = 0;
                     $already_exist_in_db = 0;
@@ -576,7 +575,7 @@ class ImportDataController extends Controller {
                         }
                     }
                     if (!empty($insert)) {
-                        $insert_chunk = array_chunk($insert, 1000);
+                        $insert_chunk = array_chunk($insert, 100);
                         foreach ($insert_chunk AS $ic) {
                             $insertData = DB::table('bounce_email')->insert($ic);
                         }
@@ -587,9 +586,6 @@ class ImportDataController extends Controller {
                             return back();
                         }
                     }
-                } else {
-                    Session::flash('error', 'The Sheet contains Only 5,000 records');
-                    return back();
                 }
                 $stats_data = array(
                     "total" => $total,

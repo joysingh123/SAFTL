@@ -50,7 +50,9 @@
         <ul>
             <li>Excel Sheet Should have column 
                 <span class="excel-column">[
-                    Full Name, 
+                    Full Name,
+                    First Name,
+                    Last Name,
                     Title,
                     Company, 
                     Experience, 
@@ -65,7 +67,7 @@
                 </span>
             </li>
             <li>Excel Sheet should not have more then one sheet .</li>
-            <li>Excel Sheet should have contains max 5,000 records.</li>
+            <li>Excel Sheet should have contains max 20,000 records.</li>
         </ul>
     </div>
     @endif
