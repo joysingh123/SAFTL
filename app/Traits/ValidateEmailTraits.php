@@ -13,6 +13,15 @@ trait ValidateEmailTraits {
     public function validateEmail($email) {
         $validation_api = EmailValidationApi::where('status','enable')->get();
         $email_validation_status = array();
+        $exist_in_email_validation = EmailValidation::where('email',$email)->get();
+        if($exist_in_email_validation->count() > 0){
+            $email_validation_status = array(
+                                            'email_status'=>$exist_in_email_validation->first()->status,
+                                            'verified_by'=>$exist_in_email_validation->first()->verified_by,
+                                            'response'=>$exist_in_email_validation->first()->raw_data
+            );
+            return $email_validation_status;
+        }
         foreach ($validation_api AS $va) {
             $api_name = $va->name;
             $api_url = $va->api_url;
