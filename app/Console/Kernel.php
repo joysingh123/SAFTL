@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         'App\Console\Commands\MatchedContacts',
         'App\Console\Commands\GenerateEmailFormat',
+        'App\Console\Commands\GenearteDefaultFormat',
         'App\Console\Commands\CreateEmail',
         'App\Console\Commands\RemoveEmail',
         'App\Console\Commands\ValidateEmail',
@@ -156,6 +157,26 @@ class Kernel extends ConsoleKernel
             }
             return false;
         });
+        
+        //formate creation cron
+       $schedule->command('generate:defaultformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_GENERATE_DEFAULT_EMAIL_FORMAT)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_GENERATE_DEFAULT_EMAIL_FORMAT)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_GENERATE_DEFAULT_EMAIL_FORMAT)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        
+        
         
         //Hunter url scrapper
         
