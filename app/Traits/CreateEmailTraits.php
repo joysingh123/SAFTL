@@ -99,6 +99,7 @@ trait CreateEmailTraits {
                                                 $is_bounce = false;
                                             }
                                         } else {
+                                            $email_created_status = true;
                                             $email_already_exist ++;
                                         }
                                     }
