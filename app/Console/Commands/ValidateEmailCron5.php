@@ -54,6 +54,7 @@ class ValidateEmailCron5 extends Command
         $emails = DB::table('emails')
                         ->select('matched_contact_id', DB::raw("group_concat(email) AS emails"))
                         ->groupBy('matched_contact_id')
+                        ->orderBy('created_at','DESC')
                         ->where('status', 'success')
                         ->take($limit)->get();
         if ($emails->count() > 0) {
