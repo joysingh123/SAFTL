@@ -11,7 +11,7 @@ use App\Traits\ValidateEmailTraits;
 use App\MatchedContact;
 
 class ValidateEmailCron2 extends Command {
-
+    use ValidateEmailTraits;
     /**
      * The name and signature of the console command.
      *
