@@ -26,6 +26,10 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ValidateEmailCron4',
         'App\Console\Commands\ValidateEmailCron5',
         'App\Console\Commands\ValidateEmailCron6',
+        'App\Console\Commands\ValidateEmailCron7',
+        'App\Console\Commands\ValidateEmailCron8',
+        'App\Console\Commands\ValidateEmailCron9',
+        'App\Console\Commands\ValidateEmailCron10',
         'App\Console\Commands\EmailFormatPercentage',
         'App\Console\Commands\RemoveApiValidEmails'
     ];
@@ -244,6 +248,72 @@ class Kernel extends ConsoleKernel
             }
             return false;
         });
+        
+        $schedule->command('validate:emailcron7')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_7)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_7)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_7)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        $schedule->command('validate:emailcron8')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_8)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_8)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_8)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        $schedule->command('validate:emailcron9')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_9)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_9)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_9)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        $schedule->command('validate:emailcron10')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_10)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_10)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_10)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        
         
         //formate creation cron
        $schedule->command('generate:defaultformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {

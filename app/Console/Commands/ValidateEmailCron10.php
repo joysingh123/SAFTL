@@ -10,7 +10,7 @@ use DB;
 use App\Traits\ValidateEmailTraits;
 use App\MatchedContact;
 
-class ValidateEmailCron5 extends Command
+class ValidateEmailCron10 extends Command
 {
     use ValidateEmailTraits;
     /**
@@ -18,7 +18,7 @@ class ValidateEmailCron5 extends Command
      *
      * @var string
      */
-    protected $signature = 'validate:emailcron5';
+    protected $signature = 'validate:emailcron10';
 
     /**
      * The console command description.
@@ -59,7 +59,7 @@ class ValidateEmailCron5 extends Command
         if ($emails->count() > 0) {
             $plucked_email = $emails->pluck('matched_contact_id');
             $plucked_email_array = $plucked_email->all();
-            $result = Emails::whereIn('matched_contact_id', $plucked_email_array)->update(['status' => 'cron5']);
+            $result = Emails::whereIn('matched_contact_id', $plucked_email_array)->update(['status' => 'cron10']);
             if ($result > 0) {
                 foreach ($emails AS $email_record) {
                     $matched_id = $email_record->matched_contact_id;
