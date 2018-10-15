@@ -211,6 +211,22 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
+        $schedule->command('validate:emailcron5')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_5)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_5)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_5)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
         //formate creation cron
        $schedule->command('generate:defaultformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_GENERATE_DEFAULT_EMAIL_FORMAT)->get();
