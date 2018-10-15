@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\CreateEmail',
         'App\Console\Commands\RemoveEmail',
         'App\Console\Commands\ValidateEmail',
+        'App\Console\Commands\ValidateEmailCron2',
         'App\Console\Commands\EmailFormatPercentage',
         'App\Console\Commands\RemoveApiValidEmails'
     ];
@@ -140,7 +141,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        //email validation
+        //email validation cron 1
         
         $schedule->command('validate:email')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION)->get();
@@ -152,6 +153,24 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        //email validation cron 2
+        
+        $schedule->command('validate:emailcron2')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_2)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_2)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_2)->get();
             if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
                 return true;
             }

@@ -10,23 +10,21 @@ use DB;
 use App\Traits\ValidateEmailTraits;
 use App\MatchedContact;
 
-class ValidateEmail extends Command {
-
-    use ValidateEmailTraits;
+class ValidateEmailCron2 extends Command {
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'validate:email';
+    protected $signature = 'validate:emailcron2';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Validate Created Email';
+    protected $description = 'Command description';
 
     /**
      * Create a new command instance.
@@ -58,7 +56,7 @@ class ValidateEmail extends Command {
         if ($emails->count() > 0) {
             $plucked_email = $emails->pluck('matched_contact_id');
             $plucked_email_array = $plucked_email->all();
-            $result = Emails::whereIn('matched_contact_id', $plucked_email_array)->update(['status' => 'cron1']);
+            $result = Emails::whereIn('matched_contact_id', $plucked_email_array)->update(['status' => 'cron2']);
             if ($result > 0) {
                 foreach ($emails AS $email_record) {
                     $matched_id = $email_record->matched_contact_id;
@@ -100,5 +98,4 @@ class ValidateEmail extends Command {
         print_r($response);
         UtilDebug::debug("end processing");
     }
-
 }
