@@ -24,6 +24,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ValidateEmailCron2',
         'App\Console\Commands\ValidateEmailCron3',
         'App\Console\Commands\ValidateEmailCron4',
+        'App\Console\Commands\ValidateEmailCron5',
+        'App\Console\Commands\ValidateEmailCron6',
         'App\Console\Commands\EmailFormatPercentage',
         'App\Console\Commands\RemoveApiValidEmails'
     ];
@@ -221,6 +223,22 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_5)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        $schedule->command('validate:emailcron6')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_6)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_6)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_6)->get();
             if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
                 return true;
             }
