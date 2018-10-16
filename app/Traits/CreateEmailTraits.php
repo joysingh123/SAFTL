@@ -102,6 +102,8 @@ trait CreateEmailTraits {
                                             $email_created_status = true;
                                             $email_already_exist ++;
                                             echo "$email is alreay exist";
+                                            $delete_email = Emails::where('email', $email)->get();
+                                            $delete_email->first()->delete();
                                         }
                                     }
                                 }
