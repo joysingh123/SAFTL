@@ -104,11 +104,9 @@
                     <div class="links">
                         <a href="/importcompaniesdata">Companies With Domain Import</a>
                     </div>
-                    @endrole
                     <div class="links">
                         <a href="/importcontactdata">Contact Import</a>
                     </div>
-                    @role('Admin')
                     <div class="links">
                         <a href="/importemaildata">Email Import For Format Generation</a>
                     </div>

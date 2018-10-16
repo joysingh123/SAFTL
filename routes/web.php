@@ -11,15 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'Auth\LoginController@showLoginForm');
+Route::post('/login', 'Auth\LoginController@login')->middleware(['isAdmin']);
 
 Route::get('importcompaniesdata',"ImportDataController@importComapniesWithDomainView")->middleware(['auth','isAdmin']);
 Route::post('importcompaniesdata',"ImportDataController@importComapniesWithDomainData")->name('importcompaniesdata')->middleware(['auth','isAdmin']);
 
-Route::get('importcontactdata',"ImportDataController@importContactView")->middleware('auth');
-Route::post('importcontactdata',"ImportDataController@importContactData")->name('importcontactdata')->middleware('auth');
+Route::get('importcontactdata',"ImportDataController@importContactView")->middleware(['auth','isAdmin']);
+Route::post('importcontactdata',"ImportDataController@importContactData")->name('importcontactdata')->middleware(['auth','isAdmin']);
 Route::post('exportjunkcontactdata',"ImportDataController@exportContactData")->name('exportjunkcontactdata');
 
 Route::get('extractdata',"ExtractDataController@extractDataView")->name('extractdata')->middleware(['auth','isAdmin']);
