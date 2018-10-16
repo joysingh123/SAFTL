@@ -19,7 +19,7 @@ trait CreateEmailTraits {
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $response = array();
-        $limit = 1500;
+        $limit = 1;
         $matched_contact = MatchedContact::where('email_format_available', 'yes')->whereNull('email_status')->take($limit)->get();
         if ($matched_contact->count() > 0) {
             $total = $matched_contact->count();
@@ -101,6 +101,7 @@ trait CreateEmailTraits {
                                         } else {
                                             $email_created_status = true;
                                             $email_already_exist ++;
+                                            echo "$email is alreay exist";
                                         }
                                     }
                                 }
