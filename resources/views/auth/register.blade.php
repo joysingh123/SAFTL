@@ -65,7 +65,7 @@
 
                             <div class="col-md-6">
                                 <select class="form-control" name="roles" >
-                                    @foreach($roles AS $r)
+                                    @foreach($roles->sortByDesc('name') AS $r)
                                     <option value="{{$r->id}}">{{$r->name}}</option>
                                     @endforeach
                                 </select>
