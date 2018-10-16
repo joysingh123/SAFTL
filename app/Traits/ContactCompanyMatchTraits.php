@@ -29,7 +29,7 @@ trait ContactCompanyMatchTraits {
                 if ($comapanies->count() > 0) {
                     $company = $comapanies->first();
 //                    $matched_contact_exist = MatchedContact::where('full_name', trim($contact->full_name))->where('linkedin_id', trim($company->linkedin_id))->where('job_title', trim($contact->job_title))->where('company_name', trim($company->company_name))->get();
-                    $matched_contact_exist = MatchedContact::where('first_name', trim($contact->first_name))->where('last_name', trim($contact->last_name))->where('domain', trim($company->company_domain))->where('job_title', trim($contact->job_title))->get();
+                    $matched_contact_exist = MatchedContact::where('first_name', trim($contact->first_name))->where('last_name', trim($contact->last_name))->where('domain', trim($company->company_domain))->get();
                     if ($matched_contact_exist->count() == 0) {
                         $matched_contact = new MatchedContact();
                         $matched_contact->contact_id = $contact->id;
