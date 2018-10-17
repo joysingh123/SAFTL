@@ -26,7 +26,7 @@ trait CreateEmailTraits {
             $email_created = 0;
             $found_in_available_email = 0;
             $found_in_bounce = 0;
-            $email_already_exist = 0;
+            $email_exist = 0;
             foreach ($matched_contact AS $mt) {
                 $matched_contact_id = $mt->id;
                 $first_name = strtolower($mt->first_name);
@@ -83,8 +83,8 @@ trait CreateEmailTraits {
                                     $email_format = "$email_format";
                                     $email = str_replace("'", "", strtr($email_format, $vars));
                                     if (UtilString::is_email($email)) {
-                                        $email_already_exist = Emails::where('email', $email)->count();
-                                        if ($email_already_exist == 0) {
+                                        $email_already_exist = Emails::where('email', $email)->get();
+                                        if ($email_already_exist->count() == 0) {
                                             $is_exist_in_bounce = BounceEmail::where('email','=',$email)->get();
                                             if($is_exist_in_bounce->count() > 0){
                                                 $is_bounce = true;
@@ -100,7 +100,27 @@ trait CreateEmailTraits {
                                             }
                                         } else {
                                             $email_created_status = true;
-                                            $email_already_exist ++;
+                                            $email_exist ++;
+                                            $alredy_exist_id = $email_already_exist->first()->matched_contact_id;
+                                            $existing_matched_data = MatchedContact::where("id" ,$alredy_exist_id)->get();
+                                            $existing_first_name = strtolower($existing_matched_data->first()->first_name);
+                                            $existing_last_name = strtolower($existing_matched_data->first()->last_name);
+                                            if($first_name == $existing_first_name && $last_name == $existing_last_name){
+                                                
+                                            }else{
+                                                $email_format = "FIRSTNAME.LASTNAME@DOMAIN";
+                                                $email = str_replace("'", "", strtr($email_format, $vars));
+                                                $newemail = new Emails();
+                                                $newemail->matched_contact_id = $matched_contact_id;
+                                                $newemail->email = trim($email);
+                                                $newemail->format_percentage = 100;
+                                                $newemail->status = "success";
+                                                $save_in_email = $newemail->save();
+                                                if($save_in_email){
+                                                    $mt->dummy_email = $email;
+                                                    $mt->save();
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -126,7 +146,7 @@ trait CreateEmailTraits {
                 }
             }
             $response['status'] = "success";
-            $response['data'] = array("Total" => $total, "Email Created" => $email_created,"In Available Email"=>$found_in_available_email,"Found In Bounce"=>$found_in_bounce,"Email Already Exist" => $email_already_exist);
+            $response['data'] = array("Total" => $total, "Email Created" => $email_created,"In Available Email"=>$found_in_available_email,"Found In Bounce"=>$found_in_bounce,"Email Already Exist" => $email_exist);
         } else {
             $response['status'] = "fail";
             $response['data'] = "No, Contact Found For Email Creation";
