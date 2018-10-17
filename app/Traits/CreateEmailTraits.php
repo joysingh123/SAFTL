@@ -105,7 +105,8 @@ trait CreateEmailTraits {
                                             $existing_matched_data = MatchedContact::where("id" ,$alredy_exist_id)->get();
                                             $existing_first_name = strtolower($existing_matched_data->first()->first_name);
                                             $existing_last_name = strtolower($existing_matched_data->first()->last_name);
-                                            if($first_name == $existing_first_name && $last_name == $existing_last_name){
+                                            $existing_domain = strtolower($existing_matched_data->first()->domain);
+                                            if($first_name == $existing_first_name && $last_name == $existing_last_name && $matched_contact_domain == $existing_domain){
                                                 
                                             }else{
                                                 $email_format = "FIRSTNAME.LASTNAME@DOMAIN";
