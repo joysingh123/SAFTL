@@ -38,6 +38,7 @@ Route::post('importbounceemaildata',"ImportDataController@importBounceEmailData"
 Route::get('contactcompanymatch',"ContactCompanyMatchController@index")->middleware(['auth','isAdmin']);
 Route::get('makeemailformat',"MakeEmailFormatController@index")->middleware(['auth','isAdmin']);
 Route::get('createemail',"CreateEmailController@index")->middleware(['auth','isAdmin']);
+Route::resource('users',"UserController")->middleware(['auth','isAdmin']);
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

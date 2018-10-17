@@ -40,7 +40,10 @@
                     <ul class="navbar-nav mr-auto">
                         @role('Admin')
                             <li class="nav-item">
-                                <a class="nav-link" href="">{{ __('Users') }}</a>
+                                <a class="nav-link" href="/home">{{ __('Home') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/users">{{ __('Users') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
