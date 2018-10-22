@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Session;
+
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Redirect;
@@ -95,7 +97,8 @@ class UserController extends Controller
             $password = Hash::make($input['password']);
             $update = User::where('id',$id)->update(['name'=>$name,'email'=>$email,'password'=>$password]);
             if($update){
-                return Redirect::back()->with(['message', 'updated successfully']);
+                Session::flash('message', "User Info Updated Successfully");
+                return Redirect::back();
             }
         }
     }

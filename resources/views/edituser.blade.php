@@ -7,9 +7,9 @@
             <div class="card">
                 <div class="card-header">{{ __('Edit User') }}</div>
                 <div class="card-body">
-                    @if(isset($message) && $message != "")
+                    @if (Session::has('message'))
                     <div class="alert alert-success">
-                        <strong>{{$message}}</strong>
+                        <strong>{{Session::get('message')}}</strong>
                     </div>
                     @endif
                     <form method="POST" action="{{ route('users.update', $user->id) }}" aria-label="{{ __('Register') }}">
