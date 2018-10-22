@@ -25,7 +25,7 @@
                                     <td>{{$user->id}}</td>
                                     <td>{{$user->name}}</td>
                                     <td>{{$user->email}}</td>
-                                    <td><?php echo $user->getRoleNames(); ?></td>
+                                    <td><?php $role_data =  $user->getRoleNames(); echo $role_data[0]; ?></td>
                                     <td>{{$user->created_at}}</td>
                                     <td><a href="{{ URL::to('users/' . $user->id) }}">Edit</a></td>
                                 </tr>

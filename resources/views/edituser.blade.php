@@ -6,11 +6,15 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Edit User') }}</div>
-
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}" aria-label="{{ __('Register') }}">
+                    @if(isset($message) && $message != "")
+                    <div class="alert alert-success">
+                        <strong>{{$message}}</strong>
+                    </div>
+                    @endif
+                    <form method="POST" action="{{ route('users.update', $user->id) }}" aria-label="{{ __('Register') }}">
                         @csrf
-
+                        {{method_field('put')}}
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
 
@@ -43,7 +47,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
+                                <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password">
 
                                 @if ($errors->has('password'))
                                     <span class="invalid-feedback" role="alert">
@@ -58,7 +62,7 @@
                             <div class="col-md-6">
                                 <select class="form-control" name="roles" >
                                     @foreach($roles->sortByDesc('name') AS $r)
-                                    <option value="{{$r->id}}">{{$r->name}}</option>
+                                    <option value="{{$r->id}}" {{($r->name == $role) ? 'selected' : '' }}>{{$r->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
