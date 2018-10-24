@@ -15,7 +15,7 @@ use App\AvailableEmail;
 use App\Helpers\UtilDebug;
 use App\BounceEmail;
 use App\EmailData;
-
+use App\EmailForValidation;
 use Illuminate\Support\Facades\Auth;
 
 class ImportDataController extends Controller {
@@ -31,7 +31,7 @@ class ImportDataController extends Controller {
     public function importEmailDataImportView() {
         return view('addemaildataimport');
     }
-    
+
     public function importEmailView() {
         return view('addemaildata');
     }
@@ -55,7 +55,9 @@ class ImportDataController extends Controller {
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
                 $data = array();
-                $data = Excel::load($path, function($reader) { })->get();
+                $data = Excel::load($path, function($reader) {
+                            
+                        })->get();
                 if (!empty($data) && $data->count()) {
                     $duplicate_in_sheet = 0;
                     $already_exist_in_db = 0;
@@ -153,25 +155,25 @@ class ImportDataController extends Controller {
                             $insertData = DB::table('companies_with_domain')->insert($ic);
                         }
                         if ($insertData) {
-                            CompaniesWithDomain::where('employee_size','0-1 employees')->update(['employee_size'=>'1 to 10']);
-                            CompaniesWithDomain::where('employee_size','1,001-5,000 employees')->update(['employee_size'=>'1001 to 5000']);
-                            CompaniesWithDomain::where('employee_size','1-10 employees')->update(['employee_size'=>'1 to 10']);
-                            CompaniesWithDomain::where('employee_size','10')->update(['employee_size'=>'1 to 10']);
-                            CompaniesWithDomain::where('employee_size','10,001+ employees')->update(['employee_size'=>'10000 above']);
-                            CompaniesWithDomain::where('employee_size','10001 + Employees')->update(['employee_size'=>'10000 above']);
-                            CompaniesWithDomain::where('employee_size','1001-5000 employees')->update(['employee_size'=>'1001 to 5000']);
-                            CompaniesWithDomain::where('employee_size','11-50 employees')->update(['employee_size'=>'11 to 50']);
-                            CompaniesWithDomain::where('employee_size','2-10 employees')->update(['employee_size'=>'1 to 10']);
-                            CompaniesWithDomain::where('employee_size','201-500 employees')->update(['employee_size'=>'201 to 500']);
-                            CompaniesWithDomain::where('employee_size','5,001-10,000 employees')->update(['employee_size'=>'5001 to 10000']);
-                            CompaniesWithDomain::where('employee_size','5001 - 10000 employees')->update(['employee_size'=>'5001 to 10000']);
-                            CompaniesWithDomain::where('employee_size','5001-10,000 employees')->update(['employee_size'=>'5001 to 10000']);
-                            CompaniesWithDomain::where('employee_size','5001-10000 employees')->update(['employee_size'=>'5001 to 10000']);
-                            CompaniesWithDomain::where('employee_size','501-1,000 employees')->update(['employee_size'=>'501 to 1000']);
-                            CompaniesWithDomain::where('employee_size','501-1000 employees')->update(['employee_size'=>'501 to 1000']);
-                            CompaniesWithDomain::where('employee_size','51-200 employees')->update(['employee_size'=>'51 to 200']);
-                            CompaniesWithDomain::where('employee_size','Myself Only')->update(['employee_size'=>'1 to 10']);
-                            CompaniesWithDomain::where('employee_size','NA')->update(['employee_size'=>'Invalid']);
+                            CompaniesWithDomain::where('employee_size', '0-1 employees')->update(['employee_size' => '1 to 10']);
+                            CompaniesWithDomain::where('employee_size', '1,001-5,000 employees')->update(['employee_size' => '1001 to 5000']);
+                            CompaniesWithDomain::where('employee_size', '1-10 employees')->update(['employee_size' => '1 to 10']);
+                            CompaniesWithDomain::where('employee_size', '10')->update(['employee_size' => '1 to 10']);
+                            CompaniesWithDomain::where('employee_size', '10,001+ employees')->update(['employee_size' => '10000 above']);
+                            CompaniesWithDomain::where('employee_size', '10001 + Employees')->update(['employee_size' => '10000 above']);
+                            CompaniesWithDomain::where('employee_size', '1001-5000 employees')->update(['employee_size' => '1001 to 5000']);
+                            CompaniesWithDomain::where('employee_size', '11-50 employees')->update(['employee_size' => '11 to 50']);
+                            CompaniesWithDomain::where('employee_size', '2-10 employees')->update(['employee_size' => '1 to 10']);
+                            CompaniesWithDomain::where('employee_size', '201-500 employees')->update(['employee_size' => '201 to 500']);
+                            CompaniesWithDomain::where('employee_size', '5,001-10,000 employees')->update(['employee_size' => '5001 to 10000']);
+                            CompaniesWithDomain::where('employee_size', '5001 - 10000 employees')->update(['employee_size' => '5001 to 10000']);
+                            CompaniesWithDomain::where('employee_size', '5001-10,000 employees')->update(['employee_size' => '5001 to 10000']);
+                            CompaniesWithDomain::where('employee_size', '5001-10000 employees')->update(['employee_size' => '5001 to 10000']);
+                            CompaniesWithDomain::where('employee_size', '501-1,000 employees')->update(['employee_size' => '501 to 1000']);
+                            CompaniesWithDomain::where('employee_size', '501-1000 employees')->update(['employee_size' => '501 to 1000']);
+                            CompaniesWithDomain::where('employee_size', '51-200 employees')->update(['employee_size' => '51 to 200']);
+                            CompaniesWithDomain::where('employee_size', 'Myself Only')->update(['employee_size' => '1 to 10']);
+                            CompaniesWithDomain::where('employee_size', 'NA')->update(['employee_size' => 'Invalid']);
                             DB::statement("update contacts A inner join companies_with_domain B on A.linkedin_id = B.linkedin_id set A.process_for_contact_match = 'not processed' where A.process_for_contact_match = 'company not found'");
                             Session::flash('success', 'Your Data has successfully imported');
                         } else {
@@ -212,7 +214,9 @@ class ImportDataController extends Controller {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
-                $data = Excel::load($path, function($reader) {})->get();
+                $data = Excel::load($path, function($reader) {
+                            
+                        })->get();
                 if (!empty($data) && $data->count() < 20000) {
                     $duplicate = 0;
                     $duplicate_in_sheet = 0;
@@ -328,7 +332,7 @@ class ImportDataController extends Controller {
 
                     Session::flash('stats_data', $stats_data);
                     return back();
-                }else{
+                } else {
                     Session::flash('error', "The Sheet contains Only 20,000 records");
                     return back();
                 }
@@ -389,7 +393,7 @@ class ImportDataController extends Controller {
                                     } else {
                                         $already_exist ++;
                                     }
-                                }else{
+                                } else {
                                     $invalid ++;
                                     $emails_not_load[] = $value;
                                 }
@@ -424,7 +428,7 @@ class ImportDataController extends Controller {
             }
         }
     }
-    
+
     public function importEmailDataDump(Request $request) {
         ini_set('max_execution_time', -1);
         ini_set('memory_limit', -1);
@@ -478,7 +482,7 @@ class ImportDataController extends Controller {
                                     } else {
                                         $already_exist ++;
                                     }
-                                }else{
+                                } else {
                                     $invalid ++;
                                     $emails_not_load[] = $value;
                                 }
@@ -491,7 +495,7 @@ class ImportDataController extends Controller {
                     if (!empty($insert)) {
                         $insert_chunk = array_chunk($insert, 100);
                         foreach ($insert_chunk AS $ic) {
-                           $insertData = DB::table('email_data')->insert($ic);
+                            $insertData = DB::table('email_data')->insert($ic);
                         }
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
@@ -506,6 +510,78 @@ class ImportDataController extends Controller {
                         "inserted" => $new_insert,
                         "invalid_email" => $invalid,
                         "emails_not_load" => $emails_not_load
+                    );
+                    Session::flash('stats_data', $stats_data);
+                    return back();
+                }
+            }
+        }
+    }
+    
+    public function importEmailValidationImportView(){
+        return view('emailvalidationimport');
+    }
+
+    public function importEmailForValidation(Request $request) {
+        ini_set('max_execution_time', -1);
+        ini_set('memory_limit', -1);
+        ini_set('upload_max_filesize', -1);
+        ini_set('post_max_size ', -1);
+        ini_set('mysql.connect_timeout', 600);
+        ini_set('default_socket_timeout', 600);
+        $this->validate($request, array(
+            'file' => 'required'
+        ));
+        if ($request->hasFile('file')) {
+            $extension = File::extension($request->file->getClientOriginalName());
+            if ($extension == "xlsx" || $extension == "xls") {
+                $path = $request->file->getRealPath();
+                $data = Excel::load($path, function($reader) {})->get();
+                if (!empty($data) && $data->count()) {
+                    $new_insert = 0;
+                    $already_exist = 0;
+                    $invalid = 0;
+                    $already_exist_in_sheet = 0;
+                    $duplicate = array();
+                    foreach ($data as $key => $value) {
+                        if (UtilString::is_email($value->email)) {
+                            $email = trim($value->email);
+                            if(!in_array($email, $duplicate)){
+                                $email_exist = EmailForValidation::where('email', $email)->count();
+                                if ($email_exist == 0) {
+                                    $insert[] = [
+                                        'user_id' => Auth::id(),
+                                        'email' => $email,
+                                    ];
+                                    $new_insert ++;
+                                } else {
+                                    $already_exist ++;
+                                }
+                            }else{
+                                $duplicate[] = $email;
+                                $already_exist_in_sheet ++;
+                            }
+                        }else{
+                            $invalid ++;
+                        }
+                    }
+                    if (!empty($insert)) {
+                        $insert_chunk = array_chunk($insert, 100);
+                        foreach ($insert_chunk AS $ic) {
+                            $insertData = DB::table('email_for_validation')->insert($ic);
+                        }
+                        if ($insertData) {
+                            Session::flash('success', 'Your Data has successfully imported');
+                        } else {
+                            Session::flash('error', 'Error inserting the data..');
+                            return back();
+                        }
+                    }
+                    $stats_data = array(
+                        "already_exist" => $already_exist,
+                        "duplicate_in_sheet" => $already_exist_in_sheet,
+                        "inserted" => $new_insert,
+                        "invalid_email" => $invalid
                     );
                     Session::flash('stats_data', $stats_data);
                     return back();
@@ -558,7 +634,9 @@ class ImportDataController extends Controller {
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
                 $data = array();
-                $data = Excel::load($path, function($reader) {})->get();
+                $data = Excel::load($path, function($reader) {
+                            
+                        })->get();
                 if (!empty($data) && $data->count()) {
                     $total = $data->count();
                     $duplicate_in_sheet = 0;
@@ -572,7 +650,7 @@ class ImportDataController extends Controller {
                             $email = trim($value->email);
                             if (in_array($email, $duplicate)) {
                                 $duplicate_in_sheet ++;
-                            }else{
+                            } else {
                                 $duplicate[] = $email;
                                 if (UtilString::is_email($email)) {
                                     $email_exist = BounceEmail::where('email', $email)->count();
@@ -585,11 +663,11 @@ class ImportDataController extends Controller {
                                     } else {
                                         $already_exist_in_db ++;
                                     }
-                                }else{
+                                } else {
                                     $invalid ++;
                                 }
                             }
-                        }else {
+                        } else {
                             Session::flash('fail', 'sheet does not contain email filed');
                             return back();
                         }

@@ -114,6 +114,9 @@
                         <a href="/importemaildatadump">Email Import Dump</a>
                     </div>
                     <div class="links">
+                        <a href="/importemailforvalidation">Email Import For Verification</a>
+                    </div>
+                    <div class="links">
                         <a href="/importbounceemaildata">Import Bounce Email</a>
                     </div>
 

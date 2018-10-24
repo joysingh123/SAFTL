@@ -28,9 +28,12 @@ Route::get('extractautocomplatedata/{data}',"ExtractDataController@extractDataFo
 
 Route::get('importemaildata',"ImportDataController@importEmailView")->middleware(['auth','isAdmin']);
 Route::post('importemaildata',"ImportDataController@importEmailData")->name('importemaildata')->middleware(['auth','isAdmin']);
-\
+
 Route::get('importemaildatadump',"ImportDataController@importEmailDataImportView")->middleware(['auth','isAdmin']);
 Route::post('importemaildatadump',"ImportDataController@importEmailDataDump")->name('importemaildatadump')->middleware(['auth','isAdmin']);
+
+Route::get('importemailforvalidation',"ImportDataController@importEmailValidationImportView")->middleware(['auth','isAdmin']);
+Route::post('importemailforvalidation',"ImportDataController@importEmailForValidation")->name('importemailvalidationdump')->middleware(['auth','isAdmin']);
 
 Route::get('importbounceemaildata',"ImportDataController@importBounceEmailView")->middleware(['auth','isAdmin']);
 Route::post('importbounceemaildata',"ImportDataController@importBounceEmailData")->name('importbounceemaildata')->middleware(['auth','isAdmin']);
