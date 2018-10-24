@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class EmailForValidation extends Model
 {
-    protected $table = "email_data";
+    protected $table = "email_for_validation";
 }

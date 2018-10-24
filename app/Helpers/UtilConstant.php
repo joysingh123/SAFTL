@@ -33,6 +33,7 @@ class UtilConstant {
     const CRON_EMAIL_VALIDATION_8 = "Email Validation 8";
     const CRON_EMAIL_VALIDATION_9 = "Email Validation 9";
     const CRON_EMAIL_VALIDATION_10 = "Email Validation 10";
+    const CRON_IMPORT_EMAIL_VALIDATION = "Import Email Validation";
     const CRON_REOMOVE_EMAIL_FROM_EMAILS = "Remove Email";
     const CRON_REOMOVE_API_VALID_EMAIL_FROM_EMAILS = "Remove Api Valid Email";
     const CRON_SCRAPE_URL_HUNTER = "Scrape Url Hunter";

@@ -31,7 +31,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ValidateEmailCron9',
         'App\Console\Commands\ValidateEmailCron10',
         'App\Console\Commands\EmailFormatPercentage',
-        'App\Console\Commands\RemoveApiValidEmails'
+        'App\Console\Commands\RemoveApiValidEmails',
+        'App\Console\Commands\UserImportEmailValidation'
     ];
 
     /**
@@ -313,6 +314,22 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
+        
+        $schedule->command('validate:useremail')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
         
         
         //formate creation cron
