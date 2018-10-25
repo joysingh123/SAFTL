@@ -29,7 +29,6 @@ trait ValidateEmailTraits {
             $email_validation_url = UtilEmailValidation::getValidationUrl($email, $api_name, $api_url, $api_key);
             $url = $email_validation_url['email_validation_url'];
             $response = Curl::to($url)->get();
-            echo $response;
             $email_validation_status = array('email_status'=>"",'verified_by'=>$api_name,'response'=>$response);
             $response_array = json_decode($response, true);
             if (isset($response_array['email']) || isset($response_array['address'])) {
