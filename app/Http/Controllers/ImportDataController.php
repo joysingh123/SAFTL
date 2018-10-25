@@ -226,9 +226,7 @@ class ImportDataController extends Controller {
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
-                $data = Excel::load($path, function($reader) {
-                            
-                        })->get();
+                $data = Excel::load($path, function($reader) {})->get();
                 if (!empty($data) && $data->count() < 20000) {
                     $duplicate = 0;
                     $duplicate_in_sheet = 0;
@@ -284,7 +282,7 @@ class ImportDataController extends Controller {
                                         $campaign_id_not_exist ++;
                                     }
                                     try {
-                                        //$contact_exist = Contacts::where('full_name', $full_name)->where('job_title', $job_title)->where('company_name', $company_name)->count();
+                                        $contact_exist = Contacts::where('full_name', $full_name)->where('job_title', $job_title)->where('company_name', $company_name)->count();
                                     } catch (\Illuminate\Database\QueryException $ex) {
                                         $contact_exist = 0;
                                         $invalid_array[] = $value;
