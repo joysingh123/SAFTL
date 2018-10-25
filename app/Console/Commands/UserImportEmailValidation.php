@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\EmailForValidation;
 use App\Helpers\UtilDebug;
 use App\Traits\ValidateEmailTraits;
+use App\AvailableEmail;
 class UserImportEmailValidation extends Command
 {
     use ValidateEmailTraits;
@@ -50,11 +51,18 @@ class UserImportEmailValidation extends Command
         if($emails->count() > 0){
             foreach ($emails AS $email){
                 $check_email =  $email->email;
-                $response = $this->validateEmail($check_email);
-                if($response['email_status'] != ""){
-                    $email->status = $response['email_status'];
-                    $email->row_data = $response['response'];
+                $available_email = AvailableEmail::where("email",$check_email)->get();
+                if($available_email->count() > 0){
+                    $email->status = 'valid';
+                    $email->row_data = 'From Available Email';
                     $email->save();
+                }else{
+                    $response = $this->validateEmail($check_email);
+                    if($response['email_status'] != ""){
+                        $email->status = $response['email_status'];
+                        $email->row_data = $response['response'];
+                        $email->save();
+                    }
                 }
             }
         }
