@@ -384,7 +384,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        $schedule->command('populate:companieswithdomain')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('populate:companieswithdomain')->cron('*/3 * * * *')->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_COMPANY_DATA)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();

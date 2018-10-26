@@ -46,7 +46,7 @@ class PopulateCompaniesWithDomain extends Command
         ini_set('memory_limit', -1);
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
-        $limit = 1000;
+        $limit = 2000;
         $us_companies_data = UsCompaniesAll::where('status','not processed')->take($limit)->get();
         if($us_companies_data->count() > 0){
             $processed_data = 0;
