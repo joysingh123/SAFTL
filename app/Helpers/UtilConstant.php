@@ -43,6 +43,7 @@ class UtilConstant {
     const CRON_SCRAPE_DOMAIN_EMAIL_FORMAT = "Scrape Domain Email Format";
     const CRON_CALCULATE_DOMAIN_EMAIL_FORMAT_PERCENTAGE = "Calculate Domain Email Format Percentage";
     const CRON_GENERATE_DEFAULT_EMAIL_FORMAT = "Genrate Default Email Format";
+    const CRON_POPULATE_COMPANY_DATA = "Populate Company Data";
     const EMAIL_VALIDATION_API_MAILBOXLAYER_NAME = "mailboxlayer";
     const EMAIL_VALIDATION_API_ZEROBOUNCE_NAME = "zerobounce";
 }

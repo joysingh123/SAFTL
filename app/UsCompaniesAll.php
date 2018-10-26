@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class UsCompaniesAll extends Model
 {
-    protected $table = "scrapped_domain";
+    protected $table = "us_companies_all";
 }

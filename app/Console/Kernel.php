@@ -34,7 +34,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\RemoveApiValidEmails',
         'App\Console\Commands\UserImportEmailValidation',
         'App\Console\Commands\UserImportEmailValidation2',
-        'App\Console\Commands\UserImportEmailValidation3'
+        'App\Console\Commands\UserImportEmailValidation3',
+        'App\Console\Commands\PopulateCompaniesWithDomain'
     ];
 
     /**
@@ -367,7 +368,7 @@ class Kernel extends ConsoleKernel
         
         
         //formate creation cron
-       $schedule->command('generate:defaultformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('generate:defaultformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_GENERATE_DEFAULT_EMAIL_FORMAT)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
@@ -377,6 +378,22 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_GENERATE_DEFAULT_EMAIL_FORMAT)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        $schedule->command('populate:companieswithdomain')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_COMPANY_DATA)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_COMPANY_DATA)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_COMPANY_DATA)->get();
             if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
                 return true;
             }
