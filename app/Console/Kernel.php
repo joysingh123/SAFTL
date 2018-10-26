@@ -218,7 +218,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        $schedule->command('validate:emailcron5')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('validate:emailcron5')->cron('*/3 * * * *')->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_5)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
@@ -234,7 +234,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        $schedule->command('validate:emailcron6')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('validate:emailcron6')->cron('*/3 * * * *')->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_6)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
