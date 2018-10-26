@@ -217,8 +217,8 @@ class ImportDataController extends Controller {
         ini_set('memory_limit', -1);
         ini_set('upload_max_filesize', -1);
         ini_set('post_max_size ', -1);
-        ini_set('mysql.connect_timeout', 300);
-        ini_set('default_socket_timeout', 300);
+        ini_set('mysql.connect_timeout', 600);
+        ini_set('default_socket_timeout', 600);
         $this->validate($request, array(
             'file' => 'required'
         ));
@@ -236,12 +236,13 @@ class ImportDataController extends Controller {
                     $invalid_record = 0;
                     $invalid_array = array();
                     $duplicate_array = array();
+//                    $contacts_data = Contacts::get(['first_name','last_name','company_name']);
                     foreach ($data as $key => $value) {
                         if (in_array($value, $duplicate_array)) {
                             $duplicate_in_sheet ++;
                         } else {
                             $duplicate_array[] = strtolower($value);
-                            if (!UtilString::contains($value, "\u")) {
+//                            if (!UtilString::contains($value, "\u")) {
                                 if (!UtilString::is_empty_string($value->full_name) && !UtilString::is_empty_string($value->company_url)) {
                                     $company_id = UtilString::get_company_id_from_url($value->company_url);
                                     $linkedin_id = $company_id;
@@ -277,19 +278,21 @@ class ImportDataController extends Controller {
                                             $invalid_array[] = $value;
                                         }
                                     }
-                                    if ($linkedin_id <= 0) {
+                                    if ($linkedin_id <= 0 || empty($linkedin_id)) {
                                         $status = "invalid";
+                                        $insert_status = false;
                                         $campaign_id_not_exist ++;
                                     }
-                                    try {
-                                        $contact_exist = Contacts::where('full_name', $full_name)->where('job_title', $job_title)->where('company_name', $company_name)->count();
-                                    } catch (\Illuminate\Database\QueryException $ex) {
-                                        $contact_exist = 0;
-                                        $invalid_array[] = $value;
-                                        $invalid_record ++;
-                                    }
+//                                    try {
+//                                        $contact_exist = Contacts::where('full_name', $full_name)->where('job_title', $job_title)->where('company_name', $company_name)->count();
+//                                    } catch (\Illuminate\Database\QueryException $ex) {
+//                                        $contact_exist = 0;
+//                                        $invalid_array[] = $value;
+//                                        $invalid_record ++;
+//                                    }
                                     if ($insert_status) {
-                                        if ($contact_exist == 0) {
+//                                        $contact_filter_all = $contacts_data->where('first_name', $first_name)->where('last_name', $last_name)->where('company_name', $company_name);
+//                                        if($contact_filter_all->count() <= 0){
                                             $inserted ++;
                                             $insert[] = [
                                                 'user_id' => Auth::id(),
@@ -307,21 +310,29 @@ class ImportDataController extends Controller {
                                                 'department' => $department,
                                                 'status' => $status,
                                             ];
-                                        } else {
-                                            $duplicate ++;
-                                        }
+                                            $user_id = Auth::id();
+                                            $experience = trim(preg_replace('/\s+/', ' ', $experience));
+                                            $full_name = str_replace('"', "", $full_name);
+//                                            $job_title = str_replace("'", "", $job_title);
+//                                            $company_name = str_replace("'", "", $company_name);
+//                                            $full_name = str_replace("'", "", $full_name);
+                                            $insertQuery[] = "($user_id,$linkedin_id,\"$full_name\",\"$first_name\",\"$last_name\",\"$company_name\",\"$job_title\",\"$experience\",\"$location\",\"$profile_link\",\"$status\",\"$tag\",\"$title_level\",\"$department\")";
+//                                        }else{
+//                                            $duplicate ++;
+//                                        }
                                     }
                                 }
-                            } else {
-                                $invalid_record ++;
-                                $invalid_array[] = $value;
-                            }
+//                            } else {
+//                                $invalid_record ++;
+//                                $invalid_array[] = $value;
+//                            }
                         }
                     }
-                    if (!empty($insert)) {
-                        $insert_chunk = array_chunk($insert, 100);
+                    if(!empty($insertQuery)){
+                        $insert_chunk = array_chunk($insertQuery, 100);
                         foreach ($insert_chunk AS $ic) {
-                            $insertData = DB::table('contacts')->insert($ic);
+                            $string_data = implode(",", $ic);
+                            $insertData = DB::statement("INSERT IGNORE INTO contacts(user_id,linkedin_id,full_name,first_name,last_name,company_name,job_title,experience,location,profile_link,status,tag,title_level,department) VALUES $string_data");
                         }
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
@@ -330,6 +341,21 @@ class ImportDataController extends Controller {
                             return back();
                         }
                     }
+//                    if (!empty($insert)) {
+//                        $insert_chunk = array_chunk($insert, 100);
+//                        foreach ($insert_chunk AS $ic) {
+//                            print_r($ic);
+//                            $insertData = DB::table('contacts')->insertIgnore($ic);
+//                            $inserted += $insertData;
+//                        }
+//                        
+//                        if ($insertData) {
+//                            Session::flash('success', 'Your Data has successfully imported');
+//                        } else {
+//                            Session::flash('error', 'Error inserting the data..');
+//                            return back();
+//                        }
+//                    }
                     $stats_data = array(
                         "duplicate" => $duplicate,
                         "duplicate_in_sheet" => $duplicate_in_sheet,
@@ -339,7 +365,6 @@ class ImportDataController extends Controller {
                         "invalid_record" => $invalid_record,
                         "invalid_array" => $invalid_array
                     );
-
                     Session::flash('stats_data', $stats_data);
                     return back();
                 } else {
