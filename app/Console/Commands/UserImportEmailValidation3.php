@@ -7,7 +7,7 @@ use App\EmailForValidation;
 use App\Helpers\UtilDebug;
 use App\Traits\ValidateEmailTraits;
 use App\AvailableEmail;
-class UserImportEmailValidation extends Command
+class UserImportEmailValidation3 extends Command
 {
     use ValidateEmailTraits;
     /**
@@ -15,7 +15,7 @@ class UserImportEmailValidation extends Command
      *
      * @var string
      */
-    protected $signature = 'validate:useremail';
+    protected $signature = 'validate:useremail3';
 
     /**
      * The console command description.
@@ -51,7 +51,7 @@ class UserImportEmailValidation extends Command
         if($emails->count() > 0){
             $plucked_email = $emails->pluck('id');
             $plucked_email_array = $plucked_email->all();
-            $result = EmailForValidation::whereIn('id', $plucked_email_array)->update(['status' => 'cron1']);
+            $result = EmailForValidation::whereIn('id', $plucked_email_array)->update(['status' => 'cron3']);
             if($result > 0){
                 foreach ($emails AS $email){
                     $check_email =  $email->email;

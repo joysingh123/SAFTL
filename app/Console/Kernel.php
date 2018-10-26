@@ -32,7 +32,9 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ValidateEmailCron10',
         'App\Console\Commands\EmailFormatPercentage',
         'App\Console\Commands\RemoveApiValidEmails',
-        'App\Console\Commands\UserImportEmailValidation'
+        'App\Console\Commands\UserImportEmailValidation',
+        'App\Console\Commands\UserImportEmailValidation2',
+        'App\Console\Commands\UserImportEmailValidation3'
     ];
 
     /**
@@ -325,6 +327,38 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        $schedule->command('validate:useremail2')->cron('*/3 * * * *')->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION_2)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION_2)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION_2)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        $schedule->command('validate:useremail3')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION_3)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION_3)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_IMPORT_EMAIL_VALIDATION_3)->get();
             if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
                 return true;
             }
