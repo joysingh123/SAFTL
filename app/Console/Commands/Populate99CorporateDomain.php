@@ -46,7 +46,7 @@ class Populate99CorporateDomain extends Command
         ini_set('default_socket_timeout', 600);
         $limit = 1500;
 //        $mca_data = McaData::where('status','not processed')->where('CORPORATE_IDENTIFICATION_NUMBER','L65110GJ1993PLC020769')->take($limit)->get();
-        $mca_data = McaData::where('status','not processed')->take($limit)->get();
+        $mca_data = McaData::where('status','not processed')->where('COMPANY_STATUS','Active')->take($limit)->get();
         $corporate_url = "https://www.99corporates.com/Company-Overview/";
         if($mca_data->count() > 0){
             foreach($mca_data AS $md){
