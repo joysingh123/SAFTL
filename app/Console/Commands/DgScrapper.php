@@ -47,18 +47,21 @@ class DgScrapper extends Command
         
         $scrapper_base_url  = "https://discoverorg.com";
         $scrapper_list_array = array(
-                                        'NUM'=>23,
-                                        'A'=>356,
-                                        'B'=>237,
-                                        'C'=>399,
-                                        'D'=>158,
-                                        'E'=>165,
-                                        'F'=>144,
-                                        'G'=>149,
-                                        'H'=>154,
-                                        'I'=>148,
-                                        'J'=>58,
-                                        'K'=>87
+                                        'L'=>23,
+                                        'M'=>356,
+                                        'N'=>237,
+                                        'O'=>399,
+                                        'P'=>158,
+                                        'Q'=>165,
+                                        'R'=>144,
+                                        'S'=>149,
+                                        'T'=>154,
+                                        'U'=>148,
+                                        'V'=>58,
+                                        'W'=>87,
+                                        'X'=>87,
+                                        'Y'=>87,
+                                        'Z'=>87
                                     );
         foreach ($scrapper_list_array AS $k=>$pagination){
             $list_url = $scrapper_base_url."/directory/company/list/$k";
