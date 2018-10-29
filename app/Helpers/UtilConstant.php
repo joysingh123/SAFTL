@@ -48,5 +48,6 @@ class UtilConstant {
     const EMAIL_VALIDATION_API_ZEROBOUNCE_NAME = "zerobounce";
     
     const CRON_DG_SCRAPPER = "Dg Scraper";
+    const CRON_99CORPORATES_DOMAIN_SCRAPPER = "99Corporates Domain Scrapper";
 }
 ?>
