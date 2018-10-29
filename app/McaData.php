@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class McaData extends Model
 {
-    protected $table = "mca_data";
+    protected $table = "MCA_Data";
 }
