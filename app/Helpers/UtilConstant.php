@@ -46,5 +46,7 @@ class UtilConstant {
     const CRON_POPULATE_COMPANY_DATA = "Populate Company Data";
     const EMAIL_VALIDATION_API_MAILBOXLAYER_NAME = "mailboxlayer";
     const EMAIL_VALIDATION_API_ZEROBOUNCE_NAME = "zerobounce";
+    
+    const CRON_DG_SCRAPPER = "Dg Scraper";
 }
 ?>
