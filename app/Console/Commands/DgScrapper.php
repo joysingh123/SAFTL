@@ -50,9 +50,10 @@ class DgScrapper extends Command
         $limit = 1;
         $url = DgUrl::where('status','not processed')->take($limit)->get();
         if($url->count() > 0){
-            $url = $url->first();
-            $url_param = $url->url_param;
-            $pagination = $url->pagination;
+            $url_data = $url->first();
+            $id = $url->first()->id;
+            $url_param = $url_data->url_param;
+            $pagination = $url_data->pagination;
             $processed = FALSE;
             for($i=2;$i <= $pagination;$i++){
                 $list_url = $scrapper_base_url."/directory/company/list/$url_param?p=$i";
@@ -86,15 +87,14 @@ class DgScrapper extends Command
                 if(count($result) > 0){
                     try {
                         $insertData = DB::table('dg_companies')->insert($result);
+                        $processed = TRUE;
                     } catch (\Illuminate\Database\QueryException $ex) {
                         echo $ex->getMessage();                  
                     }
                 }
-                $processed = TRUE;
             }
             if($processed){
-                $url->status = 'processed';
-                $url->save();
+                DgUrl::where('id',$id)->update(['status'=>'processed']);
             }
         }else{
             UtilDebug::print_r_array("response", "No, Data For Processing");
