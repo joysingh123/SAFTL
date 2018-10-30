@@ -53,7 +53,8 @@ class Populate99CorporateDomain extends Command
                 $cin = $md->CORPORATE_IDENTIFICATION_NUMBER;
                 $c_name = $md->COMPANY_NAME;
                 if(!UtilString::is_empty_string($c_name) && !UtilString::is_empty_string($cin)){
-                    $company_name_for_url = str_replace("&", "", trim($c_name,"."));
+                    $company_name_for_url = str_replace("&", "", trim($c_name));
+                    $company_name_for_url = str_replace("+", "", $company_name_for_url);
                     $company_name_for_url = str_replace(" ", "-", trim($company_name_for_url,"."));
                     $scrape_url = $corporate_url.$company_name_for_url."/CIN/".$cin;
                     echo $scrape_url ."<br> ";
