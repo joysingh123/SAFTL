@@ -48,7 +48,7 @@ class DgScrapper extends Command
         
         $scrapper_base_url  = "https://discoverorg.com";
         $limit = 1;
-        $url = DgUrl::where('status','not processed')->take($limit)->get();
+        $url = DgUrl::where('status','not processed')->where('category','Businesses')->take($limit)->get();
         if($url->count() > 0){
             $url_data = $url->first();
             $id = $url->first()->id;
