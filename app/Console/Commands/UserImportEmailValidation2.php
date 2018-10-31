@@ -55,18 +55,19 @@ class UserImportEmailValidation2 extends Command
             if($result > 0){
                 foreach ($emails AS $email){
                     $check_email =  $email->email;
-                    $available_email = AvailableEmail::where("email",$check_email)->get();
-                    if($available_email->count() > 0){
-                        $email->status = 'valid';
-                        $email->row_data = 'From Available Email';
+//                    $available_email = AvailableEmail::where("email",$check_email)->get();
+//                    if($available_email->count() > 0){
+//                        $email->status = 'valid';
+//                        $email->row_data = 'From Available Email';
+//                        $email->save();
+//                    }else{
+//                        
+//                    }
+                    $response = $this->validateEmail($check_email);
+                    if($response['email_status'] != ""){
+                        $email->status = $response['email_status'];
+                        $email->row_data = $response['response'];
                         $email->save();
-                    }else{
-                        $response = $this->validateEmail($check_email);
-                        if($response['email_status'] != ""){
-                            $email->status = $response['email_status'];
-                            $email->row_data = $response['response'];
-                            $email->save();
-                        }
                     }
                 }
             }
