@@ -28,6 +28,7 @@ trait CreateEmailTraits {
             $found_in_bounce = 0;
             $email_exist = 0;
             foreach ($matched_contact AS $mt) {
+                echo $mt;
                 $matched_contact_id = $mt->id;
                 $first_name = strtolower($mt->first_name);
                 $last_name = strtolower($mt->last_name);
@@ -45,6 +46,7 @@ trait CreateEmailTraits {
                     $found_in_available_email ++;
                 } else {
                     $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
+                    echo $available_format_for_domain;
                     if ($available_format_for_domain->count() > 0) {
                         if (!UtilString::is_empty_string($first_name) && !UtilString::is_empty_string($last_name)) {
                             $vars = array(
@@ -99,6 +101,7 @@ trait CreateEmailTraits {
                                                 $is_bounce = false;
                                             }
                                         } else {
+                                            echo "exist in email table";
                                             $email_created_status = true;
                                             $email_exist ++;
                                             $alredy_exist_id = $email_already_exist->first()->matched_contact_id;
@@ -109,6 +112,7 @@ trait CreateEmailTraits {
                                             if($first_name == $existing_first_name && $last_name == $existing_last_name && $matched_contact_domain == $existing_domain){
                                                 
                                             }else{
+                                                echo "not exist in email table";
                                                 $email_format = "FIRSTNAME.LASTNAME@DOMAIN";
                                                 $email = str_replace("'", "", strtr($email_format, $vars));
                                                 $newemail = new Emails();
