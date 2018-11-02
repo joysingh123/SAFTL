@@ -227,21 +227,23 @@ class ImportDataController extends Controller {
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
                 $data = Excel::load($path, function($reader) {})->get();
-                if (!empty($data) && $data->count() < 20000) {
-                    $duplicate = 0;
-                    $duplicate_in_sheet = 0;
-                    $inserted = 0;
-                    $campaign_id_not_exist = 0;
-                    $invalid_name = 0;
-                    $invalid_record = 0;
-                    $invalid_array = array();
-                    $duplicate_array = array();
+                $header = $data->getHeading();
+                if (in_array('full_name', $header) && in_array('first_name', $header) && in_array('last_name', $header) && in_array('company', $header) && in_array('company_url', $header) && in_array('title', $header) && in_array('experience', $header) && in_array('location', $header) && in_array('industry', $header) && in_array('profile_link', $header)) {
+                    if (!empty($data) && $data->count() < 20000) {
+                        $duplicate = 0;
+                        $duplicate_in_sheet = 0;
+                        $inserted = 0;
+                        $campaign_id_not_exist = 0;
+                        $invalid_name = 0;
+                        $invalid_record = 0;
+                        $invalid_array = array();
+                        $duplicate_array = array();
 //                    $contacts_data = Contacts::get(['first_name','last_name','company_name']);
-                    foreach ($data as $key => $value) {
-                        if (in_array($value, $duplicate_array)) {
-                            $duplicate_in_sheet ++;
-                        } else {
-                            $duplicate_array[] = strtolower($value);
+                        foreach ($data as $key => $value) {
+                            if (in_array($value, $duplicate_array)) {
+                                $duplicate_in_sheet ++;
+                            } else {
+                                $duplicate_array[] = strtolower($value);
 //                            if (!UtilString::contains($value, "\u")) {
                                 if (!UtilString::is_empty_string($value->full_name) && !UtilString::is_empty_string($value->company_url)) {
                                     $company_id = UtilString::get_company_id_from_url($value->company_url);
@@ -293,30 +295,30 @@ class ImportDataController extends Controller {
                                     if ($insert_status) {
 //                                        $contact_filter_all = $contacts_data->where('first_name', $first_name)->where('last_name', $last_name)->where('company_name', $company_name);
 //                                        if($contact_filter_all->count() <= 0){
-                                            $inserted ++;
-                                            $insert[] = [
-                                                'user_id' => Auth::id(),
-                                                'linkedin_id' => $linkedin_id,
-                                                'full_name' => $full_name,
-                                                'first_name' => $first_name,
-                                                'last_name' => $last_name,
-                                                'company_name' => $company_name,
-                                                'job_title' => $job_title,
-                                                'experience' => $experience,
-                                                'location' => $location,
-                                                'profile_link' => $profile_link,
-                                                'tag' => $tag,
-                                                'title_level' => $title_level,
-                                                'department' => $department,
-                                                'status' => $status,
-                                            ];
-                                            $user_id = Auth::id();
-                                            $experience = trim(preg_replace('/\s+/', ' ', $experience));
-                                            $full_name = str_replace('"', "", $full_name);
+                                        $inserted ++;
+                                        $insert[] = [
+                                            'user_id' => Auth::id(),
+                                            'linkedin_id' => $linkedin_id,
+                                            'full_name' => $full_name,
+                                            'first_name' => $first_name,
+                                            'last_name' => $last_name,
+                                            'company_name' => $company_name,
+                                            'job_title' => $job_title,
+                                            'experience' => $experience,
+                                            'location' => $location,
+                                            'profile_link' => $profile_link,
+                                            'tag' => $tag,
+                                            'title_level' => $title_level,
+                                            'department' => $department,
+                                            'status' => $status,
+                                        ];
+                                        $user_id = Auth::id();
+                                        $experience = trim(preg_replace('/\s+/', ' ', $experience));
+                                        $full_name = str_replace('"', "", $full_name);
 //                                            $job_title = str_replace("'", "", $job_title);
 //                                            $company_name = str_replace("'", "", $company_name);
 //                                            $full_name = str_replace("'", "", $full_name);
-                                            $insertQuery[] = "($user_id,$linkedin_id,\"$full_name\",\"$first_name\",\"$last_name\",\"$company_name\",\"$job_title\",\"$experience\",\"$location\",\"$profile_link\",\"$status\",\"$tag\",\"$title_level\",\"$department\")";
+                                        $insertQuery[] = "($user_id,$linkedin_id,\"$full_name\",\"$first_name\",\"$last_name\",\"$company_name\",\"$job_title\",\"$experience\",\"$location\",\"$profile_link\",\"$status\",\"$tag\",\"$title_level\",\"$department\")";
 //                                        }else{
 //                                            $duplicate ++;
 //                                        }
@@ -326,21 +328,23 @@ class ImportDataController extends Controller {
 //                                $invalid_record ++;
 //                                $invalid_array[] = $value;
 //                            }
+                            }
                         }
-                    }
-                    if(!empty($insertQuery)){
-                        $insert_chunk = array_chunk($insertQuery, 100);
-                        foreach ($insert_chunk AS $ic) {
-                            $string_data = implode(",", $ic);
-                            $insertData = DB::statement("INSERT IGNORE INTO contacts(user_id,linkedin_id,full_name,first_name,last_name,company_name,job_title,experience,location,profile_link,status,tag,title_level,department) VALUES $string_data");
+                        if (!empty($insertQuery)) {
+                            $insert_chunk = array_chunk($insertQuery, 100);
+                            foreach ($insert_chunk AS $ic) {
+                                $date = date("Y-m-d H:i");
+                                echo $date."<br>";
+                                $string_data = implode(",", $ic);
+                                $insertData = DB::statement("INSERT IGNORE INTO contacts(user_id,linkedin_id,full_name,first_name,last_name,company_name,job_title,experience,location,profile_link,status,tag,title_level,department) VALUES $string_data");
+                            }
+                            if ($insertData) {
+                                Session::flash('success', 'Your Data has successfully imported');
+                            } else {
+                                Session::flash('error', 'Error inserting the data..');
+                                return back();
+                            }
                         }
-                        if ($insertData) {
-                            Session::flash('success', 'Your Data has successfully imported');
-                        } else {
-                            Session::flash('error', 'Error inserting the data..');
-                            return back();
-                        }
-                    }
 //                    if (!empty($insert)) {
 //                        $insert_chunk = array_chunk($insert, 100);
 //                        foreach ($insert_chunk AS $ic) {
@@ -356,19 +360,23 @@ class ImportDataController extends Controller {
 //                            return back();
 //                        }
 //                    }
-                    $stats_data = array(
-                        "duplicate" => $duplicate,
-                        "duplicate_in_sheet" => $duplicate_in_sheet,
-                        "inserted" => $inserted,
-                        "campaign_id_not_exist" => $campaign_id_not_exist,
-                        "invalid_name" => $invalid_name,
-                        "invalid_record" => $invalid_record,
-                        "invalid_array" => $invalid_array
-                    );
-                    Session::flash('stats_data', $stats_data);
-                    return back();
+                        $stats_data = array(
+                            "duplicate" => $duplicate,
+                            "duplicate_in_sheet" => $duplicate_in_sheet,
+                            "inserted" => $inserted,
+                            "campaign_id_not_exist" => $campaign_id_not_exist,
+                            "invalid_name" => $invalid_name,
+                            "invalid_record" => $invalid_record,
+                            "invalid_array" => $invalid_array
+                        );
+//                        Session::flash('stats_data', $stats_data);
+//                        return back();
+                    } else {
+                        Session::flash('error', "The Sheet contains Only 20,000 records");
+                        return back();
+                    }
                 } else {
-                    Session::flash('error', "The Sheet contains Only 20,000 records");
+                    Session::flash('error', "The Sheet Header contain wrong column name");
                     return back();
                 }
             } else {
@@ -671,9 +679,7 @@ class ImportDataController extends Controller {
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file->getRealPath();
                 $data = array();
-                $data = Excel::load($path, function($reader) {
-                            
-                        })->get();
+                $data = Excel::load($path, function($reader) {})->get();
                 if (!empty($data) && $data->count()) {
                     $total = $data->count();
                     $duplicate_in_sheet = 0;
