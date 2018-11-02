@@ -85,46 +85,18 @@ trait CreateEmailTraits {
                                     $email_format = "$email_format";
                                     $email = str_replace("'", "", strtr($email_format, $vars));
                                     if (UtilString::is_email($email)) {
-                                        $email_already_exist = Emails::where('email', $email)->get();
-                                        if ($email_already_exist->count() == 0) {
-                                            $is_exist_in_bounce = BounceEmail::where('email','=',$email)->get();
-                                            if($is_exist_in_bounce->count() > 0){
-                                                $is_bounce = true;
-                                            }else{
-                                                $newemail = new Emails();
-                                                $newemail->matched_contact_id = $matched_contact_id;
-                                                $newemail->email = trim($email);
-                                                $newemail->format_percentage = $av->format_percentage;
-                                                $newemail->status = "success";
-                                                $newemail->save();
-                                                $email_created_status = true;
-                                                $is_bounce = false;
-                                            }
-                                        } else {
+                                        $is_exist_in_bounce = BounceEmail::where('email','=',$email)->get();
+                                        if($is_exist_in_bounce->count() > 0){
+                                            $is_bounce = true;
+                                        }else{
+                                            $newemail = new Emails();
+                                            $newemail->matched_contact_id = $matched_contact_id;
+                                            $newemail->email = trim($email);
+                                            $newemail->format_percentage = $av->format_percentage;
+                                            $newemail->status = "success";
+                                            $newemail->save();
                                             $email_created_status = true;
-                                            $email_exist ++;
-                                            $alredy_exist_id = $email_already_exist->first()->matched_contact_id;
-                                            $existing_matched_data = MatchedContact::where("id" ,$alredy_exist_id)->get();
-                                            $existing_first_name = strtolower($existing_matched_data->first()->first_name);
-                                            $existing_last_name = strtolower($existing_matched_data->first()->last_name);
-                                            $existing_domain = strtolower($existing_matched_data->first()->domain);
-                                            if($first_name == $existing_first_name && $last_name == $existing_last_name && $matched_contact_domain == $existing_domain){
-                                                
-                                            }else{
-                                                echo "not exist in email table";
-                                                $email_format = "FIRSTNAME.LASTNAME@DOMAIN";
-                                                $email = str_replace("'", "", strtr($email_format, $vars));
-                                                $newemail = new Emails();
-                                                $newemail->matched_contact_id = $matched_contact_id;
-                                                $newemail->email = trim($email);
-                                                $newemail->format_percentage = 100;
-                                                $newemail->status = "success";
-                                                $save_in_email = $newemail->save();
-                                                if($save_in_email){
-                                                    $mt->dummy_email = $email;
-                                                    $mt->save();
-                                                }
-                                            }
+                                            $is_bounce = false;
                                         }
                                     }
                                 }
