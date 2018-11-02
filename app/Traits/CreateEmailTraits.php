@@ -28,7 +28,7 @@ trait CreateEmailTraits {
             $found_in_bounce = 0;
             $email_exist = 0;
             foreach ($matched_contact AS $mt) {
-                echo $mt;
+                //echo $mt;
                 $matched_contact_id = $mt->id;
                 $first_name = strtolower($mt->first_name);
                 $last_name = strtolower($mt->last_name);
@@ -46,7 +46,7 @@ trait CreateEmailTraits {
                     $found_in_available_email ++;
                 } else {
                     $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
-                    echo $available_format_for_domain;
+                   // echo $available_format_for_domain;
                     if ($available_format_for_domain->count() > 0) {
                         if (!UtilString::is_empty_string($first_name) && !UtilString::is_empty_string($last_name)) {
                             $vars = array(
@@ -78,14 +78,12 @@ trait CreateEmailTraits {
                                     }
                                 }
                             }
-                            print_r($process_data);
                             if (count($process_data) > 0) {
                                 $is_bounce = false;
                                 foreach ($process_data AS $av) {
                                     $email_format = $av->email_format;
                                     $email_format = "$email_format";
                                     $email = str_replace("'", "", strtr($email_format, $vars));
-                                    echo "email created: $email";
                                     if (UtilString::is_email($email)) {
                                         $email_already_exist = Emails::where('email', $email)->get();
                                         if ($email_already_exist->count() == 0) {
@@ -103,7 +101,6 @@ trait CreateEmailTraits {
                                                 $is_bounce = false;
                                             }
                                         } else {
-                                            echo "exist in email table";
                                             $email_created_status = true;
                                             $email_exist ++;
                                             $alredy_exist_id = $email_already_exist->first()->matched_contact_id;
@@ -112,7 +109,7 @@ trait CreateEmailTraits {
                                             $existing_last_name = strtolower($existing_matched_data->first()->last_name);
                                             $existing_domain = strtolower($existing_matched_data->first()->domain);
                                             if($first_name == $existing_first_name && $last_name == $existing_last_name && $matched_contact_domain == $existing_domain){
-                                                
+                                                echo "email_exist $email";
                                             }else{
                                                 echo "not exist in email table";
                                                 $email_format = "FIRSTNAME.LASTNAME@DOMAIN";
