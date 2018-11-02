@@ -61,6 +61,7 @@ trait ValidateEmailTraits {
                     $email_validation->status = $email_validation_status['email_status'];
                     $email_validation->verified_by = $email_validation_status['verified_by'];
                     $email_validation->raw_data = $email_validation_status['response'];
+                    echo "catch_all".$response_array['catch_all'];
                     if($email_validation_status['verified_by'] == UtilConstant::EMAIL_VALIDATION_API_MAILBOXLAYER_NAME){
                         $email_validation->format_valid = $response_array['format_valid'];
                         $email_validation->mx_found = ($response_array['mx_found']) ? 'true' : 'false';
