@@ -36,9 +36,9 @@ trait ValidateEmailTraits {
                 $email_status = "";
                 if ($email_validation_url['verified_by'] == UtilConstant::EMAIL_VALIDATION_API_MAILBOXLAYER_NAME) {
                     $email_validation_status['verified_by'] = UtilConstant::EMAIL_VALIDATION_API_MAILBOXLAYER_NAME;
-                    if ($response_array['smtp_check']) {
+                    if ($response_array['smtp_check'] && $response_array['score'] >= 0.96 && !$response_array['disposable']) {
                         $email_validation_status['email_status'] = "valid";
-                    } else if (!$response_array['smtp_check'] && $response_array['score'] > 0.48) {
+                    } else if ($response_array['smtp_check'] && $response_array['score'] < 0.96 && !$response_array['disposable']) {
                         $email_validation_status['email_status'] = "catch all";
                     } else {
                         $email_validation_status['email_status'] = "invalid";
@@ -61,6 +61,14 @@ trait ValidateEmailTraits {
                     $email_validation->status = $email_validation_status['email_status'];
                     $email_validation->verified_by = $email_validation_status['verified_by'];
                     $email_validation->raw_data = $email_validation_status['response'];
+                    if($email_validation_status['verified_by'] == UtilConstant::EMAIL_VALIDATION_API_MAILBOXLAYER_NAME){
+                        $email_validation->format_valid = $response_array['format_valid'];
+                        $email_validation->mx_found = ($response_array['mx_found']) ? 'true' : 'false';
+                        $email_validation->smtp_check = $response_array['smtp_check'];
+                        $email_validation->catch_all = $response_array['catch_all'];
+                        $email_validation->disposable = $response_array['disposable'];
+                        $email_validation->score = $response_array['score'];
+                    }
                     $email_added = $email_validation->save();
                 }
                 break;
