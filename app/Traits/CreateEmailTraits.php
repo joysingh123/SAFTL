@@ -78,12 +78,14 @@ trait CreateEmailTraits {
                                     }
                                 }
                             }
+                            print_r($process_data);
                             if (count($process_data) > 0) {
                                 $is_bounce = false;
                                 foreach ($process_data AS $av) {
                                     $email_format = $av->email_format;
                                     $email_format = "$email_format";
                                     $email = str_replace("'", "", strtr($email_format, $vars));
+                                    echo "email created: $email";
                                     if (UtilString::is_email($email)) {
                                         $email_already_exist = Emails::where('email', $email)->get();
                                         if ($email_already_exist->count() == 0) {
