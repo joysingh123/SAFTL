@@ -109,7 +109,7 @@ trait CreateEmailTraits {
                                             $existing_last_name = strtolower($existing_matched_data->first()->last_name);
                                             $existing_domain = strtolower($existing_matched_data->first()->domain);
                                             if($first_name == $existing_first_name && $last_name == $existing_last_name && $matched_contact_domain == $existing_domain){
-                                                echo "email_exist $email";
+                                                Emails::where('email', $email)->delete();
                                             }else{
                                                 echo "not exist in email table";
                                                 $email_format = "FIRSTNAME.LASTNAME@DOMAIN";
