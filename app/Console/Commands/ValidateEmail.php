@@ -9,6 +9,7 @@ use App\Helpers\UtilString;
 use DB;
 use App\Traits\ValidateEmailTraits;
 use App\MatchedContact;
+use App\Contacts;
 
 class ValidateEmail extends Command {
 
@@ -74,12 +75,17 @@ class ValidateEmail extends Command {
                         $v_response = $this->validateEmail($email);
                         if ($v_response['email_status'] == 'valid' || $v_response['email_status'] == 'catch all') {
                             $is_invalid = false;
+                            $email_status = $v_response['email_status'];
+                            $email_validation_date = date("Y-m-d H:i:s");
                             $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
                             $matched_contact->email = $email;
-                            $matched_contact->email_status = $v_response['email_status'];
-                            $matched_contact->email_validation_date = date("Y-m-d H:i:s");
+                            $matched_contact->email_status = $email_status;
+                            $matched_contact->email_validation_date = $email_validation_date;
                             $matched_contact->save();
-                            Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => $v_response['email_status']]);
+                            Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => $email_status]);
+                            $contact_id = $matched_contact->contact_id;
+                            $domain = $matched_contact->domain;
+                            Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>$email_status,'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
                             break;
                         } else {
                             if ($v_response['email_status'] != "") {
