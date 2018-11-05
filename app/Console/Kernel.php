@@ -38,7 +38,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\PopulateCompaniesWithDomain',
         'App\Console\Commands\DgScrapper',
         'App\Console\Commands\DgContactScrapper',
-        'App\Console\Commands\Populate99CorporateDomain'
+        'App\Console\Commands\Populate99CorporateDomain',
+        'App\Console\Commands\StatsCompanyWithDomain',
     ];
 
     /**
@@ -451,6 +452,21 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
+        $schedule->command('update:companystats')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_UPDATE_COMPANY_STATS)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_UPDATE_COMPANY_STATS)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_UPDATE_COMPANY_STATS)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
         
         //Hunter url scrapper
         
