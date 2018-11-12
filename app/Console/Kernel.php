@@ -486,7 +486,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        $schedule->command('populate:contactmaster')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('populate:contactmaster')->everyMinute()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_CONTACT_MASTER)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
