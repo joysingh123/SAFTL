@@ -76,7 +76,7 @@ class PopulateContactMaster extends Command
                         $department_level_id = $department_level_data->first()->ID;
                     }
                     if($title_level_id > 0){
-                        $contact_exist = ContactMaster::where('email',$email)->get();
+                        $contact_exist = ContactMaster::where('first_name',$first_name)->where('last_name',$last_name)->where('domain',$domain)->get();
                         if($contact_exist->count() > 0){
                             $contact->populate_status = 'processed';
                             $contact->save();
