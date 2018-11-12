@@ -7,6 +7,9 @@ use App\Helpers\UtilDebug;
 use App\Helpers\UtilString;
 use App\CompanyMaster;
 use App\Companies;
+use App\ContactMaster;
+use DB;
+use App\SalesbotContacts;
 
 class PopulateSalesbotCompanies extends Command
 {
@@ -47,39 +50,74 @@ class PopulateSalesbotCompanies extends Command
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $limit = 1000;
-        $company_master = CompanyMaster::where('Status','not processed')->take($limit)->get();
-        if($company_master->count() > 0){
-            foreach($company_master AS $cm){
-                $company_name = trim($cm->company_name);
-                $website = trim($cm->website);
-                $linkedin_url = trim($cm->linkedin_URL);
-                $industry = trim($cm->industry);
-                $country = trim($cm->country);
-                $domain = trim($cm->domain);
-                $postal_code = trim($cm->postal_code);
-                $companies = Companies::where('domain',$domain)->get();
-                if($companies->count() > 0){
-                    $cm->status = "already exist";
-                    $cm->save();
-                }else{
-                    $salebot_company = new Companies();
-                    $salebot_company->company = $company_name;
-                    $salebot_company->companyWebsite = $website;
-                    $salebot_company->industry = $industry;
-                    $salebot_company->country_id = $country;
-                    $salebot_company->zipcode = $postal_code;
-                    $salebot_company->domain = $domain;
-                    $save_as = $salebot_company->save();
-                    if($save_as){
-                        $id = $salebot_company->id;
-                        $cm->reference_id = $id;
-                        $cm->status = "processed";
-                        $cm->save();
+        $contact_master = DB::table('contact_master')->select(DB::raw("company_id,count(company_id) AS total_record"))->where('status',"not processed")->groupBy('company_id')->take($limit)->get();
+        if($contact_master->count() > 0){
+            foreach($contact_master AS $cm){
+                $company_id = $cm->company_id;
+                $company_master = CompanyMaster::where('id',$company_id)->get();
+                if($company_master->count() > 0){
+                    $company_name = trim($company_master->first()->company_name);
+                    $website = trim($company_master->first()->website);
+                    $linkedin_url = trim($company_master->first()->linkedin_URL);
+                    $industry = trim($company_master->first()->industry);
+                    $country = trim($company_master->first()->country);
+                    $domain = trim($company_master->first()->domain);
+                    $postal_code = trim($company_master->first()->postal_code);
+                    $companies = Companies::where('domain',$domain)->get();
+                    $reference_id = 0;
+                    if($companies->count() > 0){
+                        $reference_id = $companies->first()->id;
+                        $company_master->first()->reference_id = $reference_id;
+                        $company_master->first()->status = 'already exist';
+                        $company_master->first()->save();
+                    }else{
+                        $salesbot_company = new Companies();
+                        $salesbot_company->company = $company_name;
+                        $salesbot_company->companyWebsite = $website;
+                        $salesbot_company->industry = $industry;
+                        $salesbot_company->country_id = $country;
+                        $salesbot_company->zipcode = $postal_code;
+                        $salesbot_company->domain = $domain;
+                        $save_as = $salesbot_company->save();
+                        if($save_as){
+                            $reference_id = $salesbot_company->id;
+                            $company_master->first()->reference_id = $reference_id;
+                            $company_master->first()->status = "processed";
+                            $company_master->first()->save();
+                        }
+                    }
+                    $contacts = ContactMaster::where('company_id',$company_id)->get();
+                    if($contacts->count() > 0){
+                        foreach($contacts AS $c){
+                            $first_name = $c->first_name;
+                            $last_name = $c->last_name;
+                            $email = $c->email;
+                            $title_level = $c->title_level;
+                            $department = $c->department;
+                            $salesbot_contact = SalesbotContacts::where('fname',$first_name)->where('lname',$last_name)->where('email',$email)->get();
+                            if($salesbot_contact->count()){
+                                $c->status = 'already exist';
+                                $c->salesbot_ref_id = $salesbot_contact->first()->id;
+                                $c->save();
+                            }else{
+                                $salesbot_contact_new = new SalesbotContacts();
+                                $salesbot_contact_new->fname = $first_name;
+                                $salesbot_contact_new->lname = $last_name;
+                                $salesbot_contact_new->email = $email;
+                                $salesbot_contact_new->company = $reference_id;
+                                $salesbot_contact_new->job_title = $title_level;
+                                $salesbot_contact_new->department = $department;
+                                $salesbot_contact_new->save();
+                                $c->status = 'processed';
+                                $c->salesbot_ref_id = $salesbot_contact_new->id;
+                                $c->save();
+                            }
+                        }  
                     }
                 }
             }
         }else{
-            echo "No, Data Found For Procesing";
+            echo "No, record found for processing";
         }
         UtilDebug::debug("End Processing");
     }
