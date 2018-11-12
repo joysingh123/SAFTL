@@ -64,7 +64,7 @@ class PopulateContactMaster extends Command
                 $email_status = trim($contact->email_status);
                 $email_validation_date = $contact->email_validation_date;
                 $domain = trim($contact->domain);
-                if($email_status == 'valid' && !UtilString::is_empty_string($job_title) && !UtilString::is_empty_string($title_level) && !UtilString::is_empty_string($department)){
+                if($email_status == 'valid' && !UtilString::is_empty_string($job_title) && !UtilString::is_empty_string($title_level)){
                     $title_level_id = 0;
                     $department_level_id = 0;
                     $title_level_data = TitleLevelMaster::where('title_level',$title_level)->where('Status','Active');
@@ -75,7 +75,7 @@ class PopulateContactMaster extends Command
                     if($department_level_data->count() > 0){
                         $department_level_id = $department_level_data->first()->ID;
                     }
-                    if($title_level_id > 0 && $department_level_id > 0){
+                    if($title_level_id > 0){
                         $contact_exist = ContactMaster::where('email',$email)->get();
                         if($contact_exist->count() > 0){
                             $contact->populate_status = 'processed';
