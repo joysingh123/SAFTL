@@ -52,5 +52,6 @@ class UtilConstant {
     const CRON_99CORPORATES_DOMAIN_SCRAPPER = "99Corporates Domain Scrapper";
     const CRON_UPDATE_COMPANY_STATS = "Update Company Stats";
     const CRON_POPULATE_COMPANY_MASTER = "Populate Company Master";
+    const CRON_POPULATE_CONTACT_MASTER = "Populate Contact Master";
 }
 ?>

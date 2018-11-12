@@ -66,9 +66,9 @@ class PopulateCompanyMaster extends Command
                 $country_id = 0;
                 $industry_id = 0;
                 $employee_size_id = 0;
-                $country_data = CountryMaster::where('Country Name',$country)->get();
-                $industry_data = IndustryMaster::where('Industry',$industry)->get();
-                $employee_size_data = EmployeeSizeMaster::where('employee_size',$employee_size)->get();
+                $country_data = CountryMaster::where('Country Name',$country)->where('Status','Active')->get();
+                $industry_data = IndustryMaster::where('Industry',$industry)->where('Status','Active')->get();
+                $employee_size_data = EmployeeSizeMaster::where('employee_size',$employee_size)->where('Status','Active')->get();
                 if($country_data->count() > 0){
                     $country_id = $country_data->first()->ID;
                 }
