@@ -469,7 +469,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        $schedule->command('populate:companymaster')->cron('*/3 * * * *')->withoutOverlapping()->before(function () {
+        $schedule->command('populate:companymaster')->everyMinute()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_COMPANY_MASTER)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
