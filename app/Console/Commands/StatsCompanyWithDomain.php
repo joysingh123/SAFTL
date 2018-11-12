@@ -93,7 +93,7 @@ class StatsCompanyWithDomain extends Command
             $domain = trim($ev->domain);
             $email_validation_filter = $email_validation->where("domain","=",$domain);
             $email_validation_filter = $email_validation_filter->all();
-            $mx_found_data = FALSE;
+            $mx_found_data = NULL;
             if(count($email_validation_filter) > 0){
                 if(count($email_validation_filter) == 1){
                     foreach($email_validation_filter AS $ets){
