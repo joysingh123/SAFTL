@@ -42,7 +42,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\StatsCompanyWithDomain',
         'App\Console\Commands\PopulateCompanyMaster',
         'App\Console\Commands\PopulateContactMaster',
-        'App\Console\Commands\PopulateCompanyMaster'
+        'App\Console\Commands\PopulateSalesbotCompanies'
     ];
 
     /**
