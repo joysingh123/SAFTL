@@ -41,7 +41,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\Populate99CorporateDomain',
         'App\Console\Commands\StatsCompanyWithDomain',
         'App\Console\Commands\PopulateCompanyMaster',
-        'App\Console\Commands\PopulateContactMaster'
+        'App\Console\Commands\PopulateContactMaster',
+        'App\Console\Commands\PopulateCompanyMaster'
     ];
 
     /**
@@ -496,6 +497,22 @@ class Kernel extends ConsoleKernel
             $cronjobs->first()->save();
         })->when(function(){
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_CONTACT_MASTER)->get();
+            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+                return true;
+            }
+            return false;
+        });
+        
+        $schedule->command('populate:salesbotcompanies')->everyMinute()->withoutOverlapping()->before(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_SALESBOT_COMPANIES)->get();
+            $cronjobs->first()->current_status = "Running";
+            $cronjobs->first()->save();
+        })->after(function () {
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_SALESBOT_COMPANIES)->get();
+            $cronjobs->first()->current_status = "Not Running";
+            $cronjobs->first()->save();
+        })->when(function(){
+            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_POPULATE_SALESBOT_COMPANIES)->get();
             if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
                 return true;
             }

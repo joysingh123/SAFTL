@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\MatchedContact;
 use App\Helpers\UtilString;
 use DB;
+use App\Companies;
 class ExtractDataController extends Controller
 {
     public function extractDataView(Request $request){
