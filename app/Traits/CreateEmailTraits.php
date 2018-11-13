@@ -10,6 +10,7 @@ use App\MatchedContact;
 use App\Emails;
 use App\AvailableEmail;
 use App\BounceEmail;
+use App\Contacts;
 
 trait CreateEmailTraits {
 
@@ -30,6 +31,7 @@ trait CreateEmailTraits {
             foreach ($matched_contact AS $mt) {
                 //echo $mt;
                 $matched_contact_id = $mt->id;
+                $contact_id = $mt->contact_id;
                 $first_name = strtolower($mt->first_name);
                 $last_name = strtolower($mt->last_name);
                 $first_name_first_char = substr($first_name, 0, 1);
@@ -39,11 +41,13 @@ trait CreateEmailTraits {
                 $matched_contact_domain = strtolower(trim($mt->domain));
                 $exist_in_available_email = AvailableEmail::where('first_name', '=', $first_name)->where('last_name', '=', $last_name)->where('company_domain', '=', $matched_contact_domain)->get();
                 if ($exist_in_available_email->count() > 0) {
-                    $mt->email = $exist_in_available_email->first()->email;
+                    $email_in_available = $exist_in_available_email->first()->email;
+                    $mt->email = $email_in_available;
                     $mt->email_status = 'valid';
                     $mt->email_validation_date = '2018-09-01 00:00:00';
                     $mt->save();
                     $found_in_available_email ++;
+                    Contacts::where('id','=',$contact_id)->update(['email'=>$email_in_available,'email_status'=>'valid','email_validation_date'=>'2018-09-01 00:00:00','domain'=>$matched_contact_domain]);
                 } else {
                     $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
                    // echo $available_format_for_domain;
