@@ -72,12 +72,19 @@ class HomeController extends Controller
         $emails_data['total'] = Emails::count();
         $emails_data['unique_email'] = Emails::all()->groupBy('matched_contact_id')->count();
         
+        $contacts = array(); 
+        $contacts['total'] = Contacts::count();
+        $contacts['valid'] = Contacts::where('email_status',"valid")->count();
+        $contacts['catch all'] = Contacts::where('email_status',"catch all")->count();
+        $contacts['invalid'] = Contacts::where('email_status',"invalid")->count();
+        
         $data['companies_data'] = $companies_data;
         $data['emails_data'] = $emails_data;
         $data['cwd_data'] = $cwd_data;
         $data['contacts_stats'] = $contacts_data;
         $data['available_email'] = $available_email;
         $data['matched_data'] = $matched_data;
+        $data['contacts'] = $contacts;
         return view('home')->with('data',$data);
     }
 }

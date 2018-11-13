@@ -98,6 +98,27 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="container">
+                        <h2>Contact Stats</h2>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>Valid</th>
+                                    <th>Catch All</th>
+                                    <th>Invalid</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['contacts']['total']); ?></td>
+                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['contacts']['valid']); ?></td>
+                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['contacts']['catch all']); ?></td>
+                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['contacts']['invalid']); ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <br>
                     @endrole
                     @role('Admin')
