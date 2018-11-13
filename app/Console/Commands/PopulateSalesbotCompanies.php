@@ -60,6 +60,7 @@ class PopulateSalesbotCompanies extends Command
                     $website = trim($company_master->first()->website);
                     $linkedin_url = trim($company_master->first()->linkedin_URL);
                     $industry = trim($company_master->first()->industry);
+                    $employee_size = trim($company_master->first()->employee_size);
                     $country = trim($company_master->first()->country);
                     $domain = trim($company_master->first()->domain);
                     $postal_code = trim($company_master->first()->postal_code);
@@ -73,6 +74,7 @@ class PopulateSalesbotCompanies extends Command
                     }else{
                         $salesbot_company = new Companies();
                         $salesbot_company->company = $company_name;
+                        $salesbot_company->employeeSize = $employee_size;
                         $salesbot_company->companyWebsite = $website;
                         $salesbot_company->industry = $industry;
                         $salesbot_company->country_id = $country;
