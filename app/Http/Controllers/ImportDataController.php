@@ -240,12 +240,13 @@ class ImportDataController extends Controller {
                         $duplicate_array = array();
 //                    $contacts_data = Contacts::get(['first_name','last_name','company_name']);
                         foreach ($data as $key => $value) {
+                            //echo $value;
                             if (in_array($value, $duplicate_array)) {
                                 $duplicate_in_sheet ++;
                             } else {
                                 $duplicate_array[] = strtolower($value);
 //                            if (!UtilString::contains($value, "\u")) {
-                                if (!UtilString::is_empty_string($value->full_name) && !UtilString::is_empty_string($value->company_url)) {
+                                if (!UtilString::is_empty_string($value->company_url)) {
                                     $company_id = UtilString::get_company_id_from_url($value->company_url);
                                     $linkedin_id = $company_id;
                                     $full_name = trim($value->full_name);
@@ -340,6 +341,7 @@ class ImportDataController extends Controller {
                             }
                             if ($insertData) {
                                 Session::flash('success', 'Your Data has successfully imported');
+                                return back();
                             } else {
                                 Session::flash('error', 'Error inserting the data..');
                                 return back();
@@ -369,8 +371,8 @@ class ImportDataController extends Controller {
                             "invalid_record" => $invalid_record,
                             "invalid_array" => $invalid_array
                         );
-//                        Session::flash('stats_data', $stats_data);
-//                        return back();
+                        Session::flash('stats_data', $stats_data);
+                        return back();
                     } else {
                         Session::flash('error', "The Sheet contains Only 20,000 records");
                         return back();
