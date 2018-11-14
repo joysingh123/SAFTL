@@ -29,8 +29,8 @@ trait ContactCompanyMatchTraits {
                 if ($comapanies->count() > 0) {
                     $company = $comapanies->first();
 //                    $matched_contact_exist = MatchedContact::where('full_name', trim($contact->full_name))->where('linkedin_id', trim($company->linkedin_id))->where('job_title', trim($contact->job_title))->where('company_name', trim($company->company_name))->get();
-                    $matched_contact_exist = MatchedContact::where('first_name', trim($contact->first_name))->where('last_name', trim($contact->last_name))->where('domain', trim($company->company_domain))->get();
-                    if ($matched_contact_exist->count() == 0) {
+                    //$matched_contact_exist = MatchedContact::where('first_name', trim($contact->first_name))->where('last_name', trim($contact->last_name))->where('domain', trim($company->company_domain))->get();
+                    //if ($matched_contact_exist->count() == 0) {
                         $matched_contact = new MatchedContact();
                         $matched_contact->contact_id = $contact->id;
                         $matched_contact->linkedin_id = trim($contact->linkedin_id);
@@ -61,15 +61,15 @@ trait ContactCompanyMatchTraits {
                             $contact->process_for_contact_match = 'matched';
                             $contact->save();
                         }
-                    } else {
-                        $contact->process_for_contact_match = 'matched';
-                        $contact->save();
-                        $exist_in_email_format = EmailFormat::where('company_domain','=',trim($company->company_domain))->count();
-                        if($exist_in_email_format > 0){
-                            MatchedContact::where('domain', trim($company->company_domain))->whereNull('email_status')->update(['email_status' => NULL, 'email_format_available' => 'yes']);
-                        }
-                        $already_exist_in_match ++;
-                    }
+//                    } else {
+//                        $contact->process_for_contact_match = 'matched';
+//                        $contact->save();
+//                        $exist_in_email_format = EmailFormat::where('company_domain','=',trim($company->company_domain))->count();
+//                        if($exist_in_email_format > 0){
+//                            MatchedContact::where('domain', trim($company->company_domain))->whereNull('email_status')->update(['email_status' => NULL, 'email_format_available' => 'yes']);
+//                        }
+//                        $already_exist_in_match ++;
+//                    }
                 } else {
                     $comapany_without_domain = CompaniesWithoutDomain::where('linkedin_id', $contact->linkedin_id)->get();
                     if ($comapany_without_domain->count() > 0) {
