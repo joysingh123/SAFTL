@@ -25,6 +25,11 @@ Route::get('extractdata',"ExtractDataController@extractDataView")->name('extract
 Route::post('extractdata',"ExtractDataController@extractData")->name('extractdata')->middleware(['auth','isAdmin']);
 Route::get('extractautocomplatedata/{data}',"ExtractDataController@extractDataForAutoComplate")->middleware(['auth','isAdmin']);
 
+Route::get('changedomain',"ChangeDomainContoller@changeDomainView")->name('changedomain')->middleware(['auth','isAdmin']);
+Route::get('editcompany/{id}',"ChangeDomainContoller@editCompanyView")->name('changedomain')->middleware(['auth','isAdmin']);
+Route::post('editcompany',"ChangeDomainContoller@editCompany")->name('editcompany')->middleware(['auth','isAdmin']);
+Route::post('changedomain',"ChangeDomainContoller@changeDomain")->name('changedomain')->middleware(['auth','isAdmin']);
+Route::get('extractautocompletedataforchangedomain/{data}',"ChangeDomainContoller@extractDataForAutoComplete")->middleware(['auth','isAdmin']);
 
 Route::get('importemaildata',"ImportDataController@importEmailView")->middleware(['auth','isAdmin']);
 Route::post('importemaildata',"ImportDataController@importEmailData")->name('importemaildata')->middleware(['auth','isAdmin']);

@@ -51,6 +51,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('extractdata') }}">{{ __('Extraction') }}</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('changedomain') }}">{{ __('Change Domain') }}</a>
+                            </li>
                         @endrole
                     </ul>
 
