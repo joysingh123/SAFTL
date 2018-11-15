@@ -23,7 +23,10 @@
                         <div class="form-group" style="margin-right: 10px;">
                             <div class="ui-widget">
                             <label for="mx_record">Mx Record: </label>
-                            <input type="text" class="form-control" id="mx_record">
+                            <select class="form-control" id='mx_record'>
+                                <option value="0">False</option>
+                                <option value="1">True</option>
+                            </select>
                             </div>
                         </div>
                         <div class="form-group" style="margin-right: 10px;">

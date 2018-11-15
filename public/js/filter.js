@@ -174,7 +174,7 @@ $(document).ready(function () {
         event.preventDefault();
         var domain = $('#c_domain').val();
         var country = $('#c_country').val();
-        var mx_record = $('#mx_record').val();
+        var mx_record = $('#mx_record :selected').val();
         var city = $('#c_city').val();
         var industry = $('#c_industry').val();
         var employee_size = $('#c_employee_size').val();
