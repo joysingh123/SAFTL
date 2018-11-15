@@ -250,9 +250,9 @@ class ImportDataController extends Controller {
                                     $company_id = UtilString::get_company_id_from_url($value->company_url);
                                     $linkedin_id = $company_id;
                                     $full_name = trim($value->full_name);
-                                    $job_title = ($value->title != "") ? trim($value->title) : "";
-                                    $company_name = ($value->company != "") ? trim($value->company) : "";
-                                    $experience = ($value->experience != "") ? trim($value->experience) : "";
+                                    $job_title = ($value->title != "") ? trim(strip_tags($value->title)) : "";
+                                    $company_name = ($value->company != "") ? trim(strip_tags($value->company)) : "";
+                                    $experience = ($value->experience != "") ? trim(strip_tags($value->experience)) : "";
                                     $location = ($value->location != "") ? trim($value->location) : "";
                                     $profile_link = ($value->profile_link != "") ? $value->profile_link : "";
                                     $tag = ($value->tag != "") ? trim($value->tag) : "";
