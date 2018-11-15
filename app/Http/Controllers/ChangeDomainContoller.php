@@ -65,9 +65,33 @@ class ChangeDomainContoller extends Controller {
         } else {
             $data = DB::table('companies_with_domain')->select('*')->where('locked', false);
             if (!UtilString::is_empty_string($domain)) {
-                $data->where('company_domain', "$domain");
+                $data->where('company_domain', $domain);
             }
-            $data = $data->get();
+            if (!UtilString::is_empty_string($country)) {
+                $data->where('country', $country);
+            }
+            if (!UtilString::is_empty_string($mx_record)) {
+                $data->where('mx_record', $mx_record);
+            }
+            if (!UtilString::is_empty_string($city)) {
+                $data->where('city', $city);
+            }
+            if (!UtilString::is_empty_string($industry)) {
+                $data->where('industry', $industry);
+            }
+            if (!UtilString::is_empty_string($employee_size)) {
+                $data->where('employee_size', $employee_size);
+            }
+            if (!UtilString::is_empty_string($employee_count)) {
+                $data->where('employee_count_at_linkedin', $employee_count);
+            }
+            if (!UtilString::is_empty_string($employee_size)) {
+                $data->where('employee_size', $employee_size);
+            }
+            if (!UtilString::is_empty_string($company_type)) {
+                $data->where('company_type', $company_type);
+            }
+            $data = $data->take(100)->get();
             if ($data->count() > 0) {
                 $response['status'] = "success";
                 $response['data'] = $data;

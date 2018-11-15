@@ -201,7 +201,7 @@ $(document).ready(function () {
                 }else{
                     var table = "<table class='table'>";
                     table += "<thead>";
-                    table += "<tr><th>#</th><th>Linkedin Id</th><th>Domain</th><th>Name</th><th>Type</th><th>Employee Count</th><th>Industry</th><th>City</th><th>Country</th><th>MX-Record</th><th>Employee Size</th><th>Edit</th></tr>";
+                    table += "<tr><th>#</th><th>Linkedin Id</th><th>Domain</th><th>Name</th><th>Type</th><th>E. Count</th><th>Industry</th><th>City</th><th>Country</th><th>MX-Record</th><th>E. Size</th><th>Edit</th></tr>";
                     table += "</thead>";
                     table += "<tbody>";
                     for (var i = 0; i < msg.data.length; i++) {
