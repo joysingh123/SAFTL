@@ -54,6 +54,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('changedomain') }}">{{ __('Change Domain') }}</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('domainapproval') }}">{{ __('Approve Domain') }}</a>
+                            </li>
                         @endrole
                     </ul>
 

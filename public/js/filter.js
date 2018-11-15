@@ -228,3 +228,17 @@ $(document).ready(function () {
         });
     });
 });
+
+function changeApprovalStatus(id){
+    var txt;
+    var r = confirm("Are You sure want to approve this domain?");
+    if (r == true) {
+        $.get( "/approvedomainforchange/"+id, function( data ) {
+        $( ".result" ).html( data );
+            window.location.reload();
+        });
+    } else {
+        txt = "You pressed Cancel!";
+    }
+    return r;
+}

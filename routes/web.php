@@ -31,6 +31,10 @@ Route::post('editcompany',"ChangeDomainContoller@editCompany")->name('editcompan
 Route::post('changedomain',"ChangeDomainContoller@changeDomain")->name('changedomain')->middleware(['auth','isAdmin']);
 Route::get('extractautocompletedataforchangedomain/{data}',"ChangeDomainContoller@extractDataForAutoComplete")->middleware(['auth','isAdmin']);
 
+Route::get('domainapproval',"DomainApprovalContoller@approveDomainView")->name('domainapproval')->middleware(['auth','isAdmin']);
+Route::get('approvedomainforchange/{id}',"DomainApprovalContoller@approveDomain")->name('approvedomainforchange')->middleware(['auth','isAdmin']);
+
+
 Route::get('importemaildata',"ImportDataController@importEmailView")->middleware(['auth','isAdmin']);
 Route::post('importemaildata',"ImportDataController@importEmailData")->name('importemaildata')->middleware(['auth','isAdmin']);
 
