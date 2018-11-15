@@ -91,7 +91,7 @@ class ChangeDomainContoller extends Controller {
             if (!UtilString::is_empty_string($company_type)) {
                 $data->where('company_type', $company_type);
             }
-            $data = $data->take(100)->get();
+            $data = $data->get();
             if ($data->count() > 0) {
                 $response['status'] = "success";
                 $response['data'] = $data;

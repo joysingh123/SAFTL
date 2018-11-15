@@ -71,7 +71,7 @@
             <br>
             <div class="card" id="filterdomain">
                 <div class="card-header">Filtered Domain</div>
-                <div class="card-body"></div>
+                <div class="card-body" style="overflow-y: hidden;"></div>
             </div>
             <div id="json_data" style="display: none">
                 
