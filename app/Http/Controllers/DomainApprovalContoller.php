@@ -7,6 +7,7 @@ use App\ChangedCompanies;
 use App\CompaniesWithDomain;
 use App\AvailableEmail;
 use App\MatchedContact;
+use App\Contacts;
 use Illuminate\Support\Facades\Auth;
 use Session;
 class DomainApprovalContoller extends Controller
@@ -26,8 +27,9 @@ class DomainApprovalContoller extends Controller
                 $updated_record = ChangedCompanies::where('id',$id)->get();
                 if($old_record->count() > 0 && $updated_record->count() > 0){
                     $old_domain = $old_record->first()->company_domain;
+                    $linkedin_id = $old_record->first()->linkedin_id;
                     $updated_domain = $updated_record->first()->company_domain;
-                    if($old_domain != $updated_record){
+                    if($old_domain != $updated_domain){
                         $update_first_name = $updated_record->first()->first_name;
                         $update_last_name = $updated_record->first()->last_name;
                         $update_email = $updated_record->first()->email;
@@ -48,10 +50,75 @@ class DomainApprovalContoller extends Controller
                             $old_record->first()->company_domain = $updated_domain;
                             $save_doamin = $old_record->first()->save();
                             if($save_doamin){
-                                MatchedContact::where('linkedin_id',$old_record->first()->linkedin_id)->update(["email_status"=>NULL,"domain"=>$updated_domain,"email_format_available"=>"no"]);
+                                MatchedContact::where('linkedin_id',$linkedin_id)->update(["email_status"=>NULL,"domain"=>$updated_domain,"email_format_available"=>"no"]);
                             }
                         }
                     }
+                    if($old_record->first()->linkedin_url != $updated_record->first()->linkedin_url){
+                        $old_record->first()->linkedin_url = $updated_record->first()->linkedin_url;
+                        $old_record->first()->save();
+                    }
+                    
+                    if($old_record->first()->company_name != $updated_record->first()->company_name){
+                        $old_record->first()->company_name = $updated_record->first()->company_name;
+                        $save_as = $old_record->first()->save();
+                        if($save_as){
+                            Contacts::where('linkedin_id',$linkedin_id)->update(['company_name'=>$updated_record->first()->company_name]);
+                            MatchedContact::where('linkedin_id',$linkedin_id)->update(['company_name'=>$updated_record->first()->company_name]);
+                        }
+                    }
+                    
+                    if($old_record->first()->company_type != $updated_record->first()->company_type){
+                        $old_record->first()->company_type = $updated_record->first()->company_type;
+                        $save_as = $old_record->first()->save();
+                    }
+                    
+                    if($old_record->first()->employee_count_at_linkedin != $updated_record->first()->employee_count_at_linkedin){
+                        $old_record->first()->employee_count_at_linkedin = $updated_record->first()->employee_count_at_linkedin;
+                        $save_as = $old_record->first()->save();
+                    }
+                    
+                    if($old_record->first()->industry != $updated_record->first()->industry){
+                        $old_record->first()->industry = $updated_record->first()->industry;
+                        $save_as = $old_record->first()->save();
+                        if($save_as){
+                           MatchedContact::where('linkedin_id',$linkedin_id)->update(['industry'=>$updated_record->first()->industry]);
+                        }
+                    }
+                    
+                    if($old_record->first()->city != $updated_record->first()->city){
+                        $old_record->first()->city = $updated_record->first()->city;
+                        $save_as = $old_record->first()->save();
+                        if($save_as){
+                           MatchedContact::where('linkedin_id',$linkedin_id)->update(['city'=>$updated_record->first()->city]);
+                        }
+                    }
+                    
+                    if($old_record->first()->postal_code != $updated_record->first()->postal_code){
+                        $old_record->first()->postal_code = $updated_record->first()->postal_code;
+                        $save_as = $old_record->first()->save();
+                        if($save_as){
+                           MatchedContact::where('linkedin_id',$linkedin_id)->update(['postal_code'=>$updated_record->first()->postal_code]);
+                        }
+                    }
+                    
+                    if($old_record->first()->employee_size != $updated_record->first()->employee_size){
+                        $old_record->first()->employee_size = $updated_record->first()->employee_size;
+                        $save_as = $old_record->first()->save();
+                        if($save_as){
+                           MatchedContact::where('linkedin_id',$linkedin_id)->update(['employee_size'=>$updated_record->first()->employee_size]);
+                        }
+                    }
+                    
+                    if($old_record->first()->country != $updated_record->first()->country){
+                        $old_record->first()->country = $updated_record->first()->country;
+                        $save_as = $old_record->first()->save();
+                        if($save_as){
+                           MatchedContact::where('linkedin_id',$linkedin_id)->update(['country'=>$updated_record->first()->country]);
+                        }
+                    }
+                    ChangedCompanies::where('id',$id)->update(['status'=>'processed']);
+                    CompaniesWithDomain::where('id',$id)->update(['locked'=>false]);
                 }else{
                    $message = "No, Record Found For Updation";
                    Session::flash('fail', $message);

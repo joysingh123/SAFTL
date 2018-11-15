@@ -121,7 +121,7 @@
                             </div>
                             <label for="remark" class="col-md-2 col-form-label text-md-right">{{ __('Remark') }}</label>
                             <div class="col-md-4">
-                                <textarea id="remark" class="form-control {{ $errors->has('remark') ? ' is-invalid' : '' }}" name="remark" rows="4" cols="44">{{ old('remark') }}</textarea>
+                                <textarea id="remark" class="form-control {{ $errors->has('remark') ? ' is-invalid' : '' }}" name="remark" rows="2" cols="44">{{ old('remark') }}</textarea>
                                 @if ($errors->has('remark'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('remark') }}</strong>
