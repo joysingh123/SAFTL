@@ -95,6 +95,7 @@ class ChangeDomainContoller extends Controller {
             if ($data->count() > 0) {
                 $response['status'] = "success";
                 $response['data'] = $data;
+                $response['result_count'] = $data->count();
             } else {
                 $response['status'] = "Fail";
                 $response['message'] = "No, Result Found.";

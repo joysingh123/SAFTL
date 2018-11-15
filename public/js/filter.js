@@ -223,6 +223,7 @@ $(document).ready(function () {
                     table += "</tbody>";
                     table += "</table>";
                     $("#filterdomain > div.card-body").html(table);
+                    $("#filterdomain > div.card-header").html("Total Result: " + msg.result_count);
                     $("#filterdomain").show();
                 }
         });
