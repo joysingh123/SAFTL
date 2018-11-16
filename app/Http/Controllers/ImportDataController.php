@@ -296,7 +296,7 @@ class ImportDataController extends Controller {
                                         $invalid_name ++;
                                         $invalid_array[] = $value;
                                     }
-                                    if(strlen($first_name) == 1 || strlen($last_name == 1)){
+                                    if(strlen($first_name) == 1 || strlen($last_name) == 1){
                                         $insert_status = false;
                                         $invalid_name ++;
                                         $invalid_array[] = $value;
