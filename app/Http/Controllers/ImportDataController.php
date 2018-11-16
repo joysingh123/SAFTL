@@ -263,11 +263,11 @@ class ImportDataController extends Controller {
                                     $status = "invalid";
 
                                     //logic for first name and last name
-                                    $explode_name = explode(" ", $value->full_name);
                                     $insert_status = true;
-                                    if ($first_name != "" && $last_name != "") {
+                                    if (!UtilString::is_empty_string($first_name) && !UtilString::is_empty_string($last_name)) {
                                         $status = "valid";
-                                    } else {
+                                    } elseif(!UtilString::is_empty_string($full_name)){
+                                        $explode_name = explode(" ", $full_name);
                                         if (count($explode_name) == 1) {
                                             $first_name = $explode_name[0];
                                             $status = "valid";
@@ -280,6 +280,21 @@ class ImportDataController extends Controller {
                                             $invalid_name ++;
                                             $invalid_array[] = $value;
                                         }
+                                    }
+                                    if(UtilString::is_empty_string($first_name) && UtilString::is_empty_string($last_name)){
+                                        $insert_status = false;
+                                        $invalid_name ++;
+                                        $invalid_array[] = $value;
+                                    }
+                                    if(UtilString::is_empty_string($first_name) && !UtilString::is_empty_string($last_name)){
+                                        $insert_status = false;
+                                        $invalid_name ++;
+                                        $invalid_array[] = $value;
+                                    }
+                                    if(UtilString::contains($first_name, "(") || UtilString::contains($first_name, ")") || UtilString::contains($last_name, "(") || UtilString::contains($last_name, ")")){
+                                        $insert_status = false;
+                                        $invalid_name ++;
+                                        $invalid_array[] = $value;
                                     }
                                     if ($linkedin_id <= 0 || empty($linkedin_id)) {
                                         $status = "invalid";
