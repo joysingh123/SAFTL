@@ -205,10 +205,16 @@ class ChangeDomainContoller extends Controller {
                         if ($validator->fails()) {
                             return Redirect::back()->withInput()->withErrors($validator);
                         } else {
-                            $changed_companies->first_name = $first_name;
-                            $changed_companies->last_name = $last_name;
-                            $changed_companies->email = $email;
-                            $save_as = $changed_companies->save();
+                            $email_doamin =  substr($email,strpos($email,'@')+1,strlen($email)-1);
+                            if($email_doamin != $company_domain){
+                                Session::flash('error', "you have entered wrong domain email");
+                                return back();
+                            }else{
+                                $changed_companies->first_name = $first_name;
+                                $changed_companies->last_name = $last_name;
+                                $changed_companies->email = $email;
+                                $save_as = $changed_companies->save();
+                            }
                         }
                     } else {
                         $save_as = $changed_companies->save();
