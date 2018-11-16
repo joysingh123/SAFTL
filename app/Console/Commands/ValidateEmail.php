@@ -86,7 +86,6 @@ class ValidateEmail extends Command {
                             $contact_id = $matched_contact->contact_id;
                             $domain = $matched_contact->domain;
                             Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>$email_status,'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
-                            echo "contact updated";
                             break;
                         } else {
                             if ($v_response['email_status'] != "") {

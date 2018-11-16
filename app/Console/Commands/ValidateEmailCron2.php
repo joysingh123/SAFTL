@@ -9,6 +9,7 @@ use App\Helpers\UtilString;
 use DB;
 use App\Traits\ValidateEmailTraits;
 use App\MatchedContact;
+use App\Contacts;
 
 class ValidateEmailCron2 extends Command {
     use ValidateEmailTraits;
@@ -78,6 +79,9 @@ class ValidateEmailCron2 extends Command {
                             $matched_contact->email_validation_date = date("Y-m-d H:i:s");
                             $matched_contact->save();
                             Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => $v_response['email_status']]);
+                            $contact_id = $matched_contact->contact_id;
+                            $domain = $matched_contact->domain;
+                            Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>$email_status,'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
                             break;
                         } else {
                             if ($v_response['email_status'] != "") {
@@ -88,6 +92,10 @@ class ValidateEmailCron2 extends Command {
                     if ($is_invalid) {
                         Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => 'invalid']);
                         MatchedContact::where('id', '=', $matched_id)->update(['email_status' => $v_response['email_status'], 'email_validation_date' => date("Y-m-d H:i:s")]);
+                        $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
+                        $contact_id = $matched_contact->contact_id;
+                        $domain = $matched_contact->domain;
+                        Contacts::where('id','=',$contact_id)->update(['email_status'=>$email_status,'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
                     }
                 }
             }
