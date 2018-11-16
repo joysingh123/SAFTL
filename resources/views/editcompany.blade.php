@@ -161,7 +161,7 @@
                             </div>
                             <div class="col-md-4 offset-md-2">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Edit') }}
+                                    {{ __('Submit') }}
                                 </button>
                             </div>
                         </div>
