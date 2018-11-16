@@ -32,8 +32,8 @@ trait CreateEmailTraits {
                 //echo $mt;
                 $matched_contact_id = $mt->id;
                 $contact_id = $mt->contact_id;
-                $first_name = strtolower($mt->first_name);
-                $last_name = strtolower($mt->last_name);
+                $first_name = strtolower(trim($mt->first_name));
+                $last_name = strtolower(trim($mt->last_name));
                 $first_name_first_char = substr($first_name, 0, 1);
                 $last_name_first_char = substr($last_name, 0, 1);
                 $first_name_first_two_char = substr($first_name, 0, 2);
@@ -52,7 +52,7 @@ trait CreateEmailTraits {
                     $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
                    // echo $available_format_for_domain;
                     if ($available_format_for_domain->count() > 0) {
-                        if (!UtilString::is_empty_string($first_name) && !UtilString::is_empty_string($last_name)) {
+                        if (!UtilString::is_empty_string($first_name) && !UtilString::is_empty_string($last_name) && !UtilString::is_empty_string($matched_contact_domain)) {
                             $vars = array(
                                 UtilConstant::FIRST_NAME => $first_name,
                                 UtilConstant::LAST_NAME => $last_name,
