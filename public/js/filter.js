@@ -197,6 +197,7 @@ $(document).ready(function () {
                 console.log(msg);
                 if (msg.status == "Fail") {
                     $("#filterdomain > div.card-body").html("<h1>" + msg.message + "</h1>");
+                    $("#filterdomain > div.card-header").html("Total Result: 0");
                     $("#filterdomain").show();
                 }else{
                     var table = "<table class='table'>";
@@ -204,20 +205,20 @@ $(document).ready(function () {
                     table += "<tr><th>#</th><th>Linkedin Id</th><th>Domain</th><th>Name</th><th>Type</th><th>E. Count</th><th>Industry</th><th>City</th><th>Country</th><th>MX-Record</th><th>E. Size</th><th>Edit</th></tr>";
                     table += "</thead>";
                     table += "<tbody>";
-                    for (var i = 0; i < msg.data.length; i++) {
+                    for (var i = 0; i < msg.data.data.length; i++) {
                         table += "<tr>";
                         table += "<td>" + (i + 1) + "</td>";
-                        table += "<td>" + msg.data[i].linkedin_id + "</td>";
-                        table += "<td>" + msg.data[i].company_domain + "</td>";
-                        table += "<td>" + msg.data[i].company_name + "</td>";
-                        table += "<td>" + msg.data[i].company_type + "</td>";
-                        table += "<td>" + msg.data[i].employee_count_at_linkedin + "</td>";
-                        table += "<td>" + msg.data[i].industry + "</td>";
-                        table += "<td>" + msg.data[i].city + "</td>";
-                        table += "<td>" + msg.data[i].country + "</td>";
-                        table += "<td>" + msg.data[i].mx_record + "</td>";
-                        table += "<td>" + msg.data[i].employee_size + "</td>";
-                        table += "<td> <a href='/editcompany/" + msg.data[i].id + "' target='_blank'>Edit</a></td>";
+                        table += "<td>" + msg.data.data[i].linkedin_id + "</td>";
+                        table += "<td>" + msg.data.data[i].company_domain + "</td>";
+                        table += "<td>" + msg.data.data[i].company_name + "</td>";
+                        table += "<td>" + msg.data.data[i].company_type + "</td>";
+                        table += "<td>" + msg.data.data[i].employee_count_at_linkedin + "</td>";
+                        table += "<td>" + msg.data.data[i].industry + "</td>";
+                        table += "<td>" + msg.data.data[i].city + "</td>";
+                        table += "<td>" + msg.data.data[i].country + "</td>";
+                        table += "<td>" + msg.data.data[i].mx_record + "</td>";
+                        table += "<td>" + msg.data.data[i].employee_size + "</td>";
+                        table += "<td> <a href='/editcompany/" + msg.data.data[i].id + "' target='_blank'>Edit</a></td>";
                         table += "</tr>";
                     }
                     table += "</tbody>";
@@ -243,3 +244,26 @@ function changeApprovalStatus(id){
     }
     return r;
 }
+
+//$(function() {
+//    $('body').on('click', '.pagination a', function(e) {
+//        e.preventDefault();
+//
+//        //$('#load a').css('color', '#dfecf6');
+//        //$('#load').append('<img style="position: absolute; left: 0; top: 0; z-index: 100000;" src="/images/loading.gif" />');
+//
+//        var url = $(this).attr('href');  
+//        getDomainChangeData(url);
+//        window.history.pushState("", "", url);
+//    });
+//
+//    function getDomainChangeData(url) {
+//        $.ajax({
+//            url : url  
+//        }).done(function (data) {
+//            $('.articles').html(data);  
+//        }).fail(function () {
+//            alert('Articles could not be loaded.');
+//        });
+//    }
+//});
