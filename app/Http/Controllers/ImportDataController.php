@@ -17,6 +17,7 @@ use App\BounceEmail;
 use App\EmailData;
 use App\EmailForValidation;
 use Illuminate\Support\Facades\Auth;
+use App\CompaniesWithoutDomain;
 
 class ImportDataController extends Controller {
 
@@ -137,6 +138,20 @@ class ImportDataController extends Controller {
                                                 'employee_size' => $value->employee_size,
                                                 'country' => $value->country
                                             ];
+                                            $company_without_domain = CompaniesWithoutDomain::where('company_name',$value->company_domain)->get();
+                                            if($company_without_domain->count() <= 0){
+                                                $company_d = new CompaniesWithoutDomain();
+                                                $linkedin_id = ($value->linkedin_id != "") ? UtilString::get_company_id_from_url($value->linkedin_id) : 0;
+                                                $company_d->linkedin_id = $linkedin_id;
+                                                $company_d->company_domain = $value->company_domain;
+                                                $company_d->company_name = $value->company_name;
+                                                $company_d->employee_count_at_linkedin = $value->employee_count_at_linkedin;
+                                                $company_d->industry = $value->industry;
+                                                $company_d->city = $value->city;
+                                                $company_d->employee_size = $value->employee_size;
+                                                $company_d->country = $value->country;
+                                                $company_d->save();
+                                            }
                                         }
                                     } else {
                                         $junk_count ++;
