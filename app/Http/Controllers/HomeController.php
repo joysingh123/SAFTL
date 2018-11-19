@@ -68,9 +68,9 @@ class HomeController extends Controller
         //MatchedContact::whereNULL('email_status')->count();
 //        $emails = Emails::groupBy('matched_contact_id')->get();
         
-        $emails_data = array();
-        $emails_data['total'] = Emails::count();
-        $emails_data['unique_email'] = Emails::all()->groupBy('matched_contact_id')->count();
+//        $emails_data = array();
+//        $emails_data['total'] = Emails::count();
+//        $emails_data['unique_email'] = Emails::all()->groupBy('matched_contact_id')->count();
         
         $contacts = array(); 
         $contacts['total'] = Contacts::count();
@@ -79,7 +79,7 @@ class HomeController extends Controller
         $contacts['invalid'] = Contacts::where('email_status',"invalid")->count();
         
         $data['companies_data'] = $companies_data;
-        $data['emails_data'] = $emails_data;
+//        $data['emails_data'] = $emails_data;
         $data['cwd_data'] = $cwd_data;
         $data['contacts_stats'] = $contacts_data;
         $data['available_email'] = $available_email;

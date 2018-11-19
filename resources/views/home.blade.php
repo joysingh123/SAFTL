@@ -82,23 +82,6 @@
                     <br>
                     <br>
                     <div class="container">
-                        <h2>Email Stats</h2>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Total</th>
-                                    <th>Unique Id Email</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['emails_data']['total']); ?></td>
-                                    <td><?php echo \App\Helpers\UtilString::IND_money_format($data['emails_data']['unique_email']); ?></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="container">
                         <h2>Contact Stats</h2>
                         <table class="table">
                             <thead>
