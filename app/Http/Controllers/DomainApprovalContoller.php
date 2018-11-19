@@ -24,7 +24,7 @@ class DomainApprovalContoller extends Controller
             $update = ChangedCompanies::where('id',$id)->update(['approve'=>true,"approved_by"=>$user_id]);
             if($update){
                 $old_record = CompaniesWithDomain::where('id',$id)->get();
-                $updated_record = ChangedCompanies::where('id',$id)->get();
+                $updated_record = ChangedCompanies::where('id',$id)->where('status','not processed')->get();
                 if($old_record->count() > 0 && $updated_record->count() > 0){
                     $old_domain = $old_record->first()->company_domain;
                     $linkedin_id = $old_record->first()->linkedin_id;
