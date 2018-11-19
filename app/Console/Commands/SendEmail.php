@@ -49,20 +49,24 @@ class SendEmail extends Command
         ini_set('default_socket_timeout', 600);
         $data = ['message' => 'This is a test!'];
         $limit = 5;
-        $contacts = Contacts::where('final','not processed')->take($limit)->get();
-        if($contacts->count() > 0){
-            foreach ($contacts AS $con){
-                $email = $con->email;
-                if(UtilString::is_email($email)){
-                    $response = Mail::to($email)->send(new TestEmailViaSendgrid($data));
-                    $con->final = "sent";
-                    $con->save();
-                }else{
-                    $con->final = "Email Not Exist";
-                    $con->save();
-                }
-            }
-        }   
+//        $contacts = Contacts::where('final','not processed')->take($limit)->get();
+//        if($contacts->count() > 0){
+//            foreach ($contacts AS $con){
+//                $email = $con->email;
+//                if(UtilString::is_email($email)){
+//                    $response = Mail::to($email)->send(new TestEmailViaSendgrid($data));
+//                    $con->final = "sent";
+//                    $con->save();
+//                }else{
+//                    $con->final = "Email Not Exist";
+//                    $con->save();
+//                }
+//            }
+//        }
+        $con_email = array("sumit@salesaladin.com","tosumitgoel@gmail.com","sumitg1276.1@gmail.com","sumitg1276.2@gmail.com","sumitg1276.3@gmail.com","sumitg1276.4@gmail.com","sumitg1276.5@gmail.com","sumit-goel@hcl.com");
+        foreach($con_email AS $email){
+            $response = Mail::to($email)->send(new TestEmailViaSendgrid($data));
+        }
         UtilDebug::debug("End processing");
     }
 }
