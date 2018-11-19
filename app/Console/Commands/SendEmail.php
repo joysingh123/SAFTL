@@ -63,7 +63,7 @@ class SendEmail extends Command
 //                }
 //            }
 //        }
-        $con_email = array("sumit@salesaladin.com","tosumitgoel@gmail.com","sumitg1276.1@gmail.com","sumitg1276.2@gmail.com","sumitg1276.3@gmail.com","sumitg1276.4@gmail.com","sumitg1276.5@gmail.com","sumit-goel@hcl.com");
+        $con_email = array("ajay.agrawal9022@gmail.com","sumit@salesaladin.com","tosumitgoel@gmail.com","sumitg1276.1@gmail.com","sumitg1276.2@gmail.com","sumitg1276.3@gmail.com","sumitg1276.4@gmail.com","sumitg1276.5@gmail.com","sumit-goel@hcl.com");
         foreach($con_email AS $email){
             $response = Mail::to($email)->send(new TestEmailViaSendgrid($data));
         }
