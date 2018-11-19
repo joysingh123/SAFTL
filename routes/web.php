@@ -54,4 +54,4 @@ Route::resource('users',"UserController")->middleware(['auth','isAdmin']);
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::post('webhook', 'WebhookController@handle');
+Route::post('webhook', 'WebHookController@handle');
