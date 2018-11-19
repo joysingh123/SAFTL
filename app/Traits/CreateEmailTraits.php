@@ -42,9 +42,16 @@ trait CreateEmailTraits {
                 $exist_in_available_email = AvailableEmail::where('first_name', '=', $first_name)->where('last_name', '=', $last_name)->where('company_domain', '=', $matched_contact_domain)->get();
                 if ($exist_in_available_email->count() > 0) {
                     $email_in_available = $exist_in_available_email->first()->email;
+                    $email_status_in_available_email  = $exist_in_available_email->first()->email_status;
+                    $email_validation_date_in_available_email  = $exist_in_available_email->first()->email_validation_date;
+                    if($email_status_in_available_email == 'valid' || $email_status_in_available_email == 'invalid' || $email_status_in_available_email == 'catch all'){
+                        $mt->email_status = $email_status_in_available_email;
+                        $mt->email_validation_date = $email_validation_date_in_available_email;
+                    }else{
+                        $mt->email_status = 'valid';
+                        $mt->email_validation_date = '2018-09-01 00:00:00';
+                    }
                     $mt->email = $email_in_available;
-                    $mt->email_status = 'valid';
-                    $mt->email_validation_date = '2018-09-01 00:00:00';
                     $mt->save();
                     $found_in_available_email ++;
                     Contacts::where('id','=',$contact_id)->update(['email'=>$email_in_available,'email_status'=>'valid','email_validation_date'=>'2018-09-01 00:00:00','domain'=>$matched_contact_domain]);
