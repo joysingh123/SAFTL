@@ -24,6 +24,7 @@
                             <div class="ui-widget">
                             <label for="mx_record">Mx Record: </label>
                             <select class="form-control" id='mx_record'>
+                                <option value="">Others</option>
                                 <option value="0">False</option>
                                 <option value="1">True</option>
                             </select>
