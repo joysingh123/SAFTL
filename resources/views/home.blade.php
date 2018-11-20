@@ -133,6 +133,9 @@
                     <div class="links">
                         <a href="/createemail">Create Email</a>
                     </div>
+                    <div class="links">
+                        <a href="/reprocesssheetdata">Re-Process Sheet Data</a>
+                    </div>
                     @endrole
                 </div>
             </div>
