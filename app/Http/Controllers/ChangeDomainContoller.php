@@ -18,35 +18,14 @@ use Session;
 class ChangeDomainContoller extends Controller {
 
     public function changeDomainView() {
-        return view('changedomainview');
-    }
-
-    public function extractDataForAutoComplete(Request $request) {
-        $column = $request->data;
-        $term = $request->get('term');
-        $data = "";
-        if ($column == "domain") {
-            $filter_data = DB::table('companies_with_domain')->select('company_domain')->where('company_domain', 'LIKE', "%solicent%")->orderBy('company_domain')->get();
-            $plucked = $filter_data->pluck('company_domain');
-            $filter_data = $plucked->all();
-            $data = json_encode($filter_data);
-        } else if ($column == "industry") {
-            $filter_data = DB::table('s_industry_master')->select('Industry')->where('Industry', 'LIKE', "%$term%")->get();
-            $plucked = $filter_data->pluck('Industry');
-            $filter_data = $plucked->all();
-            $data = json_encode($filter_data);
-        } else if ($column == "country") {
-            $filter_data = DB::table('s_country_master')->select('Country Name')->where('Country Name', 'LIKE', "%$term%")->get();
-            $plucked = $filter_data->pluck('Country Name');
-            $filter_data = $plucked->all();
-            $data = json_encode($filter_data);
-        } else if ($column == "employeesize") {
-            $filter_data = DB::table('s_employee_size_master')->select('employee_size')->where('employee_size', 'LIKE', "%$term%")->get();
-            $plucked = $filter_data->pluck('employee_size');
-            $filter_data = $plucked->all();
-            $data = json_encode($filter_data);
-        }
-        return $data;
+        $industry = DB::table('s_industry_master')->select('Industry')->get();
+        $country = DB::table('s_country_master')->select('Country Name AS name')->get();
+        $employeesize = DB::table('s_employee_size_master')->select('employee_size')->get();
+        $plucked_industry = $industry->pluck('Industry');
+        $plucked_country = $country->pluck('name');
+        $plucked_employeesize = $employeesize->pluck('employee_size');
+        $seed_data = array("industry"=>$plucked_industry,"country"=>$plucked_country,"employeesize"=>$plucked_employeesize);
+        return view('changedomainview')->with("seed_data",$seed_data);
     }
     
     public function companyFilteredData(Request $request){

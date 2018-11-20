@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -9,58 +8,48 @@
                 <div class="card-body">
                     <form class="form-inline" id="filterchangedomainform">
                         <div class="form-group" style="margin-right: 10px;">
-                            <div class="ui-widget">
-                                <label for="domain">Domain: </label>
-                                <input type="text" class="form-control" id="c_domain">
+                            <div class="autocomplete">
+                                <input id="c_domain" type="text" placeholder="Domain" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group" style="margin-right: 10px;">
-                            <div class="ui-widget">
-                            <label for="country">Country: </label>
-                            <input type="text" class="form-control" id="c_country">
+                            <div class="autocomplete">
+                                <input id="c_country" type="text" placeholder="Country" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group" style="margin-right: 10px;">
-                            <div class="ui-widget">
-                            <label for="mx_record">Mx Record: </label>
-                            <select class="form-control" id='mx_record'>
-                                <option value="">Others</option>
+                            <select class="form-control" id='mx_record' >
+                                <option value="">MX Record</option>
                                 <option value="0">False</option>
                                 <option value="1">True</option>
                             </select>
+                        </div>
+                        <div class="form-group" style="margin-right: 10px;">
+                            <div class="autocomplete">
+                                <input id="c_city" type="text" placeholder="City" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group" style="margin-right: 10px;">
-                            <div class="ui-widget">
-                            <label for="city">City: </label>
-                            <input type="text" class="form-control" id="c_city">
+                            <div class="autocomplete">
+                                <input id="c_industry" type="text" placeholder="Industry" autocomplete="off">
                             </div>
                         </div>
-                        <div class="form-group" style="margin-right: 10px;">
-                            <div class="ui-widget">
-                                <label for="industry">Industry: </label>
-                                <input type="text" class="form-control" id="c_industry">
+                        <div class="form-group" style="margin-right: 10px;margin-top: 10px;">
+                            <div class="autocomplete">
+                                <input id="c_employee_size" type="text" placeholder="Employee Size" autocomplete="off">
                             </div>
                         </div>
-                        <div class="form-group" style="margin-right: 10px;">
-                            <div class="ui-widget">
-                                <label for="employee_size">Employee Size: </label>
-                                <input type="text" class="form-control" id="c_employee_size">
+                        <div class="form-group" style="margin-right: 10px;margin-top: 10px;">
+                            <div class="autocomplete">
+                                <input id="c_employee_count" type="text" placeholder="Employee Count" autocomplete="off">
                             </div>
                         </div>
-                        <div class="form-group" style="margin-right: 10px;">
-                            <div class="ui-widget">
-                                <label for="employee_count">Employee Count: </label>
-                                <input type="text" class="form-control" id="c_employee_count">
+                        <div class="form-group" style="margin-right: 10px;margin-top: 10px;">
+                            <div class="autocomplete">
+                                <input id="c_company_type" type="text" placeholder="Company Type" autocomplete="off">
                             </div>
                         </div>
-                        <div class="form-group" style="margin-right: 10px;">
-                            <div class="ui-widget">
-                                <label for="company_type">Company Type: </label>
-                                <input type="text" class="form-control" id="c_company_type">
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-right: 10px;">
+                        <div class="form-group" style="margin-right: 10px;margin-top: 10px;">
                             <div class="ui-widget">
                                 <label for="department"></label>
                                 <button type="submit" class="btn btn-default">Submit</button>
@@ -73,5 +62,14 @@
             <div class="card" id="filterdomain"></div>
         </div>
     </div>
+    <script type="text/javascript">
+    var country = <?php echo $seed_data['country']; ?>
+    </script>
+    <script type="text/javascript">
+    var industry = <?php echo $seed_data['industry']; ?>
+    </script>
+    <script type="text/javascript">
+    var employee_size = <?php echo $seed_data['employeesize']; ?>
+    </script>
 </div>
 @endsection
