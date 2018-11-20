@@ -52,7 +52,7 @@
                         <div class="form-group" style="margin-right: 10px;margin-top: 10px;">
                             <div class="ui-widget">
                                 <label for="department"></label>
-                                <button type="submit" class="btn btn-default">Submit</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </form>
