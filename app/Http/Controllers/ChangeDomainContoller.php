@@ -48,9 +48,8 @@ class ChangeDomainContoller extends Controller {
         }
         return $data;
     }
-
-    public function changeDomain(Request $request) {
-        $response = array();
+    
+    public function companyFilteredData(Request $request){
         $domain = trim($request->domain);
         $country = trim($request->country);
         $mx_record = trim($request->mx_record);
@@ -60,8 +59,7 @@ class ChangeDomainContoller extends Controller {
         $employee_count = trim($request->employee_count);
         $company_type = trim($request->company_type);
         if (UtilString::is_empty_string($domain) && UtilString::is_empty_string($country) && UtilString::is_empty_string($mx_record) && UtilString::is_empty_string($city) && UtilString::is_empty_string($industry) && UtilString::is_empty_string($employee_size) && UtilString::is_empty_string($employee_count) && UtilString::is_empty_string($company_type)) {
-            $response['status'] = "Fail";
-            $response['message'] = "No, Result Found.";
+            $data = DB::table('companies_with_domain')->select('*')->where('company_domain', 'test');
         } else {
             $data = DB::table('companies_with_domain')->select('*')->where('locked', false);
             if (!UtilString::is_empty_string($domain)) {
@@ -91,19 +89,11 @@ class ChangeDomainContoller extends Controller {
             if (!UtilString::is_empty_string($company_type)) {
                 $data->where('company_type', $company_type);
             }
-            $data = $data->get();
-            if ($data->count() > 0) {
-                $response['status'] = "success";
-                $response['data'] = $data;
-                $response['result_count'] = $data->count();
-            } else {
-                $response['status'] = "Fail";
-                $response['message'] = "No, Result Found.";
-            }
         }
-        return response()->json($response);
+        $data = $data->paginate(100);
+        return view('filteredcompanydata', compact('data'))->render();
     }
-
+    
     public function editCompanyView(Request $request) {
         $response = array();
         $id = $request->id;
