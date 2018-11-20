@@ -159,9 +159,23 @@ $(document).ready(function () {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $.ajax({url: url}).done(function (data) {
-            $('#filterdomain').html(data);
-            $("#filterdomain").show();
+//        $.ajax({url: url}).done(function (data) {
+//            $('#filterdomain').html(data);
+//            $("#filterdomain").show();
+//        });
+        $.ajax({
+            url: url,
+            cache: false,
+            beforeSend: function(){
+                $('.loading').show();
+            },
+            complete: function(){
+                $('.loading').hide();
+            },
+            success: function(data){
+                $('#filterdomain').html(data);
+                $("#filterdomain").show();
+            }
         });
     });
 });
@@ -198,9 +212,24 @@ $(document).ready(function(){
         var company_type = $('#c_company_type').val();
         var url = window.location.origin + "/filtercompanydata?page="+page+"&domain="+domain+"&country="+country+"&mx_record="+mx_record+"&city="+city+"&industry="+industry+"&employee_size="+employee_size+"&employee_count="+employee_count+"&company_type="+company_type;
         console.log(url);
+//        $.ajax({
+//            url:url,
+//            success:function(data){
+//                $('#filterdomain').html(data);
+//                $("#filterdomain").show();
+//            }
+//            
+//        });
         $.ajax({
-            url:url,
-            success:function(data){
+            url: url,
+            cache: false,
+            beforeSend: function(){
+                $('.loading').show();
+            },
+            complete: function(){
+                $('.loading').hide();
+            },
+            success: function(data){
                 $('#filterdomain').html(data);
                 $("#filterdomain").show();
             }
