@@ -5,9 +5,11 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Helpers\UtilDebug;
 use App\Helpers\UtilString;
+use App\Helpers\UtilConstant;
 use App\Mail\TestEmailViaSendgrid;
 use \Illuminate\Support\Facades\Mail;
 use App\Contacts;
+use App\EmailSendData;
 
 class SendEmail extends Command
 {
@@ -49,19 +51,26 @@ class SendEmail extends Command
         ini_set('default_socket_timeout', 600);
         $data = ['message' => 'This is a test!'];
         $limit = 100;
+        $sendgrid_email_send = EmailSendData::where('service', UtilConstant::SENDGRID_EMAIL_SERVICE)->where('status','Active')->get();
         $contacts = Contacts::where('final','not processed')->take($limit)->get();
-        if($contacts->count() > 0){
-            foreach ($contacts AS $con){
-                $email = $con->email;
-                if(UtilString::is_email($email)){
-                    $response = Mail::to($email)->send(new TestEmailViaSendgrid($data));
-                    $con->final = "sent";
-                    $con->save();
-                }else{
-                    $con->final = "Email Not Exist";
-                    $con->save();
+        if($sendgrid_email_send->count() > 0){
+            if($contacts->count() > 0){
+                foreach ($contacts AS $con){
+                    $email = $con->email;
+                    if(UtilString::is_email($email)){
+                        $response = Mail::to($email)->send(new TestEmailViaSendgrid($sendgrid_email_send));
+                        $con->final = "sent";
+                        $con->save();
+                    }else{
+                        $con->final = "Email Not Exist";
+                        $con->save();
+                    }
                 }
+            }else{
+                echo "No, Data Found for email sending";
             }
+        }else{
+            echo "No, email sending data found";
         }
         UtilDebug::debug("End processing");
     }

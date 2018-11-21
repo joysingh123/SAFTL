@@ -5,6 +5,6 @@
     </head>
     <body>
         <h2>Test Email</h2>
-        <p>{{ $data['message'] }}</p>
+        <p>{{ $data->first()->body }}</p>
     </body>
 </html>
