@@ -69,7 +69,7 @@ class ChangeDomainContoller extends Controller {
                 $data->where('company_type', $company_type);
             }
         }
-        $data = $data->paginate(100);
+        $data = $data->orderBy('total_record', 'desc')->paginate(100);
         return view('filteredcompanydata', compact('data'))->render();
     }
     
