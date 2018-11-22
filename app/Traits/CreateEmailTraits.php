@@ -71,6 +71,7 @@ trait CreateEmailTraits {
                             );
                             $email_created_status = false;
                             $data = $available_format_for_domain->pluck('format_percentage')->values();
+                            print_r($data);
                             $process_data = [];
                             if (count($data) == 1) {
                                 if ($data[0] >= 10) {
@@ -89,6 +90,7 @@ trait CreateEmailTraits {
                                     }
                                 }
                             }
+                             print_r($process_data);
                             if (count($process_data) > 0) {
                                 $is_bounce = false;
                                 foreach ($process_data AS $av) {
