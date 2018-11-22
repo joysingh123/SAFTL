@@ -114,6 +114,13 @@ class ChangeDomainContoller extends Controller {
                 $first_name = trim($request->first_name);
                 $last_name = trim($request->last_name);
                 $email = trim($request->email);
+                $state = trim($request->state);
+                $region = trim($request->region);
+                $logo = trim($request->logo);
+                $facebook_url = trim($request->facebook_url);
+                $twitter_url = trim($request->twitter_url);
+                $zoominfo_url = trim($request->zoominfo_url);
+                
                 $change_perform = false;
                 $is_domain_change = false;
                 if ($company_name != $existing_companies->company_name) {
@@ -147,6 +154,24 @@ class ChangeDomainContoller extends Controller {
                 if ($website != $existing_companies->website) {
                     $change_perform = true;
                 }
+                if ($state != $existing_companies->state) {
+                    $change_perform = true;
+                }
+                if ($logo != $existing_companies->logo_url) {
+                    $change_perform = true;
+                }
+                if ($region != $existing_companies->region) {
+                    $change_perform = true;
+                }
+                if ($facebook_url != $existing_companies->facebook_url) {
+                    $change_perform = true;
+                }
+                if ($twitter_url != $existing_companies->twitter_url) {
+                    $change_perform = true;
+                }
+                if ($zoominfo_url != $existing_companies->zoominfo_url) {
+                    $change_perform = true;
+                }
                 if ($change_perform) {
                     $changed_companies = new ChangedCompanies();
                     $changed_companies->id = $id;
@@ -163,6 +188,13 @@ class ChangeDomainContoller extends Controller {
                     $changed_companies->country = $country;
                     $changed_companies->website = $website;
                     $changed_companies->remark = $remark;
+                    $changed_companies->state = $state;
+                    $changed_companies->region = $region;
+                    $changed_companies->logo_url = $logo;
+                    $changed_companies->facebook_url = $facebook_url;
+                    $changed_companies->twitter_url = $twitter_url;
+                    $changed_companies->zoominfo_url = $zoominfo_url;
+                    
                     $save_as = false;
                     if ($is_domain_change) {
                         $rules = array(

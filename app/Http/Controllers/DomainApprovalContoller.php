@@ -73,6 +73,36 @@ class DomainApprovalContoller extends Controller
                         $save_as = $old_record->first()->save();
                     }
                     
+                    if($old_record->first()->state != $updated_record->first()->state){
+                        $old_record->first()->state = $updated_record->first()->state;
+                        $save_as = $old_record->first()->save();
+                    }
+                    
+                    if($old_record->first()->region != $updated_record->first()->region){
+                        $old_record->first()->region = $updated_record->first()->region;
+                        $save_as = $old_record->first()->save();
+                    }
+                    
+                    if($old_record->first()->logo_url != $updated_record->first()->logo_url){
+                        $old_record->first()->logo_url = $updated_record->first()->logo_url;
+                        $save_as = $old_record->first()->save();
+                    }
+                    
+                    if($old_record->first()->facebook_url != $updated_record->first()->facebook_url){
+                        $old_record->first()->facebook_url = $updated_record->first()->facebook_url;
+                        $save_as = $old_record->first()->save();
+                    }
+                    
+                    if($old_record->first()->twitter_url != $updated_record->first()->twitter_url){
+                        $old_record->first()->twitter_url = $updated_record->first()->twitter_url;
+                        $save_as = $old_record->first()->save();
+                    }
+                    
+                    if($old_record->first()->zoominfo_url != $updated_record->first()->zoominfo_url){
+                        $old_record->first()->zoominfo_url = $updated_record->first()->zoominfo_url;
+                        $save_as = $old_record->first()->save();
+                    }
+                    
                     if($old_record->first()->employee_count_at_linkedin != $updated_record->first()->employee_count_at_linkedin){
                         $old_record->first()->employee_count_at_linkedin = $updated_record->first()->employee_count_at_linkedin;
                         $save_as = $old_record->first()->save();

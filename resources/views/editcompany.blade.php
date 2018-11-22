@@ -159,6 +159,36 @@
                                     </span>
                                 @endif
                             </div>
+                            <label for="state" class="col-md-2 col-form-label text-md-right">{{ __('State') }}</label>
+                            <div class="col-md-4">
+                                <input id="state" type="text" class="form-control{{ $errors->has('state') ? ' is-invalid' : '' }}" name="state" value="{{ old('state') }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="region" class="col-md-2 col-form-label text-md-right">{{ __('Region') }}</label>
+                            <div class="col-md-4">
+                                <input id="region" type="text" class="form-control{{ $errors->has('region') ? ' is-invalid' : '' }}" name="region" value="{{ old('region') }}">
+                            </div>
+                            <label for="facebook_url" class="col-md-2 col-form-label text-md-right">{{ __('Facebook Url') }}</label>
+                            <div class="col-md-4">
+                                <input id="state" type="text" class="form-control{{ $errors->has('facebook_url') ? ' is-invalid' : '' }}" name="facebook_url" value="{{ old('facebook_url') }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="twitter_url" class="col-md-2 col-form-label text-md-right">{{ __('Twitter Url') }}</label>
+                            <div class="col-md-4">
+                                <input id="email" type="text" class="form-control{{ $errors->has('twitter_url') ? ' is-invalid' : '' }}" name="twitter_url" value="{{ old('twitter_url') }}">
+                            </div>
+                            <label for="zoominfo_url" class="col-md-2 col-form-label text-md-right">{{ __('Zoominfo Url') }}</label>
+                            <div class="col-md-4">
+                                <input id="zoominfo_url" type="text" class="form-control{{ $errors->has('zoominfo_url') ? ' is-invalid' : '' }}" name="zoominfo_url" value="{{ old('zoominfo_url') }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="logo" class="col-md-2 col-form-label text-md-right">{{ __('Logo') }}</label>
+                            <div class="col-md-4">
+                                <input id="logo" type="text" class="form-control{{ $errors->has('logo') ? ' is-invalid' : '' }}" name="logo" value="{{ old('logo') }}">
+                            </div>
                             <div class="col-md-4 offset-md-2">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Submit') }}
