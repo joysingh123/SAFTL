@@ -92,6 +92,10 @@ class ImportDataController extends Controller {
                                             $postal_code = ($value->postal_code != "") ? trim($value->postal_code) : "";
                                             $employee_size = ($value->employee_size != "") ? trim($value->employee_size) : "";
                                             $country = ($value->country != "") ? trim($value->country) : "";
+                                            $state = NULL;
+                                            if(isset($value->state)){
+                                                $state = ($value->state != "") ? trim($value->state) : NULL;
+                                            }
                                             $linkedin_url = UtilString::clean_string($linkedin_url);
                                             $company_domain = UtilString::clean_string($company_domain);
                                             $company_domain = UtilString::get_domain_from_url($company_domain);
@@ -115,7 +119,8 @@ class ImportDataController extends Controller {
                                                         'city' => $city,
                                                         'postal_code' => $postal_code,
                                                         'employee_size' => $employee_size,
-                                                        'country' => $country
+                                                        'country' => $country,
+                                                        'state' => $state
                                                     ];
                                                     $insert[] = $insert_array;
                                                     $inserted ++;
@@ -150,6 +155,7 @@ class ImportDataController extends Controller {
                                                 $company_d->city = $value->city;
                                                 $company_d->employee_size = $value->employee_size;
                                                 $company_d->country = $value->country;
+                                                $company_d->state = $value->state;
                                                 $company_d->save();
                                             }
                                         }

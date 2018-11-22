@@ -54,15 +54,16 @@
             <span class="excel-column">[
                 Linkedin Id, 
                 Linkedin url, 
-                Company_Domain, 
-                Company_Name, 
-                Company_Type, 
-                Employee_Count_at_LinkedIN, 
+                Company Domain, 
+                Company Name, 
+                Company Type, 
+                Employee Count at LinkedIN, 
                 Industry, 
                 City,
                 Postal Code
-                Employee_Size, 
-                Country] .
+                Employee Size, 
+                Country,
+                State] .
             </span>
         </li>
         <li>Excel Sheet should not have more then one sheet .</li>

@@ -22,7 +22,7 @@
             </thead>
             <tbody>
                 @foreach($data as $k => $row)
-                    <tr style="{{ ($row->mx_record == 0) ? 'background-color: #ecbbbb;' : '' }}">
+                    <tr>
                         <td>{{ $k+1 }}</td>
                         <td><a href='/editcompany/{{ $row->id }}' target='_blank'>Edit</a></td>
                         <td>{{ $row->linkedin_id }}</td>
