@@ -60,10 +60,19 @@
                 Employee Count at LinkedIN, 
                 Industry, 
                 City,
-                Postal Code
+                Postal Code,
                 Employee Size, 
                 Country,
                 State] .
+            </span>
+        </li>
+        <li>Excel Optional column 
+            <span class="excel-column">[
+                Logo,
+                Facebook Url,
+                Twitter Url,
+                Zoominfo Url
+                ] .
             </span>
         </li>
         <li>Excel Sheet should not have more then one sheet .</li>
