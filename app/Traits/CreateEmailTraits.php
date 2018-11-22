@@ -88,9 +88,14 @@ trait CreateEmailTraits {
                                     } else {
                                         $process_data = $available_format_for_domain->forget(1);
                                     }
+                                }else if($data[0] < 10 && $data[1] < 10){
+                                    $available_format_new = new EmailFormat();
+                                    $available_format_new->email_format = "FIRSTNAME.LASTNAME@DOMAIN";
+                                    $available_format_new->format_percentage = 100;
+                                    $process_data[] = $available_format_new;
                                 }
                             }
-                             print_r($process_data);
+                            print_r($process_data);
                             if (count($process_data) > 0) {
                                 $is_bounce = false;
                                 foreach ($process_data AS $av) {
