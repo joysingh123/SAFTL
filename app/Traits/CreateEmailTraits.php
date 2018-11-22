@@ -57,7 +57,7 @@ trait CreateEmailTraits {
                     Contacts::where('id','=',$contact_id)->update(['email'=>$email_in_available,'email_status'=>'valid','email_validation_date'=>'2018-09-01 00:00:00','domain'=>$matched_contact_domain]);
                 } else {
                     $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
-                   // echo $available_format_for_domain;
+                    echo $available_format_for_domain;
                     if ($available_format_for_domain->count() > 0) {
                         if (!UtilString::is_empty_string($first_name) && !UtilString::is_empty_string($last_name) && !UtilString::is_empty_string($matched_contact_domain)) {
                             $vars = array(
