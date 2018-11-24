@@ -43,7 +43,7 @@ class GenearteDefaultFormat extends Command
     {
         UtilDebug::debug("start processing");
         $matched_contacts_formate_1 = DB::table('matched_contacts')
-                    ->select(DB::raw("distinct 0 AS user_id, CONCAT('FIRSTNAME.LASTNAME@',domain) AS email,' ' AS company_domain,domain AS company_domain,'FIRSTNAME' AS first_name,'LASTNAME' as last_name,'' as country,' ' as job_title,'' as status"))
+                    ->select(DB::raw("distinct 0 AS user_id, CONCAT('FIRSTNAME.LASTNAME@',domain) AS email,domain AS company_domain,'FIRSTNAME' AS first_name,'LASTNAME' as last_name,'' as country,' ' as job_title,'' as status"))
                      ->where('email_format_available', '=', 'no')
                      ->get();
         
@@ -53,7 +53,7 @@ class GenearteDefaultFormat extends Command
         }
         
         $matched_contacts_formate_2 = DB::table('matched_contacts')
-                    ->select(DB::raw("distinct 0 AS user_id, CONCAT('FLASTNAME@',domain) AS email,' ' AS company_domain,domain AS company_domain,'FIRSTNAME' AS first_name,'LASTNAME' as last_name,'' as country,' ' as job_title,'' as status"))
+                    ->select(DB::raw("distinct 0 AS user_id, CONCAT('FLASTNAME@',domain) AS email,domain AS company_domain,'FIRSTNAME' AS first_name,'LASTNAME' as last_name,'' as country,' ' as job_title,'' as status"))
                     ->where("email_format_available", '=', 'no')
                     ->whereIn('employee_size',['501 to 1000','5001 to 10000','201 to 500','1001 to 5000','10000 above'])
                     ->get();
@@ -64,7 +64,7 @@ class GenearteDefaultFormat extends Command
         }
         
         $matched_contacts_formate_3 = DB::table('matched_contacts')
-                    ->select(DB::raw("distinct 0 AS user_id, CONCAT('FIRSTNAME@',domain) AS email,' ' AS company_domain,domain AS company_domain,'FIRSTNAME' AS first_name,'LASTNAME' as last_name,'' as country,' ' as job_title,'' as status"))
+                    ->select(DB::raw("distinct 0 AS user_id, CONCAT('FIRSTNAME@',domain) AS email,domain AS company_domain,'FIRSTNAME' AS first_name,'LASTNAME' as last_name,'' as country,' ' as job_title,'' as status"))
                     ->where('email_format_available', '=', 'no')
                     ->whereIn('employee_size',['invalid','NA','1 to 10','11 to 50','51 to 200'])
                     ->get();
