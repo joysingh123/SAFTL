@@ -76,6 +76,11 @@ trait CreateEmailTraits {
                             if (count($data) == 1) {
                                 if ($data[0] >= 10) {
                                     $process_data = $available_format_for_domain;
+                                }else{
+                                    $available_format_new = new EmailFormat();
+                                    $available_format_new->email_format = "FIRSTNAME.LASTNAME@DOMAIN";
+                                    $available_format_new->format_percentage = 100;
+                                    $process_data[] = $available_format_new; 
                                 }
                             }
                             if (count($data) == 2) {
