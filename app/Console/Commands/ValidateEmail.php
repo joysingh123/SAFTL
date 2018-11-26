@@ -97,7 +97,7 @@ class ValidateEmail extends Command {
                                 $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
                                 $contact_id = $matched_contact->contact_id;
                                 $domain = $matched_contact->domain;
-                                Contacts::where('id','=',$contact_id)->update(['email_status'=>$email_status,'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
+                                Contacts::where('id','=',$contact_id)->update(['email_status'=>'timeout','email_validation_date'=>$email_validation_date,'domain'=>$domain]);
                             }
                         }
                     }
