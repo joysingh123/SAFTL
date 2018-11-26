@@ -91,6 +91,14 @@ class ValidateEmailCron5 extends Command
                         } else {
                             if ($v_response['email_status'] != "") {
                                 $is_invalid = true;
+                            }else{
+                                Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => 'timeout']);
+                                $email_validation_date = date("Y-m-d H:i:s");
+                                MatchedContact::where('id', '=', $matched_id)->update(['email_status' => 'timeout', 'email_validation_date' => $email_validation_date]);
+                                $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
+                                $contact_id = $matched_contact->contact_id;
+                                $domain = $matched_contact->domain;
+                                Contacts::where('id','=',$contact_id)->update(['email_status'=>'timeout','email_validation_date'=>$email_validation_date,'domain'=>$domain]);
                             }
                         }
                     }
