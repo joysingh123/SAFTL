@@ -28,12 +28,8 @@ trait ValidateEmailTraits {
             $api_key = $va->api_key;
             $email_validation_url = UtilEmailValidation::getValidationUrl($email, $api_name, $api_url, $api_key);
             $url = $email_validation_url['email_validation_url'];
-            echo $url;
             $response = Curl::to($url)->get();
-            echo "response:". $response;
-//            if($response == ""){
-//                $email_validation_status = array('email_status'=>"error",'verified_by'=>$api_name,'response'=>$response);
-//            }
+            echo "$url:". $response;
             $email_validation_status = array('email_status'=>"",'verified_by'=>$api_name,'response'=>$response);
             $response_array = json_decode($response, true);
             if (isset($response_array['email']) || isset($response_array['address'])) {
