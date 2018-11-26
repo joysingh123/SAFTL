@@ -73,6 +73,7 @@ class ValidateEmail extends Command {
                     $is_invalid = false;
                     foreach ($emails_array AS $email) {
                         $v_response = $this->validateEmail($email);
+                        print_r($v_response);
                         if ($v_response['email_status'] == 'valid' || $v_response['email_status'] == 'catch all') {
                             $is_invalid = false;
                             $email_status = $v_response['email_status'];
