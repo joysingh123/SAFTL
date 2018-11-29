@@ -373,9 +373,7 @@ class ImportDataController extends Controller {
                                         $experience = trim(preg_replace('/\s+/', ' ', $experience));
                                         $full_name = str_replace('"', "", $full_name);
                                         $job_title = str_replace('"', "", $job_title);
-//                                            $job_title = str_replace("'", "", $job_title);
-//                                            $company_name = str_replace("'", "", $company_name);
-//                                            $full_name = str_replace("'", "", $full_name);
+                                        $company_name = str_replace('"', "", $company_name);
                                         $insertQuery[] = "($user_id,$linkedin_id,\"$full_name\",\"$first_name\",\"$last_name\",\"$company_name\",\"$job_title\",\"$experience\",\"$location\",\"$contact_country\",\"$profile_link\",\"$status\",\"$tag\",\"$title_level\",\"$department\")";
 //                                        }else{
 //                                            $duplicate ++;
