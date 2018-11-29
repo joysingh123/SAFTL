@@ -372,6 +372,7 @@ class ImportDataController extends Controller {
                                         $user_id = Auth::id();
                                         $experience = trim(preg_replace('/\s+/', ' ', $experience));
                                         $full_name = str_replace('"', "", $full_name);
+                                        $job_title = str_replace('"', "", $job_title);
 //                                            $job_title = str_replace("'", "", $job_title);
 //                                            $company_name = str_replace("'", "", $company_name);
 //                                            $full_name = str_replace("'", "", $full_name);
