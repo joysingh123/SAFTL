@@ -288,6 +288,7 @@ class ImportDataController extends Controller {
                                     $company_name = ($value->company != "") ? trim(strip_tags($value->company)) : "";
                                     $experience = ($value->experience != "") ? trim(strip_tags($value->experience)) : "";
                                     $location = ($value->location != "") ? trim($value->location) : "";
+                                    $contact_country = (isset($value->contact_country) && !UtilString::is_empty_string($value->contact_country)) ? trim($value->contact_country) : NULL;
                                     $profile_link = ($value->profile_link != "") ? $value->profile_link : "";
                                     $tag = ($value->tag != "") ? trim($value->tag) : "";
                                     $title_level = ($value->title_level != "") ? trim($value->title_level) : "";
@@ -361,6 +362,7 @@ class ImportDataController extends Controller {
                                             'job_title' => $job_title,
                                             'experience' => $experience,
                                             'location' => $location,
+                                            'contact_country' => $contact_country,
                                             'profile_link' => $profile_link,
                                             'tag' => $tag,
                                             'title_level' => $title_level,
@@ -373,7 +375,7 @@ class ImportDataController extends Controller {
 //                                            $job_title = str_replace("'", "", $job_title);
 //                                            $company_name = str_replace("'", "", $company_name);
 //                                            $full_name = str_replace("'", "", $full_name);
-                                        $insertQuery[] = "($user_id,$linkedin_id,\"$full_name\",\"$first_name\",\"$last_name\",\"$company_name\",\"$job_title\",\"$experience\",\"$location\",\"$profile_link\",\"$status\",\"$tag\",\"$title_level\",\"$department\")";
+                                        $insertQuery[] = "($user_id,$linkedin_id,\"$full_name\",\"$first_name\",\"$last_name\",\"$company_name\",\"$job_title\",\"$experience\",\"$location\",\"$contact_country\",\"$profile_link\",\"$status\",\"$tag\",\"$title_level\",\"$department\")";
 //                                        }else{
 //                                            $duplicate ++;
 //                                        }
@@ -391,7 +393,7 @@ class ImportDataController extends Controller {
                                 $date = date("Y-m-d H:i");
                                 echo $date."<br>";
                                 $string_data = implode(",", $ic);
-                                $insertData = DB::statement("INSERT IGNORE INTO contacts(user_id,linkedin_id,full_name,first_name,last_name,company_name,job_title,experience,location,profile_link,status,tag,title_level,department) VALUES $string_data");
+                                $insertData = DB::statement("INSERT IGNORE INTO contacts(user_id,linkedin_id,full_name,first_name,last_name,company_name,job_title,experience,location,contact_country,profile_link,status,tag,title_level,department) VALUES $string_data");
                             }
                             if ($insertData) {
                                 Session::flash('success', 'Your Data has successfully imported');
