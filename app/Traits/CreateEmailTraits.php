@@ -47,14 +47,15 @@ trait CreateEmailTraits {
                     if($email_status_in_available_email == 'valid' || $email_status_in_available_email == 'invalid' || $email_status_in_available_email == 'catch all'){
                         $mt->email_status = $email_status_in_available_email;
                         $mt->email_validation_date = $email_validation_date_in_available_email;
+                        Contacts::where('id','=',$contact_id)->update(['email'=>$email_in_available,'email_status'=>$email_status_in_available_email,'email_validation_date'=>$email_validation_date_in_available_email,'domain'=>$matched_contact_domain]);
                     }else{
                         $mt->email_status = 'valid';
                         $mt->email_validation_date = '2018-09-01 00:00:00';
+                        Contacts::where('id','=',$contact_id)->update(['email'=>$email_in_available,'email_status'=>'valid','email_validation_date'=>'2018-09-01 00:00:00','domain'=>$matched_contact_domain]);
                     }
                     $mt->email = $email_in_available;
                     $mt->save();
                     $found_in_available_email ++;
-                    Contacts::where('id','=',$contact_id)->update(['email'=>$email_in_available,'email_status'=>'valid','email_validation_date'=>'2018-09-01 00:00:00','domain'=>$matched_contact_domain]);
                 } else {
                     $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
                     echo $available_format_for_domain;
