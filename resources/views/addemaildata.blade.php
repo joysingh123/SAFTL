@@ -116,7 +116,7 @@
                 <tr>
                     <td>{{$enl['email']}}</td>
                     <td>{{$enl['company_name']}}</td>
-                    <td>{{$enl['domain']}}</td>
+                    <td><?php echo (isset($enl['domain'])) ? $enl['domain'] :  $enl['domain']; ?></td>
                     <td>{{$enl['first_name']}}</td>
                     <td>{{$enl['last_name']}}</td>
                     <td>{{$enl['country']}}</td>
