@@ -52,13 +52,13 @@ class StatsCompanyWithDomain extends Command
         DB::statement("UPDATE companies_with_domain A,companies_with_domain B SET A.website = B.company_domain WHERE A.id = B.id");
         
         //Step 2
-        $contacts_domain = DB::table('contacts')->select(DB::raw("domain,count(*) AS total_record"))->groupBy('domain')->get();
-        $contacts_domain_valid_stats = DB::table('contacts')->select(DB::raw("domain,email_status,count(email_status) AS count"))->groupBy('domain')->groupBy('email_status')->get();
+        $contacts_domain = DB::table('contacts')->select(DB::raw("linkedin_id,count(*) AS total_record"))->groupBy('linkedin_id')->get();
+        $contacts_domain_valid_stats = DB::table('contacts')->select(DB::raw("linkedin_id,email_status,count(email_status) AS count"))->groupBy('linkedin_id')->groupBy('email_status')->get();
         
         foreach ($contacts_domain AS $cd){
-            $domain = $cd->domain;
+            $linkedin_id = $cd->linkedin_id;
             $total_record = $cd->total_record;
-            $contacts_valid_record = $contacts_domain_valid_stats->where("domain","=",$domain);
+            $contacts_valid_record = $contacts_domain_valid_stats->where("linkedin_id","=",$linkedin_id);
             $contacts_valid_record = $contacts_valid_record->all();
             $valid = NULL;
             $catch_all = NULL;
@@ -76,7 +76,7 @@ class StatsCompanyWithDomain extends Command
                     }
                 }
             }
-            CompaniesWithDomain::where('company_domain',trim($domain))->update(["total_record"=>$total_record,"valid"=>$valid,"invalid"=>$invalid,"catch_all"=>$catch_all]);
+            CompaniesWithDomain::where('linkedin_id',trim($linkedin_id))->update(["total_record"=>$total_record,"valid"=>$valid,"invalid"=>$invalid,"catch_all"=>$catch_all]);
         }
         
         //Step 3
