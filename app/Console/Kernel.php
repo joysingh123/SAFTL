@@ -73,7 +73,7 @@ class Kernel extends ConsoleKernel
         });
         
         //formate creation cron
-       $schedule->command('generate:emailformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+       $schedule->command('generate:emailformat')->cron('*/2 * * * *')->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_EMAIL_FORMAT)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
@@ -109,7 +109,7 @@ class Kernel extends ConsoleKernel
         
         //email creation
         
-        $schedule->command('create:email')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('create:email')->cron('*/2 * * * *')->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_EMAIL_CREATE)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
@@ -376,7 +376,7 @@ class Kernel extends ConsoleKernel
         
         
         //formate creation cron
-        $schedule->command('generate:defaultformat')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('generate:defaultformat')->cron('*/2 * * * *')->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_GENERATE_DEFAULT_EMAIL_FORMAT)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
