@@ -51,7 +51,7 @@ class GenearteDefaultFormat extends Command
                     ->whereNull('process_status')
                     ->take($limit)
                     ->get();
-        echo "processing record: $matched_contacts_formate_1";
+        echo "processing record: ".$matched_contacts_formate_1->count();
         if($matched_contacts_formate_1->count() > 0){
             $ids_for_match = $matched_contacts_formate_1->pluck('id');
             $ids_for_match = $ids_for_match->all();
