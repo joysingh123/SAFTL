@@ -46,12 +46,15 @@ class GenearteDefaultFormat extends Command
                     ->select(DB::raw("distinct 0 AS user_id, CONCAT('FIRSTNAME.LASTNAME@',domain) AS email,domain AS company_domain,'FIRSTNAME' AS first_name,'LASTNAME' as last_name,'' as country,' ' as job_title,'' as status"))
                      ->where('email_format_available', '=', 'no')
                      ->get();
-        echo $matched_contacts_formate_1;
         
-//        if($matched_contacts_formate_1->count() > 0){
-//            $result = json_decode($matched_contacts_formate_1, true);
-//            $insertData = DB::table('available_email')->insert($result);
-//        }
+        if($matched_contacts_formate_1->count() > 0){
+            $insert_chunk = array_chunk($matched_contacts_formate_1, 2000);
+            foreach ($insert_chunk AS $ic) {
+                $result = json_decode($ic, true);
+                echo $result;
+            }
+            //$insertData = DB::table('available_email')->insert($result);
+        }
 //        
 //        $matched_contacts_formate_2 = DB::table('matched_contacts')
 //                    ->select(DB::raw("distinct 0 AS user_id, CONCAT('FLASTNAME@',domain) AS email,domain AS company_domain,'FIRSTNAME' AS first_name,'LASTNAME' as last_name,'' as country,' ' as job_title,'' as status"))
