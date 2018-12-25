@@ -51,6 +51,7 @@ class GenearteDefaultFormat extends Command
                     ->whereNull('process_status')
                     ->take($limit)
                     ->get();
+        echo "processing record: $matched_contacts_formate_1";
         if($matched_contacts_formate_1->count() > 0){
             $ids_for_match = $matched_contacts_formate_1->pluck('id');
             $ids_for_match = $ids_for_match->all();
@@ -61,7 +62,6 @@ class GenearteDefaultFormat extends Command
                 $employee_size = $mf->employee_size;
                 $exist_in_available_email = AvailableEmail::where('email',$email)->count();
                 if($exist_in_available_email <= 0){
-                    echo "object created";
                     $available_email = new AvailableEmail();
                     $available_email->user_id = $mf->user_id;
                     $available_email->email = $mf->email;
