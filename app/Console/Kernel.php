@@ -56,7 +56,7 @@ class Kernel extends ConsoleKernel
     {
         
         // matched contacts
-        $schedule->command('create:matchedcontact')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('create:matchedcontact')->cron('*/2 * * * *')->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_JOB_NAME)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
