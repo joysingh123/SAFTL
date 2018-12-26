@@ -10,6 +10,8 @@ use App\TitleLevelMaster;
 use App\DepartmentMaster;
 use App\ContactMaster;
 use App\CompaniesWithDomain;
+use App\CountryMaster;
+
 class PopulateContactMaster extends Command
 {
     /**
@@ -64,16 +66,22 @@ class PopulateContactMaster extends Command
                 $email_status = trim($contact->email_status);
                 $email_validation_date = $contact->email_validation_date;
                 $domain = trim($contact->domain);
+                $contact_country = trim($contact->contact_country);
                 if($email_status == 'valid' && !UtilString::is_empty_string($job_title) && !UtilString::is_empty_string($title_level)){
                     $title_level_id = 0;
                     $department_level_id = 0;
+                    $country_id = 0;
                     $title_level_data = TitleLevelMaster::where('title_level',$title_level)->where('Status','Active');
                     $department_level_data = DepartmentMaster::where('Department',$department)->where('Status','Active');
+                    $country_data = CountryMaster::where('Country Name',$contact_country)->where('Status','Active');
                     if($title_level_data->count() > 0){
                         $title_level_id = $title_level_data->first()->ID;
                     }
                     if($department_level_data->count() > 0){
                         $department_level_id = $department_level_data->first()->ID;
+                    }
+                    if($country_data->count() > 0){
+                        $country_id = $country_data->first()->ID;
                     }
                     if($title_level_id > 0){
                         $contact_exist = ContactMaster::where('first_name',$first_name)->where('last_name',$last_name)->where('domain',$domain)->get();
@@ -96,6 +104,7 @@ class PopulateContactMaster extends Command
                             $con->email_validation_date = $email_validation_date;
                             $con->domain = $domain;
                             $con->company_id = 0;
+                            $con->country_id = $country_id;
                             if($company_data->count() > 0){
                                 $con->company_id = $company_data->first()->id;
                             }
