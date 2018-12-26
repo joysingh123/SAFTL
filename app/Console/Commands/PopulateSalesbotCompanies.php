@@ -96,6 +96,9 @@ class PopulateSalesbotCompanies extends Command
                             $email = $c->email;
                             $title_level = $c->title_level;
                             $department = $c->department;
+                            $country_id = $c->country_id;
+                            $email_status = $c->email_status;
+                            $email_validation_date = $c->email_validation_date;
                             $salesbot_contact = SalesbotContacts::where('fname',$first_name)->where('lname',$last_name)->where('email',$email)->get();
                             if($salesbot_contact->count()){
                                 $c->status = 'already exist';
@@ -106,9 +109,12 @@ class PopulateSalesbotCompanies extends Command
                                 $salesbot_contact_new->fname = $first_name;
                                 $salesbot_contact_new->lname = $last_name;
                                 $salesbot_contact_new->email = $email;
-                                $salesbot_contact_new->company = $reference_id;
+                                $salesbot_contact_new->company_id = $reference_id;
+                                $salesbot_contact_new->country_id = $country_id;
                                 $salesbot_contact_new->job_title = $title_level;
                                 $salesbot_contact_new->department = $department;
+                                $salesbot_contact_new->email_status = $email_status;
+                                $salesbot_contact_new->email_validation_date = $email_validation_date;
                                 $salesbot_contact_new->save();
                                 $c->status = 'processed';
                                 $c->salesbot_ref_id = $salesbot_contact_new->id;
