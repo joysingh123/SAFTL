@@ -49,7 +49,7 @@ class StatsCompanyWithDomain extends Command
         
         //Step 1
         
-        DB::statement("UPDATE companies_with_domain A,companies_with_domain B SET A.website = B.company_domain WHERE A.id = B.id");
+        DB::statement("UPDATE companies_with_domain A,companies_with_domain B SET A.website = B.company_domain WHERE A.id = B.id AND A.website IS NULL");
         
         //Step 2
         $contacts_domain = DB::table('contacts')->select(DB::raw("linkedin_id,count(*) AS total_record"))->groupBy('linkedin_id')->get();
