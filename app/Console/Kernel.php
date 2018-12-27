@@ -456,7 +456,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        $schedule->command('update:companystats')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('update:companystats')->cron('0 *\2 * * *')->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_UPDATE_COMPANY_STATS)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
