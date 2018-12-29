@@ -22,7 +22,7 @@ trait ValidateEmailTraits {
             );
         }else{
             $email_validation_status = array(
-                                            'email_status'=>'NA',
+                                            'email_status'=>'invalid',
                                             'verified_by'=>"mailboxlayer",
                                             'response'=>""
             );
