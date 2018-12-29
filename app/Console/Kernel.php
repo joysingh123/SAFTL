@@ -163,7 +163,7 @@ class Kernel extends ConsoleKernel
         
         //email validation cron 1
         
-        $schedule->command('validate:email')->cron('*/2 * * * *')->withoutOverlapping()->before(function () {
+        $schedule->command('validate:email')->everyMinute()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
