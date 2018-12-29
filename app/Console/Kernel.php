@@ -109,7 +109,7 @@ class Kernel extends ConsoleKernel
         
         //email creation
         
-        $schedule->command('create:email')->cron('*/2 * * * *')->withoutOverlapping()->before(function () {
+        $schedule->command('create:email')->cron('*/1 * * * *')->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::MATCHED_CRON_EMAIL_CREATE)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
