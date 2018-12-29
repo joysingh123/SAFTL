@@ -51,7 +51,7 @@ class ValidateEmailCron5 extends Command
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $response = array();
-        $limit = 250;
+        $limit = 1000;
         $emails = DB::table('emails')
                         ->select('matched_contact_id', DB::raw("group_concat(email) AS emails"))
                         ->groupBy('matched_contact_id')
@@ -64,6 +64,7 @@ class ValidateEmailCron5 extends Command
             if ($result > 0) {
                 foreach ($emails AS $email_record) {
                     $matched_id = $email_record->matched_contact_id;
+                    Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => 'Invalidate']);
                     $emails_db = $email_record->emails;
                     $emails_array = array();
                     if (UtilString::contains($emails_db, ",")) {
@@ -83,16 +84,17 @@ class ValidateEmailCron5 extends Command
                             $matched_contact->email_status = $v_response['email_status'];
                             $matched_contact->email_validation_date = date("Y-m-d H:i:s");
                             $matched_contact->save();
-                            Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => $v_response['email_status']]);
+                            Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => $v_response['email_status']]);
                             $contact_id = $matched_contact->contact_id;
                             $domain = $matched_contact->domain;
                             Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>$email_status,'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
                             break;
                         } else {
                             if ($v_response['email_status'] != "") {
+                                Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => $v_response['email_status']]);
                                 $is_invalid = true;
                             }else{
-                                Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => 'timeout']);
+                                Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => 'timeout']);
                                 $email_validation_date = date("Y-m-d H:i:s");
                                 MatchedContact::where('id', '=', $matched_id)->update(['email_status' => 'timeout', 'email_validation_date' => $email_validation_date]);
                                 $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
@@ -103,7 +105,7 @@ class ValidateEmailCron5 extends Command
                         }
                     }
                     if ($is_invalid) {
-                        Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => 'invalid']);
+                        //Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => 'invalid']);
                         $email_status = $v_response['email_status'];
                         $email_validation_date = date("Y-m-d H:i:s");
                         MatchedContact::where('id', '=', $matched_id)->update(['email_status' => $email_status, 'email_validation_date' => $email_validation_date]);
