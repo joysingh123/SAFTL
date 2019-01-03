@@ -163,7 +163,7 @@ class Kernel extends ConsoleKernel
         
         //email validation cron 1
         
-        $schedule->command('validate:email')->everyMinute()->withoutOverlapping()->before(function () {
+        $schedule->command('validate:email')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
@@ -181,7 +181,7 @@ class Kernel extends ConsoleKernel
         
         //email validation cron 2
         
-        $schedule->command('validate:emailcron2')->everyMinute()->withoutOverlapping()->before(function () {
+        $schedule->command('validate:emailcron2')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_2)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
@@ -197,7 +197,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        $schedule->command('validate:emailcron3')->everyMinute()->withoutOverlapping()->before(function () {
+        $schedule->command('validate:emailcron3')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_3)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
@@ -213,7 +213,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        $schedule->command('validate:emailcron4')->everyMinute()->withoutOverlapping()->before(function () {
+        $schedule->command('validate:emailcron4')->everyFiveMinutes()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_EMAIL_VALIDATION_4)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();

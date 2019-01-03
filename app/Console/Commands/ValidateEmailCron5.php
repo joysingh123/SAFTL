@@ -51,7 +51,7 @@ class ValidateEmailCron5 extends Command
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $response = array();
-        $limit = 1000;
+        $limit = 250;
         $emails = DB::table('emails')
                         ->select('matched_contact_id', DB::raw("group_concat(email) AS emails"))
                         ->groupBy('matched_contact_id')
