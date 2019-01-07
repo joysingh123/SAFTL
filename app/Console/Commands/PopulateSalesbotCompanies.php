@@ -64,6 +64,13 @@ class PopulateSalesbotCompanies extends Command
                     $country = trim($company_master->first()->country);
                     $domain = trim($company_master->first()->domain);
                     $postal_code = trim($company_master->first()->postal_code);
+                    $state = trim($company_master->first()->state);
+                    $region = trim($company_master->first()->region);
+                    $grouping = trim($company_master->first()->grouping);
+                    $logo_url = trim($company_master->first()->Logo_URL);
+                    $facebook_url = trim($company_master->first()->facebook_url);
+                    $twitter_url = trim($company_master->first()->twitter_url);
+                    $zoominfo_url = trim($company_master->first()->zoominfo_url);
                     $companies = Companies::where('domain',$domain)->get();
                     $reference_id = 0;
                     if($companies->count() > 0){
@@ -80,6 +87,13 @@ class PopulateSalesbotCompanies extends Command
                         $salesbot_company->country_id = $country;
                         $salesbot_company->zipcode = $postal_code;
                         $salesbot_company->domain = $domain;
+                        $salesbot_company->state = $state;
+                        $salesbot_company->region = $region;
+                        $salesbot_company->grouping = $grouping;
+                        $salesbot_company->logo_url = $logo_url;
+                        $salesbot_company->facebook_url = $facebook_url;
+                        $salesbot_company->twitter_url = $twitter_url;
+                        $salesbot_company->zoominfo_url = $zoominfo_url;
                         $save_as = $salesbot_company->save();
                         if($save_as){
                             $reference_id = $salesbot_company->id;
@@ -91,9 +105,13 @@ class PopulateSalesbotCompanies extends Command
                     $contacts = ContactMaster::where('company_id',$company_id)->get();
                     if($contacts->count() > 0){
                         foreach($contacts AS $c){
+                            $full_name = $c->full_name;
                             $first_name = $c->first_name;
                             $last_name = $c->last_name;
                             $email = $c->email;
+                            $domain = $c->domain;
+                            $location = $c->location;
+                            $job_title = $c->job_title;
                             $title_level = $c->title_level;
                             $department = $c->department;
                             $country_id = $c->country_id;
@@ -106,12 +124,16 @@ class PopulateSalesbotCompanies extends Command
                                 $c->save();
                             }else{
                                 $salesbot_contact_new = new SalesbotContacts();
+                                $salesbot_contact_new->full_name = $full_name;
                                 $salesbot_contact_new->fname = $first_name;
                                 $salesbot_contact_new->lname = $last_name;
                                 $salesbot_contact_new->email = $email;
+                                $salesbot_contact_new->domain = $domain;
+                                $salesbot_contact_new->location = $location;
+                                $salesbot_contact_new->title_level = $title_level;
                                 $salesbot_contact_new->company_id = $reference_id;
                                 $salesbot_contact_new->country_id = $country_id;
-                                $salesbot_contact_new->job_title = $title_level;
+                                $salesbot_contact_new->job_title = $job_title;
                                 $salesbot_contact_new->department = $department;
                                 $salesbot_contact_new->email_status = $email_status;
                                 $salesbot_contact_new->email_validation_date = $email_validation_date;
