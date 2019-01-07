@@ -54,7 +54,6 @@ class PopulateContactMaster extends Command
         $contacts = Contacts::where("populate_status",'not processed')->take($limit)->get();
         if($contacts->count() > 0){
             foreach($contacts AS $contact){
-                
                 $id = $contact->id;
                 $full_name = trim($contact->full_name);
                 $first_name = trim($contact->first_name);
@@ -91,9 +90,7 @@ class PopulateContactMaster extends Command
                             $contact->populate_status = 'processed';
                             $contact->save();
                         }else{
-                            echo $contact;
                             $company_data = CompaniesWithDomain::where("company_domain",$domain)->get();
-                            echo $company_data;
                             $con = new ContactMaster();
                             $con->id = $id;
                             $con->full_name = (!UtilString::is_empty_string($full_name)) ? $full_name : NULL;
