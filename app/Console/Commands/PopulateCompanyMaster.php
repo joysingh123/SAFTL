@@ -62,6 +62,13 @@ class PopulateCompanyMaster extends Command
             $country = trim($company->country);
             $postal_code = trim($company->postal_code);
             $domain = trim($company->company_domain);
+            $state = trim($company->state);
+            $region = trim($company->region);
+            $grouping = trim($company->grouping);
+            $logo_url = trim($company->logo_url);
+            $facebook_url = trim($company->facebook_url);
+            $twitter_url = trim($company->twitter_url);
+            $zoominfo_url = trim($company->zoominfo_url);
             if(!UtilString::is_empty_string($employee_size) && !UtilString::is_empty_string($industry) && !UtilString::is_empty_string($country)){
                 $country_id = 0;
                 $industry_id = 0;
@@ -95,6 +102,13 @@ class PopulateCompanyMaster extends Command
                         $co->city = (!UtilString::is_empty_string($city)) ? $city : NULL;
                         $co->postal_code = (!UtilString::is_empty_string($postal_code)) ? $postal_code : NULL;
                         $co->domain = (!UtilString::is_empty_string($domain)) ? $domain : NULL;
+                        $co->state = (!UtilString::is_empty_string($state)) ? $state : NULL;
+                        $co->region = (!UtilString::is_empty_string($region)) ? $region : NULL;
+                        $co->grouping = (!UtilString::is_empty_string($grouping)) ? $grouping : NULL;
+                        $co->Logo_URL = (!UtilString::is_empty_string($logo_url)) ? $logo_url : NULL;
+                        $co->facebook_url = (!UtilString::is_empty_string($facebook_url)) ? $facebook_url : NULL;
+                        $co->twitter_url = (!UtilString::is_empty_string($twitter_url)) ? $twitter_url : NULL;
+                        $co->zoominfo_url = (!UtilString::is_empty_string($zoominfo_url)) ? $zoominfo_url : NULL;
                         $save_as = $co->save();
                         if($save_as){
                             $company->status = 'processed';

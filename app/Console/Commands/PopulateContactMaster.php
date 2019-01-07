@@ -50,11 +50,13 @@ class PopulateContactMaster extends Command
         ini_set('memory_limit', -1);
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
-        $limit = 1000;
+        $limit = 1;
         $contacts = Contacts::where("populate_status",'not processed')->take($limit)->get();
         if($contacts->count() > 0){
             foreach($contacts AS $contact){
+                
                 $id = $contact->id;
+                $full_name = trim($contact->full_name);
                 $first_name = trim($contact->first_name);
                 $last_name = trim($contact->last_name);
                 $email = trim($contact->email);
@@ -89,9 +91,12 @@ class PopulateContactMaster extends Command
                             $contact->populate_status = 'processed';
                             $contact->save();
                         }else{
+                            echo $contact;
                             $company_data = CompaniesWithDomain::where("company_domain",$domain)->get();
+                            echo $company_data;
                             $con = new ContactMaster();
                             $con->id = $id;
+                            $con->full_name = (!UtilString::is_empty_string($full_name)) ? $full_name : NULL;
                             $con->first_name = $first_name;
                             $con->last_name = $last_name;
                             $con->email = $email;
