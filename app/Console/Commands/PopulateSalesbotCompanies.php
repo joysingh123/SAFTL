@@ -8,6 +8,9 @@ use App\Helpers\UtilString;
 use App\CompanyMaster;
 use App\Companies;
 use App\ContactMaster;
+use App\DepartmentMaster;
+use App\TitleLevelMaster;
+use App\BounceEmail;
 use DB;
 use App\SalesbotContacts;
 
@@ -49,6 +52,8 @@ class PopulateSalesbotCompanies extends Command
         ini_set('memory_limit', -1);
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
+        $department_master = DepartmentMaster::all();
+        $title_level_master = TitleLevelMaster::all();
         $limit = 1000;
         $contact_master = DB::table('contact_master')->select(DB::raw("company_id,count(company_id) AS total_record"))->where('status',"not processed")->groupBy('company_id')->take($limit)->get();
         if($contact_master->count() > 0){
@@ -114,6 +119,16 @@ class PopulateSalesbotCompanies extends Command
                             $job_title = $c->job_title;
                             $title_level = $c->title_level;
                             $department = $c->department;
+                            $s_department = NULL;
+                            $s_title_level = NULL;
+                            if($department > 0){
+                                $dep_m = $department_master->where('ID',$department)->values();
+                                $s_department = $dep_m->first()->Department;
+                            }
+                            if($title_level > 0){
+                                $title_level_m = $title_level_master->where('ID',$title_level)->values();
+                                $s_title_level = $title_level_m->first()->title_level;
+                            }
                             $country_id = $c->country_id;
                             $email_status = $c->email_status;
                             $email_validation_date = $c->email_validation_date;
@@ -131,6 +146,8 @@ class PopulateSalesbotCompanies extends Command
                                 $salesbot_contact_new->domain = $domain;
                                 $salesbot_contact_new->location = $location;
                                 $salesbot_contact_new->title_level = $title_level;
+                                $salesbot_contact_new->s_department = $s_department;
+                                $salesbot_contact_new->s_title_level = $s_title_level;
                                 $salesbot_contact_new->company_id = $reference_id;
                                 $salesbot_contact_new->country_id = $country_id;
                                 $salesbot_contact_new->job_title = $job_title;
