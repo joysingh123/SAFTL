@@ -68,7 +68,7 @@ class PopulateContactMaster extends Command
                 $email_validation_date = $contact->email_validation_date;
                 $domain = trim($contact->domain);
                 $contact_country = trim($contact->contact_country);
-                if($email_status == 'valid' && !UtilString::is_empty_string($job_title) && !UtilString::is_empty_string($title_level)){
+                if($email_status == 'valid' && !UtilString::is_empty_string($job_title)){
                     $title_level_id = 0;
                     $department_level_id = 0;
                     $country_id = 0;
@@ -84,41 +84,36 @@ class PopulateContactMaster extends Command
                     if($country_data->count() > 0){
                         $country_id = $country_data->first()->ID;
                     }
-                    if($title_level_id > 0){
-                        $contact_exist = ContactMaster::where('first_name',$first_name)->where('last_name',$last_name)->where('domain',$domain)->get();
-                        if($contact_exist->count() > 0){
+                    $contact_exist = ContactMaster::where('first_name',$first_name)->where('last_name',$last_name)->where('domain',$domain)->get();
+                    if($contact_exist->count() > 0){
+                        $contact->populate_status = 'processed';
+                        $contact->save();
+                    }else{
+                        $company_data = CompaniesWithDomain::where("company_domain",$domain)->get();
+                        $con = new ContactMaster();
+                        $con->id = $id;
+                        $con->full_name = (!UtilString::is_empty_string($full_name)) ? $full_name : NULL;
+                        $con->first_name = $first_name;
+                        $con->last_name = $last_name;
+                        $con->email = $email;
+                        $con->company_name = $company_name;
+                        $con->job_title = $job_title;
+                        $con->location = $location;
+                        $con->title_level = $title_level_id;
+                        $con->department = $department_level_id;
+                        $con->email_status = $email_status;
+                        $con->email_validation_date = $email_validation_date;
+                        $con->domain = $domain;
+                        $con->company_id = 0;
+                        $con->country_id = $country_id;
+                        if($company_data->count() > 0){
+                            $con->company_id = $company_data->first()->id;
+                        }
+                        $save_as = $con->save();
+                        if($save_as){
                             $contact->populate_status = 'processed';
                             $contact->save();
-                        }else{
-                            $company_data = CompaniesWithDomain::where("company_domain",$domain)->get();
-                            $con = new ContactMaster();
-                            $con->id = $id;
-                            $con->full_name = (!UtilString::is_empty_string($full_name)) ? $full_name : NULL;
-                            $con->first_name = $first_name;
-                            $con->last_name = $last_name;
-                            $con->email = $email;
-                            $con->company_name = $company_name;
-                            $con->job_title = $job_title;
-                            $con->location = $location;
-                            $con->title_level = $title_level_id;
-                            $con->department = $department_level_id;
-                            $con->email_status = $email_status;
-                            $con->email_validation_date = $email_validation_date;
-                            $con->domain = $domain;
-                            $con->company_id = 0;
-                            $con->country_id = $country_id;
-                            if($company_data->count() > 0){
-                                $con->company_id = $company_data->first()->id;
-                            }
-                            $save_as = $con->save();
-                            if($save_as){
-                                $contact->populate_status = 'processed';
-                                $contact->save();
-                            }
                         }
-                    }else{
-                        $contact->populate_status = 'title or department not found';
-                        $contact->save();
                     }
                 }else{
                     $contact->populate_status = 'attempt';
