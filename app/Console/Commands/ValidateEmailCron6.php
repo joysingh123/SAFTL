@@ -8,6 +8,7 @@ use App\Helpers\UtilDebug;
 use App\Helpers\UtilString;
 use DB;
 use App\Traits\ValidateEmailTraits;
+use App\EmailValidationApi;
 use App\MatchedContact;
 use App\Contacts;
 
@@ -61,60 +62,73 @@ class ValidateEmailCron6 extends Command
             $plucked_email = $emails->pluck('matched_contact_id');
             $plucked_email_array = $plucked_email->all();
             $result = Emails::whereIn('matched_contact_id', $plucked_email_array)->update(['status' => 'cron6']);
-            if ($result > 0) {
-                foreach ($emails AS $email_record) {
-                    $matched_id = $email_record->matched_contact_id;
-                    Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => 'Invalidate']);
-                    $emails_db = $email_record->emails;
-                    $emails_array = array();
-                    if (UtilString::contains($emails_db, ",")) {
-                        $emails_array = explode(",", $emails_db);
-                    } else {
-                        $emails_array[] = $emails_db;
-                    }
-                    $is_invalid = false;
-                    foreach ($emails_array AS $email) {
-                        $v_response = $this->validateEmail($email);
-                        if ($v_response['email_status'] == 'valid' || $v_response['email_status'] == 'catch all') {
-                            $is_invalid = false;
-                            $email_status = $v_response['email_status'];
-                            $email_validation_date = date("Y-m-d H:i:s");
-                            $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
-                            $matched_contact->email = $email;
-                            $matched_contact->email_status = $v_response['email_status'];
-                            $matched_contact->email_validation_date = date("Y-m-d H:i:s");
-                            $matched_contact->save();
-                            Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => $v_response['email_status']]);
-                            $contact_id = $matched_contact->contact_id;
-                            $domain = $matched_contact->domain;
-                            Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>$email_status,'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
-                            break;
+            $validation_api = EmailValidationApi::where('active','yes')->where('status','enable')->orderBy('cron_count','ASC')->get();
+            if($validation_api->count() > 0){
+                $validation_api = $validation_api->first();
+                $validation_api->cron_count = $validation_api->cron_count + 1;
+                $validation_api->save();
+                if ($result > 0) {
+                    foreach ($emails AS $email_record) {
+                        $matched_id = $email_record->matched_contact_id;
+                        Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => 'Invalidate']);
+                        $emails_db = $email_record->emails;
+                        $emails_array = array();
+                        if (UtilString::contains($emails_db, ",")) {
+                            $emails_array = explode(",", $emails_db);
                         } else {
-                            if ($v_response['email_status'] != "") {
-                                Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => $v_response['email_status']]);
-                                $is_invalid = true;
-                            }else{
-                                Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => 'timeout']);
-                                $email_validation_date = date("Y-m-d H:i:s");
-                                MatchedContact::where('id', '=', $matched_id)->update(['email_status' => 'timeout', 'email_validation_date' => $email_validation_date]);
+                            $emails_array[] = $emails_db;
+                        }
+                        $outer_loop = FALSE;
+                        foreach ($emails_array AS $email) {
+                            $v_response = $this->validateEmail($email,$validation_api);
+                            if ($v_response['email_status'] == 'valid' || $v_response['email_status'] == 'catch all') {
+                                $email_status = $v_response['email_status'];
+                                $email_validation_date = (isset($v_response['validation_date'])) ? $v_response['validation_date'] : date("Y-m-d H:i:s");
                                 $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
+                                $matched_contact->email = $email;
+                                $matched_contact->email_status = $email_status;
+                                $matched_contact->email_validation_date = $email_validation_date;
+                                $matched_contact->save();
+                                Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => $email_status]);
                                 $contact_id = $matched_contact->contact_id;
                                 $domain = $matched_contact->domain;
-                                Contacts::where('id','=',$contact_id)->update(['email_status'=>'timeout','email_validation_date'=>$email_validation_date,'domain'=>$domain]);
+                                Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>$email_status,'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
+                                break;
+                            } else {
+                                if($v_response['email_status'] == "invalid"){
+                                    $email_validation_date = (isset($v_response['validation_date'])) ? $v_response['validation_date'] : date("Y-m-d H:i:s");
+                                    Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => $v_response['email_status']]);
+                                    MatchedContact::where('id', '=', $matched_id)->update(['email'=>$email, 'email_status' => $v_response['email_status'], 'email_validation_date' => $email_validation_date]);
+                                    $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
+                                    $contact_id = $matched_contact->contact_id;
+                                    $domain = $matched_contact->domain;
+                                    Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>$v_response['email_status'],'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
+                                }else{
+                                    $response_api_array = json_decode($v_response['response'],TRUE);
+                                    if(isset($response_api_array['error']) && $response_api_array['error']['code'] == 104){
+                                        Emails::where('status', 'cron6')->orWhere('email',$email)->update(['status' => 'success']);
+                                        $validation_api->active = 'No';
+                                        break 2;
+                                    }
+                                    if(isset($response_api_array['error']) && $response_api_array['error']['code'] == 999){
+                                        Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => 'timeout']);
+                                        $email_validation_date = date("Y-m-d H:i:s");
+                                        MatchedContact::where('id', '=', $matched_id)->update(['email'=>$email,'email_status' => 'timeout', 'email_validation_date' => $email_validation_date]);
+                                        $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
+                                        $contact_id = $matched_contact->contact_id;
+                                        $domain = $matched_contact->domain;
+                                        Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>'timeout','email_validation_date'=>$email_validation_date,'domain'=>$domain]);
+                                    }
+                                }
                             }
                         }
                     }
-                    if ($is_invalid) {
-                        //Emails::where('matched_contact_id', '=', $matched_id)->update(['status' => 'invalid']);
-                        $email_status = $v_response['email_status'];
-                        $email_validation_date = date("Y-m-d H:i:s");
-                        MatchedContact::where('id', '=', $matched_id)->update(['email_status' => $email_status, 'email_validation_date' => $email_validation_date]);
-                        $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
-                        $contact_id = $matched_contact->contact_id;
-                        $domain = $matched_contact->domain;
-                        Contacts::where('id','=',$contact_id)->update(['email_status'=>$email_status,'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
-                    }
+                    $validation_api->cron_count = $validation_api->cron_count - 1;
+                    $validation_api->save();
                 }
+            }else{
+                $response['status'] = "fail";
+                $response['status'] = "No, usable api key found..";
             }
         } else {
             $response['status'] = "fail";
