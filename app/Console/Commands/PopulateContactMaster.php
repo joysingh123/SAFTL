@@ -116,8 +116,10 @@ class PopulateContactMaster extends Command
                         }
                     }
                 }else{
-                    $contact->populate_status = 'attempt';
-                    $contact->save();
+                    if($email_status !=  ''){
+                        $contact->populate_status = 'attempt';
+                        $contact->save();
+                    }
                 }
             }
         }else{
