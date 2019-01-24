@@ -105,7 +105,6 @@ class ValidateEmail extends Command {
                                 }else{
                                     $response_api_array = json_decode($v_response['response'],TRUE);
                                     if(isset($response_api_array['error']) && $response_api_array['error']['code'] == 104){
-                                        echo "api limit over";
                                         Emails::where('status', 'cron1')->orWhere('email',$email)->update(['status' => 'success']);
                                         $validation_api->active = 'No';
                                         break 2;
