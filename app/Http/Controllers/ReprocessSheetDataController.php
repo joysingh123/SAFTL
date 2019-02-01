@@ -24,14 +24,17 @@ class ReprocessSheetDataController extends Controller
             $response['total'] = $sheet_data->count();
             $response['record update'] = 0;
             $linkedin_ids = $sheet_data->pluck('Company_Linkedin_ID');
-            $companies = CompaniesWithDomain::whereIn('linkedin_id',$linkedin_ids)->get();
-            if($companies->count() > 0){
-                foreach ($companies AS $sd){
-                    $linkedin_id = $sd->linkedin_id;
-                    $company_domain = $sd->company_domain;
-                    $updated = MasterUserContact::where('Company_Linkedin_ID',$linkedin_id)->where('Email_Status','domain not found')->update(['Company_Domain'=>$company_domain,'Email_Status'=>'domain found']);
-                    if($updated){
-                        $response['record update'] += $updated;
+            $linkedin_ids_chunk = array_chunk($linkedin_ids, 1000);
+            foreach($linkedin_ids_chunk AS $lic){
+                $companies = CompaniesWithDomain::whereIn('linkedin_id',$lic)->get();
+                if($companies->count() > 0){
+                    foreach ($companies AS $sd){
+                        $linkedin_id = $sd->linkedin_id;
+                        $company_domain = $sd->company_domain;
+                        $updated = MasterUserContact::where('Company_Linkedin_ID',$linkedin_id)->where('Email_Status','domain not found')->update(['Company_Domain'=>$company_domain,'Email_Status'=>'domain found']);
+                        if($updated){
+                            $response['record update'] += $updated;
+                        }
                     }
                 }
             }
