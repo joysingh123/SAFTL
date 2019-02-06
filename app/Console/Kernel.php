@@ -537,7 +537,7 @@ class Kernel extends ConsoleKernel
             return false;
         });
         
-        $schedule->command('update:formatcount')->everyThirtyMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('update:formatcount')->everyMinute()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_UPDATE_FORMAT_COUNT)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
