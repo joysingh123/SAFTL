@@ -522,21 +522,21 @@ class Kernel extends ConsoleKernel
             return false;
         });
 //        
-        $schedule->command('send:email')->everyFiveMinutes()->withoutOverlapping()->before(function () {
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SEND_EMAIL)->get();
-            $cronjobs->first()->current_status = "Running";
-            $cronjobs->first()->save();
-        })->after(function () {
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SEND_EMAIL)->get();
-            $cronjobs->first()->current_status = "Not Running";
-            $cronjobs->first()->save();
-        })->when(function(){
-            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SEND_EMAIL)->get();
-            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
-                return true;
-            }
-            return false;
-        });
+//        $schedule->command('send:email')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+//            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SEND_EMAIL)->get();
+//            $cronjobs->first()->current_status = "Running";
+//            $cronjobs->first()->save();
+//        })->after(function () {
+//            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SEND_EMAIL)->get();
+//            $cronjobs->first()->current_status = "Not Running";
+//            $cronjobs->first()->save();
+//        })->when(function(){
+//            $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_SEND_EMAIL)->get();
+//            if($cronjobs->first()->is_run == 'yes' && $cronjobs->first()->current_status == "Not Running"){
+//                return true;
+//            }
+//            return false;
+//        });
         
         $schedule->command('update:formatcount')->everyMinute()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_UPDATE_FORMAT_COUNT)->get();
@@ -569,6 +569,7 @@ class Kernel extends ConsoleKernel
             }
             return false;
         });
+        
         //Hunter url scrapper
         
 //        $schedule->command('scrapeurl:hunter')->everyFiveMinutes()->withoutOverlapping()->before(function () {
