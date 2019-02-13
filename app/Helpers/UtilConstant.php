@@ -56,6 +56,7 @@ class UtilConstant {
     const CRON_POPULATE_SALESBOT_COMPANIES = "Populate Salesbot Companies";
     const CRON_SEND_EMAIL = "Send Email";
     const CRON_UPDATE_FORMAT_COUNT = "Update Format Count";
+    const CRON_CREATE_EMAIL_FOR_INVALID = "Create Email For Invalid";
     
     // Email Send Service
     
