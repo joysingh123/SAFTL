@@ -57,6 +57,7 @@ class PopulateCompanyMaster extends Command
             $website = trim($company->website);
             $linkedin_url = trim($company->linkedin_url);
             $employee_size = trim($company->employee_size);
+            $employee_count = trim($company->employee_count_at_linkedin);
             $industry = trim($company->industry);
             $city = trim($company->city);
             $country = trim($company->country);
@@ -94,6 +95,7 @@ class PopulateCompanyMaster extends Command
                 $co->company_name = (!UtilString::is_empty_string($company_name)) ? $company_name : NULL;
                 $co->website = (!UtilString::is_empty_string($website)) ? $website : NULL;
                 $co->linkedin_URL = (!UtilString::is_empty_string($linkedin_url)) ? $linkedin_url : NULL;
+                $co->employee_count = $employee_count;
                 $co->employee_size = $employee_size_id;
                 $co->industry = $industry_id;
                 $co->country = $country_id;

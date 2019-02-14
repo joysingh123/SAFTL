@@ -64,6 +64,7 @@ class PopulateSalesbotCompanies extends Command
                     $company_name = trim($company_master->first()->company_name);
                     $website = trim($company_master->first()->website);
                     $linkedin_url = trim($company_master->first()->linkedin_URL);
+                    $employee_count = trim($company_master->first()->employee_count);
                     $industry = trim($company_master->first()->industry);
                     $employee_size = trim($company_master->first()->employee_size);
                     $country = trim($company_master->first()->country);
@@ -71,6 +72,7 @@ class PopulateSalesbotCompanies extends Command
                     $postal_code = trim($company_master->first()->postal_code);
                     $state = trim($company_master->first()->state);
                     $region = trim($company_master->first()->region);
+                    $city = trim($company_master->first()->city);
                     $grouping = trim($company_master->first()->grouping);
                     $logo_url = trim($company_master->first()->Logo_URL);
                     $facebook_url = trim($company_master->first()->facebook_url);
@@ -87,10 +89,12 @@ class PopulateSalesbotCompanies extends Command
                         $salesbot_company = new Companies();
                         $salesbot_company->company = $company_name;
                         $salesbot_company->employeeSize = $employee_size;
+                        $salesbot_company->employee_count = $employee_count;
                         $salesbot_company->companyWebsite = $website;
                         $salesbot_company->industry = $industry;
                         $salesbot_company->country_id = $country;
                         $salesbot_company->zipcode = $postal_code;
+                        $salesbot_company->city = $city;
                         $salesbot_company->domain = $domain;
                         $salesbot_company->state = $state;
                         $salesbot_company->region = $region;
