@@ -61,3 +61,9 @@ Route::get('filtercompanydata',"ChangeDomainContoller@companyFilteredData")->mid
 
 Route::get('installbase',"InstallBaseController@installBaseView")->name('installbase')->middleware(['auth','isAdmin']);
 Route::post('importinstallbase',"InstallBaseController@importInstallBase")->name('importinstallbase')->middleware(['auth','isAdmin']);
+
+Route::get('event',"InstallBaseController@eventView")->name('event')->middleware(['auth','isAdmin']);
+Route::post('importevent',"InstallBaseController@importEvent")->name('importevent')->middleware(['auth','isAdmin']);
+
+Route::get('partner',"InstallBaseController@partnerView")->name('partner')->middleware(['auth','isAdmin']);
+Route::post('importpartner',"InstallBaseController@importPartner")->name('importpartner')->middleware(['auth','isAdmin']);

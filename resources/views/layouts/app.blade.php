@@ -59,6 +59,10 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('installbase') }}">{{ __('Install Base') }}</a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('event') }}">{{ __('Event') }}</a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('partner') }}">{{ __('Partner') }}</a>
                             </li>
                         @endrole
                     </ul>
