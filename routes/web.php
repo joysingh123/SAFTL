@@ -58,3 +58,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('webhook', 'WebHookController@handle');
 
 Route::get('filtercompanydata',"ChangeDomainContoller@companyFilteredData")->middleware(['auth']);
+
+Route::get('installbase',"InstallBaseController@installBaseView")->name('installbase')->middleware(['auth','isAdmin']);
+Route::post('importinstallbase',"InstallBaseController@importInstallBase")->name('importinstallbase')->middleware(['auth','isAdmin']);
