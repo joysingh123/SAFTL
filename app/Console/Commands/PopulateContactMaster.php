@@ -51,7 +51,7 @@ class PopulateContactMaster extends Command
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $limit = 2000;
-        $contacts = Contacts::where("populate_status",'not processed')->take($limit)->get();
+        $contacts = Contacts::where("populate_status",'not processed')->where('email_status','valid')->take($limit)->get();
         if($contacts->count() > 0){
             foreach($contacts AS $contact){
                 $id = $contact->id;
@@ -114,11 +114,6 @@ class PopulateContactMaster extends Command
                             $contact->populate_status = 'processed';
                             $contact->save();
                         }
-                    }
-                }else{
-                    if($email_status !=  ''){
-                        $contact->populate_status = 'attempt';
-                        $contact->save();
                     }
                 }
             }
