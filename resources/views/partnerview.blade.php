@@ -40,7 +40,7 @@
     <form action="{{ route('importpartner') }}" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         
-        Install Base:<select name="partner" class="form-control">
+        Partner:<select name="partner" class="form-control">
             <option value="">Select Your Partner</option>
             @foreach($partner_base AS $is)
             <option value="{{$is->id}}">{{$is->name}}</option>

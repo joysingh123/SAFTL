@@ -40,7 +40,7 @@
     <form action="{{ route('importevent') }}" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         
-        Install Base:<select name="event" class="form-control">
+        Event:<select name="event" class="form-control">
             <option value="">Select Your Event</option>
             @foreach($event_base AS $is)
             <option value="{{$is->id}}">{{$is->name}}</option>
