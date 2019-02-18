@@ -10,6 +10,7 @@ use Excel;
 use DB;
 use App\Helpers\UtilString;
 use App\Helpers\UtilConstant;
+use App\CompanyInstallBaseMapping;
 class InstallBaseController extends Controller
 {
     public function installBaseView(){
@@ -41,25 +42,43 @@ class InstallBaseController extends Controller
                 if (in_array('domain', $header)) {
                     if (!empty($data) && $data->count()) {
                         $duplicate_in_sheet = 0;
-                        $already_exist_in_db = 0;
                         $inserted = 0;
                         $duplicate = array();
+                        $invalid_domain = 0;
+                        $already_exist_in_db = 0;
+                        $invalid_domain_array = array();
                         foreach ($data as $key => $value) {
-                            if (UtilString::is_empty_string($value->domain)) {
+                            $domain = trim($value->domain);
+                            if (UtilString::is_empty_string($domain)) {
                                 
                             } else {
-                                if (in_array($value, $duplicate)) {
+                                if (in_array($domain, $duplicate)) {
                                     $duplicate_in_sheet ++;
                                 } else {
-                                    $duplicate[] = $value->domain;
-                                    echo $value->domain;
+                                    $duplicate[] = $domain;
+                                    if(UtilString::contains($domain, ".")){
+                                        $company_install_base = CompanyInstallBaseMapping::where('domain',$domain)->where('install_base_id',$install_base)->get();
+                                        if($company_install_base->count() > 0){
+                                            $already_exist_in_db ++;
+                                        }else{
+                                            $inser_data = array();
+                                            $inser_data['domain'] = $domain;
+                                            $inser_data['install_base_id'] = $install_base;
+                                            $insert[] = $inser_data;
+                                            $inserted++;
+                                        }
+                                    }else{
+                                        $invalid_domain ++;
+                                        $invalid_domain_array[] = $domain;
+                                    }
+                                    
                                 }
                             }
                         }
                         if (!empty($insert)) {
                             $insert_chunk = array_chunk($insert, 100);
                             foreach ($insert_chunk AS $ic) {
-                                $insertData = DB::table('companies_with_domain')->insert($ic);
+                                $insertData = CompanyInstallBaseMapping::insert($ic);
                             }
                             if ($insertData) {
                               Session::flash('success', 'Your Data has successfully imported');
@@ -72,11 +91,9 @@ class InstallBaseController extends Controller
                     $stats_data = array(
                         "inserted" => $inserted,
                         "duplicate_in_sheet" => $duplicate_in_sheet,
+                        "invalid_domain" => $invalid_domain,
                         "already_exist_in_db" => $already_exist_in_db,
-                        "domain_not_exist" => $domain_not_exist,
-                        "junk_count" => $junk_count,
-                        "domain_not_found" => $domain_not_found,
-                        "junk_data_array" => $junk_data_array
+                        "invalid_domain_array" => $invalid_domain_array,
                     );
                     Session::flash('stats_data', $stats_data);
                     return back();

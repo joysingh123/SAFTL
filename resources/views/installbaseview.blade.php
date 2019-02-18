@@ -67,8 +67,55 @@
     </div>
     @endif
     @if(Session::has('stats_data'))
+    @php
+        $stats_data = Session::get('stats_data')
+    @endphp
     <br>
     <br>
+    <div class="container">
+        <h2>Domain Stats</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>New Inserted</th>
+                    <th>Duplicate In Sheet</th>
+                    <th>Invalid Domain</th> 
+                    <th>Domain Already Exist</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{$stats_data['inserted']}}</td>
+                    <td>{{$stats_data['duplicate_in_sheet']}}</td>
+                    <td>{{$stats_data['invalid_domain']}}</td>
+                    <td>{{$stats_data['already_exist_in_db']}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    @if(count($stats_data['invalid_domain_array']) > 0)
+    <br>
+    <br>
+    <div class="container">
+        <h2>Invalid Domain</h2>         
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Domain</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($stats_data['invalid_domain_array'] AS $k=>$data)
+                <tr>
+                    <td>{{$k + 1}}</td>
+                    <td>{{$data}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endif
     @endif
 </div>
 @endsection
