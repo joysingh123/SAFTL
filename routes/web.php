@@ -67,3 +67,5 @@ Route::post('importevent',"InstallBaseController@importEvent")->name('importeven
 
 Route::get('partner',"InstallBaseController@partnerView")->name('partner')->middleware(['auth','isAdmin']);
 Route::post('importpartner',"InstallBaseController@importPartner")->name('importpartner')->middleware(['auth','isAdmin']);
+Route::get('companygroup',"CompanyGroupController@companyGroupView")->name('companygroup')->middleware(['auth','isAdmin']);
+Route::post('importcompanygroup',"CompanyGroupController@importCompanyGroup")->name('importcompanygroup')->middleware(['auth','isAdmin']);

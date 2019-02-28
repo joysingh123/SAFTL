@@ -64,6 +64,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('partner') }}">{{ __('Partner') }}</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('companygroup') }}">{{ __('Company Group') }}</a>
+                            </li>
                         @endrole
                     </ul>
 
