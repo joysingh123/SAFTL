@@ -138,6 +138,9 @@ return [
             'PUSHER_APP_SECRET',
             'DB_PASSWORD_SECOND',
         ],
+        '_POST' => [
+            'password',
+        ],
     ],
 
     'providers' => [
