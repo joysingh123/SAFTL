@@ -128,6 +128,7 @@ return [
             'PUSHER_APP_KEY',
             'PUSHER_APP_SECRET',
             'DB_PASSWORD_SECOND',
+            'DB_PASSWORD_THIRD',
         ],
         '_SERVER' => [
             'APP_KEY',
@@ -137,6 +138,7 @@ return [
             'PUSHER_APP_KEY',
             'PUSHER_APP_SECRET',
             'DB_PASSWORD_SECOND',
+            'DB_PASSWORD_THIRD',
         ],
         '_POST' => [
             'password',
