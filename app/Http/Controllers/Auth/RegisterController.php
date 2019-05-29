@@ -71,7 +71,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'api_token' => Str::random(60),
+            'api_token' => Str::random(60)
         ]);
         if(isset($data['roles'])){
             $role_r = Role::where('id', '=', $data['roles'])->firstOrFail();
