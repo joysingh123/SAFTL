@@ -9,7 +9,7 @@ use App\Contacts;
 use App\TitleLevelMaster;
 use App\DepartmentMaster;
 use App\ContactMaster;
-use App\CompaniesWithDomain;
+use App\CompanyMaster;
 use App\CountryMaster;
 
 class PopulateContactMaster extends Command
@@ -54,7 +54,6 @@ class PopulateContactMaster extends Command
         $contacts = Contacts::where("populate_status",'not processed')->take($limit)->get();
         if($contacts->count() > 0){
             foreach($contacts AS $contact){
-                $id = $contact->id;
                 $full_name = trim($contact->full_name);
                 $first_name = trim($contact->first_name);
                 $last_name = trim($contact->last_name);
@@ -88,9 +87,8 @@ class PopulateContactMaster extends Command
                     $contact->populate_status = 'processed';
                     $contact->save();
                 }else{
-                    $company_data = CompaniesWithDomain::where("company_domain",$domain)->get();
+                    $company_data = CompanyMaster::where("domain",$domain)->get();
                     $con = new ContactMaster();
-                    $con->id = $id;
                     $con->full_name = (!UtilString::is_empty_string($full_name)) ? $full_name : NULL;
                     $con->first_name = $first_name;
                     $con->last_name = $last_name;

@@ -52,7 +52,6 @@ class PopulateCompanyMaster extends Command
         $limit = 10000;
         $companies = CompaniesWithDomain::where("status",'not processed')->take($limit)->get();
         foreach($companies AS $company){
-            $id = $company->id;
             $company_name = trim($company->company_name);
             $website = trim($company->website);
             $linkedin_url = trim($company->linkedin_url);
@@ -91,7 +90,6 @@ class PopulateCompanyMaster extends Command
                 $company->save();
             }else{
                 $co = new CompanyMaster();
-                $co->id = $id;
                 $co->company_name = (!UtilString::is_empty_string($company_name)) ? $company_name : NULL;
                 $co->website = (!UtilString::is_empty_string($website)) ? $website : NULL;
                 $co->linkedin_URL = (!UtilString::is_empty_string($linkedin_url)) ? $linkedin_url : NULL;
