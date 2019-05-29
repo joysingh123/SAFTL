@@ -51,7 +51,7 @@ class PopulateContactMaster extends Command
         ini_set('mysql.connect_timeout', 600);
         ini_set('default_socket_timeout', 600);
         $limit = 2000;
-        $contacts = Contacts::where("populate_status",'not processed')->take($limit)->get();
+        $contacts = Contacts::where("populate_status",'not processed')->whereNotNull('email')->take($limit)->get();
         if($contacts->count() > 0){
             foreach($contacts AS $contact){
                 $full_name = trim($contact->full_name);
