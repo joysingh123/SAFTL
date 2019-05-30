@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    $user = $request->user();
-    return response()->json($user);
+Route::group(['prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
+    Route::get('/emailvalidationapikey', 'ApiController@getEmailValidationApiKey');
+    Route::post('/getemailformatbydomain', 'ApiController@getEmailFormatByDomain');
 });
