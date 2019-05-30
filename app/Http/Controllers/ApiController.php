@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\EmailValidationApi;
 use App\EmailFormat;
+use App\Helpers\UtilString;
 class ApiController extends Controller
 {
     public function getEmailValidationApiKey(){
@@ -20,12 +21,32 @@ class ApiController extends Controller
     
     public function getEmailFormatByDomain(Request $request){
         $response_array = array('status'=>"fail","msg"=>"something went wrong");
-        if($request->has('domain')){
-            $domain = $request->get('domain');
+        $data = $request->json()->all(); 
+        if(isset($data['domain'])){
+            $domain = $data['domain'];
             $email_format = EmailFormat::where("company_domain", $domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
             if($email_format->count() > 0){
-                echo $email_format;
+                $email_format_db  = $email_format->pluck('email_format');
+                $email_format_db = $email_format_db->all();
+                $response_array = array('status'=>"success","email_format"=>$email_format_db);
+            }else{
+                $emp_size_1 = ['501 to 1000','5001 to 10000','201 to 500','1001 to 5000','10000 above'];
+                $emp_size_2 = ['invalid','NA','1 to 10','11 to 50','51 to 200'];
+                if(isset($data['employee_size']) && !UtilString::is_empty_string($data['employee_size'])){
+                    $employee_size = $data['employee_size'];
+                    $email_formats = array();
+                    if(in_array($employee_size, $emp_size_1)){
+                        $email_formats[] = "FLASTNAME@DOMAIN";
+                    }
+                    if(in_array($employee_size, $emp_size_2)){
+                        $email_formats[] = "FIRSTNAME@DOMAIN";
+                    }
+                    $response_array = array('status'=>"success","email_format"=>$email_formats);
+                }else{
+                   $response_array = array('status'=>"fail","msg"=>"No email format found"); 
+                }
             }
         }
+        return response()->json($response_array);
     }
 }

@@ -13,7 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
-    Route::get('/emailvalidationapikey', 'ApiController@getEmailValidationApiKey');
-    Route::post('/getemailformatbydomain', 'ApiController@getEmailFormatByDomain');
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    $user = $request->user();
+    return response()->json($user);
 });
+Route::middleware('auth:api')->get('/emailvalidationapikey', 'ApiController@getEmailValidationApiKey');
+Route::middleware('auth:api')->post('/getemailformatbydomain', 'ApiController@getEmailFormatByDomain');
