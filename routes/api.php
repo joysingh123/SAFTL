@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::middleware('auth:api')->get('/emailvalidationapikey', 'ApiController@getEmailValidationApiKey');
 Route::middleware('auth:api')->post('/getemailformatbydomain', 'ApiController@getEmailFormatByDomain');
+Route::middleware('auth:api')->post('/getemailinfo', 'ApiController@getEmailInfo');

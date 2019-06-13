@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\EmailValidationApi;
 use App\EmailFormat;
 use App\Helpers\UtilString;
+use App\Contacts;
+use App\CompaniesWithDomain;
 class ApiController extends Controller
 {
     public function getEmailValidationApiKey(){
@@ -45,6 +47,25 @@ class ApiController extends Controller
                 }else{
                    $response_array = array('status'=>"fail","msg"=>"No email format found"); 
                 }
+            }
+        }
+        return response()->json($response_array);
+    }
+    public function getEmailInfo(Request $request){
+        $response_array = array('status'=>"fail","msg"=>"something went wrong");
+        $data = $request->json()->all();
+        if(isset($data['first_name']) && isset($data['last_name']) && isset($data['domain'])){
+            $first_name = $data['first_name'];
+            $last_name = $data['last_name'];
+            $domain = $data['domain'];
+            $contacts = Contacts::where('first_name',$first_name)->where('last_name',$last_name)->where('domain',$domain)->get();
+            if($contacts->count() > 0){
+                $linkedin_id = $contacts->first()->linkedin_id;
+                $companies = CompaniesWithDomain::where('linkedin_id',$linkedin_id)->first();
+                $contacts->first()->company_info = $companies;
+                $response_array = array('status'=>"success","contact_info"=>$contacts);
+            }else{
+                $response_array = array('status'=>"fail","msg"=>"No Contact found"); 
             }
         }
         return response()->json($response_array);
