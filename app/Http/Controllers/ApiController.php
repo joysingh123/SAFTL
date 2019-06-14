@@ -8,8 +8,11 @@ use App\EmailFormat;
 use App\Helpers\UtilString;
 use App\Contacts;
 use App\CompaniesWithDomain;
+use App\Helpers\UtilEmailValidation;
+use Ixudra\Curl\Facades\Curl;
 class ApiController extends Controller
 {
+    
     public function getEmailValidationApiKey(){
         $response_array = array('status'=>"fail","msg"=>"something went wrong");
         $validation_api = EmailValidationApi::where('active','yes')->where('status','enable')->orderBy('cron_count','ASC')->get();
@@ -66,6 +69,55 @@ class ApiController extends Controller
                 $response_array = array('status'=>"success","contact_info"=>$contacts);
             }else{
                 $response_array = array('status'=>"fail","msg"=>"No Contact found"); 
+            }
+        }
+        return response()->json($response_array);
+    }
+    
+    public function verifyEmail(Request $request){
+        $response_array = array('status'=>"fail","msg"=>"something went wrong");
+        $data = $request->json()->all();
+        if(isset($data['email']) && UtilString::is_email($data['email'])){
+            $email = $data['email'];
+            $validation_api = EmailValidationApi::where('active','yes')->where('status','enable')->orderBy('cron_count','ASC')->get();
+            if($validation_api->count() > 0){
+                $validation_api = $validation_api->first();
+                $api_name = $validation_api->name;
+                $api_url = $validation_api->api_url;
+                $api_key = $validation_api->api_key;
+                $email_validation_url = UtilEmailValidation::getValidationUrl($email, $api_name, $api_url, $api_key);
+                $url = $email_validation_url['email_validation_url'];
+                $response = Curl::to($url)->get();
+                $response_array = json_decode($response, true);
+                $email_validation_response = array("status"=>"","email_validation_date"=>"","msg"=>"","error_code"=>"","email"=>$email);
+                if (isset($response_array['email'])) {
+                    if ($response_array['smtp_check'] && $response_array['score'] >= 0.96 && !$response_array['disposable']) {
+                        $email_validation_response['status'] = "valid";
+                        $email_validation_response['email_validation_date'] = date("Y-m-d H:i:s");
+                    } else if ($response_array['smtp_check'] && $response_array['score'] < 0.96 && !$response_array['disposable']) {
+                        $email_validation_response['status'] = "catch all";
+                        $email_validation_response['email_validation_date'] = date("Y-m-d H:i:s");
+                    } else {
+                        $email_validation_response['status'] = "invalid";
+                        $email_validation_response['email_validation_date'] = date("Y-m-d H:i:s");
+                    }
+                }else{
+                    if(isset($response_array['error']) && $response_array['error']['code'] == 104){
+                        $email_validation_response['status'] = "error";
+                        $email_validation_response['msg'] = "you  have reached api usage limit";
+                        $email_validation_response['error_code'] = $response_array['error']['code'];
+                        $email_validation_response['email_validation_date'] = date("Y-m-d H:i:s");
+                    }
+                    if(isset($response_array['error']) && $response_array['error']['code'] == 999){
+                        $email_validation_response['status'] = "error";
+                        $email_validation_response['msg'] = "timeout";
+                        $email_validation_response['error_code'] = $response_array['error']['code'];
+                        $email_validation_response['email_validation_date'] = date("Y-m-d H:i:s");
+                    }
+                }
+                $response_array = array('status'=>"success","data"=>$email_validation_response);
+            }else{
+                $response_array = array('status'=>"fail","msg"=>"No Active api Key Found");
             }
         }
         return response()->json($response_array);
