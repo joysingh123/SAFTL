@@ -51,10 +51,17 @@ trait ContactCompanyMatchTraits {
                         $matched_contact->tag = $contact->tag;
                         $matched_contact->title_level = $contact->title_level;
                         $matched_contact->department = $contact->department;
+                        if(trim($company->company_domain) == "tobeidentified.com"){
+                            $matched_contact->email_status = "NA";
+                        }
                         $save_as = $matched_contact->save();
                         $exist_in_email_format = EmailFormat::where('company_domain','=',trim($company->company_domain))->count();
                         if($exist_in_email_format > 0){
-                            MatchedContact::where('domain', trim($company->company_domain))->whereNull('email_status')->update(['email_status' => NULL, 'email_format_available' => 'yes']);
+                            if(trim($company->company_domain) == "tobeidentified.com"){
+                                MatchedContact::where('domain', trim($company->company_domain))->whereNull('email_status')->update(['email_status' => "NA", 'email_format_available' => 'no']);
+                            }else{
+                                MatchedContact::where('domain', trim($company->company_domain))->whereNull('email_status')->update(['email_status' => NULL, 'email_format_available' => 'yes']);
+                            }
                         }
                         if ($save_as == 1) {
                             $new_insert_in_match ++;
