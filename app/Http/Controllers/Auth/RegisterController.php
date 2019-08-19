@@ -42,6 +42,13 @@ class RegisterController extends Controller
         $this->middleware('isAdmin');
     }
 
+    public function showRegistrationForm()
+    {
+        $roles = Role::all();
+        return view('auth.register')->with('roles',$roles);
+    }
+
+
     /**
      * Get a validator for an incoming registration request.
      *
