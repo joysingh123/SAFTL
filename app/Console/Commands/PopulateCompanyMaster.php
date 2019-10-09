@@ -97,6 +97,7 @@ class PopulateCompanyMaster extends Command
                 $co->linkedin_URL = (!UtilString::is_empty_string($linkedin_url)) ? $linkedin_url : NULL;
                 $co->employee_count = $employee_count;
                 $co->employee_size = $employee_size_id;
+                $co->s_employee_size = $employee_size;
                 $co->industry = $industry_id;
                 $co->country = $country_id;
                 $co->city = (!UtilString::is_empty_string($city)) ? $city : NULL;
