@@ -76,9 +76,18 @@ class PopulateContactMaster extends Command
                 if(!UtilString::is_empty_string($location)){
                     if(UtilString::contains($location, ",")){
                         $location_array = explode(",", $location);
-                        $city = (isset($location_array[0])) ? trim($location_array[0]) : NULL;
-                        $state = (isset($location_array[1])) ? trim($location_array[1]) : NULL;
-                        $country = (isset($location_array[2])) ? trim($location_array[2]) : NULL;
+                        if(count($location) == 3){
+                            $city = (isset($location_array[0])) ? str_replace('Area','',trim($location_array[0])) : NULL;
+                            $state = (isset($location_array[1])) ? trim($location_array[1]) : NULL;
+                            $country = (isset($location_array[2])) ? trim($location_array[2]) : NULL;
+                        }
+                        if(count($location) == 2){
+                            $city = (isset($location_array[0])) ? str_replace('Area','',trim($location_array[0])) : NULL;
+                            $country = (isset($location_array[1])) ? trim($location_array[1]) : NULL;
+                        }
+                        if(count($location) == 1){
+                            $country = (isset($location_array[0])) ? trim($location_array[0]) : NULL;
+                        }
                     }
                 }
                 $title_level_data = TitleLevelMaster::where('title_level',$title_level)->where('Status','Active');
