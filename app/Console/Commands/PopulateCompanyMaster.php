@@ -103,6 +103,8 @@ class PopulateCompanyMaster extends Command
                 $company_master->first()->s_employee_size = $employee_size;
                 $company_master->first()->industry = $industry_id;
                 $company_master->first()->country = $country_id;
+                $company_master->first()->s_industry = (!UtilString::is_empty_string($industry)) ? $industry : NULL;
+                $company_master->first()->s_country = (!UtilString::is_empty_string($country)) ? $country : NULL;
                 $company_master->first()->city = (!UtilString::is_empty_string($city)) ? $city : NULL;
                 $company_master->first()->postal_code = (!UtilString::is_empty_string($postal_code)) ? $postal_code : NULL;
                 $company_master->first()->domain = (!UtilString::is_empty_string($domain)) ? $domain : NULL;
@@ -128,6 +130,8 @@ class PopulateCompanyMaster extends Command
                 $co->s_employee_size = $employee_size;
                 $co->industry = $industry_id;
                 $co->country = $country_id;
+                $co->s_industry = (!UtilString::is_empty_string($industry)) ? $industry : NULL;
+                $co->s_country = (!UtilString::is_empty_string($country)) ? $country : NULL;
                 $co->city = (!UtilString::is_empty_string($city)) ? $city : NULL;
                 $co->postal_code = (!UtilString::is_empty_string($postal_code)) ? $postal_code : NULL;
                 $co->domain = (!UtilString::is_empty_string($domain)) ? $domain : NULL;
