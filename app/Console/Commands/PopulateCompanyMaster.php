@@ -87,6 +87,27 @@ class PopulateCompanyMaster extends Command
             }
             $company_master = CompanyMaster::where("domain",$domain)->get();
             if($company_master->count() > 0){
+                $company_master->first()->linkedin_id = $linkedin_id;
+                $company_master->first()->company_name = (!UtilString::is_empty_string($company_name)) ? $company_name : NULL;
+                $company_master->first()->website = (!UtilString::is_empty_string($website)) ? $website : NULL;
+                $company_master->first()->linkedin_URL = (!UtilString::is_empty_string($linkedin_url)) ? $linkedin_url : NULL;
+                $company_master->first()->employee_count = $employee_count;
+                $company_master->first()->employee_size = $employee_size_id;
+                $company_master->first()->s_employee_size = $employee_size;
+                $company_master->first()->industry = $industry_id;
+                $company_master->first()->country = $country_id;
+                $company_master->first()->city = (!UtilString::is_empty_string($city)) ? $city : NULL;
+                $company_master->first()->postal_code = (!UtilString::is_empty_string($postal_code)) ? $postal_code : NULL;
+                $company_master->first()->domain = (!UtilString::is_empty_string($domain)) ? $domain : NULL;
+                $company_master->first()->state = (!UtilString::is_empty_string($state)) ? $state : NULL;
+                $company_master->first()->region = (!UtilString::is_empty_string($region)) ? $region : NULL;
+                $company_master->first()->grouping = (!UtilString::is_empty_string($grouping)) ? $grouping : NULL;
+                $company_master->first()->Logo_URL = (!UtilString::is_empty_string($logo_url)) ? $logo_url : NULL;
+                $company_master->first()->facebook_url = (!UtilString::is_empty_string($facebook_url)) ? $facebook_url : NULL;
+                $company_master->first()->twitter_url = (!UtilString::is_empty_string($twitter_url)) ? $twitter_url : NULL;
+                $company_master->first()->zoominfo_url = (!UtilString::is_empty_string($zoominfo_url)) ? $zoominfo_url : NULL;
+                $save_as = $company_master->first()->save();
+                
                 $company->status = 'processed';
                 $company->save();
             }else{
