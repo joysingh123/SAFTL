@@ -73,23 +73,6 @@ class PopulateContactMaster extends Command
                 $city = NULL;
                 $state = NULL;
                 $country = NULL;
-                if(!UtilString::is_empty_string($location)){
-                    if(UtilString::contains($location, ",")){
-                        $location_array = explode(",", $location);
-                        if(count($location_array) == 3){
-                            $city = (isset($location_array[0])) ? trim(str_replace('Area','',$location_array[0])) : NULL;
-                            $state = (isset($location_array[1])) ? trim($location_array[1]) : NULL;
-                            $country = (isset($location_array[2])) ? trim($location_array[2]) : NULL;
-                        }
-                        if(count($location_array) == 2){
-                            $city = (isset($location_array[0])) ? trim(str_replace('Area','',$location_array[0])) : NULL;
-                            $country = (isset($location_array[1])) ? trim($location_array[1]) : NULL;
-                        }
-                        if(count($location_array) == 1){
-                            $country = (isset($location_array[0])) ? trim(str_replace('Area','',$location_array[0])) : NULL;
-                        }
-                    }
-                }
                 $title_level_data = TitleLevelMaster::where('title_level',$title_level)->where('Status','Active');
                 $department_level_data = DepartmentMaster::where('Department',$department)->where('Status','Active');
                 $country_data = CountryMaster::where('Country Name',$contact_country)->where('Status','Active');
