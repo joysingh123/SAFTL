@@ -70,6 +70,12 @@ class PopulateCompanyMaster extends Command
             $facebook_url = trim($company->facebook_url);
             $twitter_url = trim($company->twitter_url);
             $zoominfo_url = trim($company->zoominfo_url);
+            $company_type = 'Private';
+            if(UtilString::contains(strtolower($domain), '.gov')){
+                $company_type = "Government";
+            }else if(strtolower ($industry) == "nonprofit organization management"){
+                $company_type = "Non-Profit";
+            }
             $country_id = 0;
             $industry_id = 0;
             $employee_size_id = 0;
@@ -89,6 +95,7 @@ class PopulateCompanyMaster extends Command
             if($company_master->count() > 0){
                 $company_master->first()->linkedin_id = $linkedin_id;
                 $company_master->first()->company_name = (!UtilString::is_empty_string($company_name)) ? $company_name : NULL;
+                $company_master->first()->company_type = (!UtilString::is_empty_string($company_type)) ? $company_type : NULL;
                 $company_master->first()->website = (!UtilString::is_empty_string($website)) ? $website : NULL;
                 $company_master->first()->linkedin_URL = (!UtilString::is_empty_string($linkedin_url)) ? $linkedin_url : NULL;
                 $company_master->first()->employee_count = $employee_count;
@@ -107,13 +114,13 @@ class PopulateCompanyMaster extends Command
                 $company_master->first()->twitter_url = (!UtilString::is_empty_string($twitter_url)) ? $twitter_url : NULL;
                 $company_master->first()->zoominfo_url = (!UtilString::is_empty_string($zoominfo_url)) ? $zoominfo_url : NULL;
                 $save_as = $company_master->first()->save();
-                
                 $company->status = 'processed';
                 $company->save();
             }else{
                 $co = new CompanyMaster();
                 $co->linkedin_id = $linkedin_id;
                 $co->company_name = (!UtilString::is_empty_string($company_name)) ? $company_name : NULL;
+                $co->company_type = (!UtilString::is_empty_string($company_type)) ? $company_type : NULL;
                 $co->website = (!UtilString::is_empty_string($website)) ? $website : NULL;
                 $co->linkedin_URL = (!UtilString::is_empty_string($linkedin_url)) ? $linkedin_url : NULL;
                 $co->employee_count = $employee_count;
