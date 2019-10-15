@@ -11,7 +11,7 @@ use App\DepartmentMaster;
 use App\ContactMaster;
 use App\CompanyMaster;
 use App\CountryMaster;
-
+use App\Location;
 class PopulateContactMaster extends Command
 {
     /**
@@ -73,6 +73,13 @@ class PopulateContactMaster extends Command
                 $city = NULL;
                 $state = NULL;
                 $country = NULL;
+                $location_data = Location::where('location',$location)->get();
+                if($location_data->count() > 0){
+                    $city = $location_data->first()->city;
+                    $state = $location_data->first()->state;
+                    $country = $location_data->first()->country;
+                    $contact_country = (UtilString::is_empty_string($contact_country)) ? $country : $contact_country;
+                }
                 $title_level_data = TitleLevelMaster::where('title_level',$title_level)->where('Status','Active');
                 $department_level_data = DepartmentMaster::where('Department',$department)->where('Status','Active');
                 $country_data = CountryMaster::where('Country Name',$contact_country)->where('Status','Active');
@@ -82,8 +89,22 @@ class PopulateContactMaster extends Command
                 if($department_level_data->count() > 0){
                     $department_level_id = $department_level_data->first()->ID;
                 }
+                $continent = NULL;
+                $continent_region = NULL;
+                $mena = NULL;
+                $apac = NULL;
+                $latam = NULL;
+                $europian_union = NULL;
+                $emea = NULL;
                 if($country_data->count() > 0){
                     $country_id = $country_data->first()->ID;
+                    $continent = $country_data->first()->continent;
+                    $continent_region = $country_data->first()->continent_region;
+                    $mena = $country_data->first()->mena;
+                    $apac = $country_data->first()->apac;
+                    $latam = $country_data->first()->latam;
+                    $europian_union = $country_data->first()->eu;
+                    $emea = $country_data->first()->emea;
                 }
                 $contact_exist = ContactMaster::where('first_name',$first_name)->where('last_name',$last_name)->where('domain',$domain)->get();
                 if($contact_exist->count() > 0){
@@ -110,6 +131,13 @@ class PopulateContactMaster extends Command
                     if($company_data->count() > 0){
                         $contact_exist->first()->company_id = $company_data->first()->id;
                     }
+                    $contact_exist->first()->continent = $continent;
+                    $contact_exist->first()->continent_region = $continent_region;
+                    $contact_exist->first()->mena = $mena;
+                    $contact_exist->first()->apac = $apac;
+                    $contact_exist->first()->latam = $latam;
+                    $contact_exist->first()->europian_union = $europian_union;
+                    $contact_exist->first()->emea = $emea;
                     $contact_exist->first()->save();
                     $contact->populate_status = 'processed';
                     $contact->save();
@@ -138,6 +166,13 @@ class PopulateContactMaster extends Command
                     if($company_data->count() > 0){
                         $con->company_id = $company_data->first()->id;
                     }
+                    $con->continent = $continent;
+                    $con->continent_region = $continent_region;
+                    $con->mena = $mena;
+                    $con->apac = $apac;
+                    $con->latam = $latam;
+                    $con->europian_union = $europian_union;
+                    $con->emea = $emea;
                     $save_as = $con->save();
                     if($save_as){
                         $contact->populate_status = 'processed';
