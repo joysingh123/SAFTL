@@ -82,8 +82,22 @@ class PopulateCompanyMaster extends Command
             $country_data = CountryMaster::where('Country Name',$country)->where('Status','Active')->get();
             $industry_data = IndustryMaster::where('Industry',$industry)->where('Status','Active')->get();
             $employee_size_data = EmployeeSizeMaster::where('employee_size',$employee_size)->where('Status','Active')->get();
+            $continent = NULL;
+            $continent_region = NULL;
+            $mena = NULL;
+            $apac = NULL;
+            $latam = NULL;
+            $europian_union = NULL;
+            $emea = NULL;
             if($country_data->count() > 0){
                 $country_id = $country_data->first()->ID;
+                $continent = $country_data->first()->continent;
+                $continent_region = $country_data->first()->continent_region;
+                $mena = $country_data->first()->mena;
+                $apac = $country_data->first()->apac;
+                $latam = $country_data->first()->latam;
+                $europian_union = $country_data->first()->eu;
+                $emea = $country_data->first()->emea;
             }
             if($industry_data->count() > 0){
                 $industry_id = $industry_data->first()->ID;
@@ -112,6 +126,13 @@ class PopulateCompanyMaster extends Command
                 $company_master->first()->region = (!UtilString::is_empty_string($region)) ? $region : NULL;
                 $company_master->first()->grouping = (!UtilString::is_empty_string($grouping)) ? $grouping : NULL;
                 $company_master->first()->Logo_URL = (!UtilString::is_empty_string($logo_url)) ? $logo_url : NULL;
+                $company_master->first()->continent = $continent;
+                $company_master->first()->continent_region = $continent_region;
+                $company_master->first()->mena = $mena;
+                $company_master->first()->apac = $apac;
+                $company_master->first()->latam = $latam;
+                $company_master->first()->europian_union = $europian_union;
+                $company_master->first()->emea = $emea;
                 $company_master->first()->facebook_url = (!UtilString::is_empty_string($facebook_url)) ? $facebook_url : NULL;
                 $company_master->first()->twitter_url = (!UtilString::is_empty_string($twitter_url)) ? $twitter_url : NULL;
                 $company_master->first()->zoominfo_url = (!UtilString::is_empty_string($zoominfo_url)) ? $zoominfo_url : NULL;
@@ -139,6 +160,13 @@ class PopulateCompanyMaster extends Command
                 $co->region = (!UtilString::is_empty_string($region)) ? $region : NULL;
                 $co->grouping = (!UtilString::is_empty_string($grouping)) ? $grouping : NULL;
                 $co->Logo_URL = (!UtilString::is_empty_string($logo_url)) ? $logo_url : NULL;
+                $co->continent = $continent;
+                $co->continent_region = $continent_region;
+                $co->mena = $mena;
+                $co->apac = $apac;
+                $co->latam = $latam;
+                $co->europian_union = $europian_union;
+                $co->emea = $emea;
                 $co->facebook_url = (!UtilString::is_empty_string($facebook_url)) ? $facebook_url : NULL;
                 $co->twitter_url = (!UtilString::is_empty_string($twitter_url)) ? $twitter_url : NULL;
                 $co->zoominfo_url = (!UtilString::is_empty_string($zoominfo_url)) ? $zoominfo_url : NULL;
