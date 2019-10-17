@@ -70,6 +70,7 @@ class PopulateCompanyMaster extends Command
             $facebook_url = trim($company->facebook_url);
             $twitter_url = trim($company->twitter_url);
             $zoominfo_url = trim($company->zoominfo_url);
+            $mx_record = $company->mx_record;
             $company_type = 'Private';
             if(UtilString::contains(strtolower($domain), '.gov')){
                 $company_type = "Government";
@@ -128,6 +129,7 @@ class PopulateCompanyMaster extends Command
                 $company_master->first()->Logo_URL = (!UtilString::is_empty_string($logo_url)) ? $logo_url : NULL;
                 $company_master->first()->continent = $continent;
                 $company_master->first()->continent_region = $continent_region;
+                $company_master->first()->mx_record = $mx_record;
                 $company_master->first()->mena = $mena;
                 $company_master->first()->apac = $apac;
                 $company_master->first()->latam = $latam;
@@ -162,6 +164,7 @@ class PopulateCompanyMaster extends Command
                 $co->Logo_URL = (!UtilString::is_empty_string($logo_url)) ? $logo_url : NULL;
                 $co->continent = $continent;
                 $co->continent_region = $continent_region;
+                $co->mx_record = $mx_record;
                 $co->mena = $mena;
                 $co->apac = $apac;
                 $co->latam = $latam;
