@@ -104,13 +104,23 @@ class ValidateEmailCron7 extends Command
                                     $domain = $matched_contact->domain;
                                     Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>$v_response['email_status'],'email_validation_date'=>$email_validation_date,'domain'=>$domain]);
                                 }else{
-                                    $response_api_array = json_decode($v_response['response'],TRUE);
-                                    if(isset($response_api_array['error']) && $response_api_array['error']['code'] == 104){
-                                        Emails::where('status', 'cron7')->orWhere('email',$email)->update(['status' => 'success']);
-                                        $validation_api->active = 'No';
-                                        break 2;
-                                    }
-                                    if(isset($response_api_array['error']) && $response_api_array['error']['code'] == 999){
+                                    if(strlen($v_response['response']) > 0){
+                                        $response_api_array = json_decode($v_response['response'],TRUE);
+                                        if(isset($response_api_array['error']) && $response_api_array['error']['code'] == 104){
+                                            Emails::where('status', 'cron7')->orWhere('email',$email)->update(['status' => 'success']);
+                                            $validation_api->active = 'No';
+                                            break 2;
+                                        }
+                                        if(isset($response_api_array['error']) && $response_api_array['error']['code'] == 999){
+                                            Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => 'timeout']);
+                                            $email_validation_date = date("Y-m-d H:i:s");
+                                            MatchedContact::where('id', '=', $matched_id)->update(['email'=>$email,'email_status' => 'timeout', 'email_validation_date' => $email_validation_date]);
+                                            $matched_contact = MatchedContact::where('id', '=', $matched_id)->first();
+                                            $contact_id = $matched_contact->contact_id;
+                                            $domain = $matched_contact->domain;
+                                            Contacts::where('id','=',$contact_id)->update(['email'=>$email,'email_status'=>'timeout','email_validation_date'=>$email_validation_date,'domain'=>$domain]);
+                                        }
+                                    }else{
                                         Emails::where('matched_contact_id', '=', $matched_id)->where('email', '=', $email)->update(['status' => 'timeout']);
                                         $email_validation_date = date("Y-m-d H:i:s");
                                         MatchedContact::where('id', '=', $matched_id)->update(['email'=>$email,'email_status' => 'timeout', 'email_validation_date' => $email_validation_date]);
