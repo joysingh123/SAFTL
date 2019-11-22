@@ -104,7 +104,7 @@ class ProcessCompanyImportFile extends Command {
                                         if ($contact_exist == 0) {
                                             if (!empty($linkedin_id)) {
                                                 $insert_array = [
-                                                    'user_id' => Auth::id(),
+                                                    'user_id' => $user_id,
                                                     'linkedin_id' => $linkedin_id,
                                                     'linkedin_url' => $linkedin_url,
                                                     'company_domain' => $company_domain,
