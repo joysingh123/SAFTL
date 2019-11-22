@@ -109,7 +109,7 @@ class Kernel extends ConsoleKernel
             }
             return false;
         });
-        $schedule->command('company:import')->everyFiveMinutes()->withoutOverlapping()->before(function () {
+        $schedule->command('company:import')->everyMinute()->withoutOverlapping()->before(function () {
             $cronjobs = CronJobs::where('cron_name', UtilConstant::CRON_COMPANY_IMPORT)->get();
             $cronjobs->first()->current_status = "Running";
             $cronjobs->first()->save();
