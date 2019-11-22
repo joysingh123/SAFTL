@@ -57,6 +57,7 @@ class ProcessCompanyImportFile extends Command {
                     $already_exist_in_db = 0;
                     $inserted = 0;
                     $domain_not_exist = 0;
+                    $linked_in_id_exist = 0;
                     $junk_count = 0;
                     $insert = array();
                     $duplicate = array();
@@ -105,27 +106,30 @@ class ProcessCompanyImportFile extends Command {
                                         $contact_exist = CompaniesWithDomain::where('linkedin_id', $linkedin_id)->count();
                                         if ($contact_exist == 0) {
                                             if (!empty($linkedin_id)) {
-                                                $insert_array = [
-                                                    'user_id' => $user_id,
-                                                    'linkedin_id' => $linkedin_id,
-                                                    'linkedin_url' => $linkedin_url,
-                                                    'company_domain' => $company_domain,
-                                                    'company_name' => $company_name,
-                                                    'company_type' => $company_type,
-                                                    'employee_count_at_linkedin' => $employee_count_at_linkedin,
-                                                    'industry' => $industry,
-                                                    'city' => $city,
-                                                    'postal_code' => $postal_code,
-                                                    'employee_size' => $employee_size,
-                                                    'country' => $country,
-                                                    'state' => $state,
-                                                    'logo_url' => $logo_url,
-                                                    'facebook_url' => $facebook_url,
-                                                    'twitter_url' => $twitter_url,
-                                                    'zoominfo_url' => $zoominfo_url
-                                                ];
-                                                $insert[] = $insert_array;
-                                                $inserted ++;
+                                                if (!in_array($linkedin_id, $linkedinids_array)) {
+                                                    $insert_array = [
+                                                        'user_id' => $user_id,
+                                                        'linkedin_id' => $linkedin_id,
+                                                        'linkedin_url' => $linkedin_url,
+                                                        'company_domain' => $company_domain,
+                                                        'company_name' => $company_name,
+                                                        'company_type' => $company_type,
+                                                        'employee_count_at_linkedin' => $employee_count_at_linkedin,
+                                                        'industry' => $industry,
+                                                        'city' => $city,
+                                                        'postal_code' => $postal_code,
+                                                        'employee_size' => $employee_size,
+                                                        'country' => $country,
+                                                        'state' => $state,
+                                                        'logo_url' => $logo_url,
+                                                        'facebook_url' => $facebook_url,
+                                                        'twitter_url' => $twitter_url,
+                                                        'zoominfo_url' => $zoominfo_url
+                                                    ];
+                                                    $insert[] = $insert_array;
+                                                    $inserted ++;
+                                                    $linkedinids_array [] = $linkedin_id;
+                                                }
                                             }
                                         } else {
                                             $already_exist_in_db ++;
