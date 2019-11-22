@@ -45,7 +45,6 @@
     </form>
 
 </div>
-@if(!Session::has('stats_data'))
 <br>
 <div class="container">
     <h2>Instruction</h2>         
@@ -78,6 +77,39 @@
         <li>Excel Sheet should not have more then one sheet .</li>
     </ul>
 </div>
+@if($company_import->count() > 0)
+<br>
+<div class="container">
+    <h2>Companies Stats</h2>         
+    <table class="table">
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th>Total In File</th>
+                <th>New Inserted</th>
+                <th>Duplicate In Sheet</th>
+                <th>Already Exist</th>
+                <th>Domain Not Exist</th>
+                <th>Junk Found</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($company_import AS $ci)
+            <tr>
+                <td>{{$ci->name}}</td>
+                <td>{{$ci->total_contact}}</td>
+                <td>{{($ci->inserted_in_db == 0) ? 'Finding .. ' : $ci->inserted_in_db}}</td>
+                <td>{{($ci->duplicate_in_sheet == 0) ? 'Finding .. ' : $ci->duplicate_in_sheet}}</td>
+                <td>{{($ci->already_exist_in_db == 0) ? 'Finding .. ' : $ci->already_exist_in_db}}</td>
+                <td>{{($ci->domain_not_exist == 0) ? 'Finding .. ' : $ci->domain_not_exist}}</td>
+                <td>{{($ci->junk_count == 0) ? 'Finding .. ' : $ci->junk_count}}</td>
+                <td>{{$ci->status}}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 @endif
 @if(Session::has('stats_data'))
 @php
@@ -90,11 +122,13 @@ $stats_data = Session::get('stats_data')
     <table class="table">
         <thead>
             <tr>
+                <th></th>
                 <th>New Inserted</th>
                 <th>Duplicate In Sheet</th>
                 <th>Already Exist</th>
                 <th>Domain Not Exist</th>
                 <th>Junk Found</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>

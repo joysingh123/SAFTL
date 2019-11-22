@@ -45,7 +45,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\PopulateSalesbotCompanies',
         'App\Console\Commands\SendEmail',
         'App\Console\Commands\UpdateFormatCount',
-        'App\Console\Commands\CreateEmailForInvalidContact'
+        'App\Console\Commands\CreateEmailForInvalidContact',
+        'App\Console\Commands\ProcessCompanyImportFile'
     ];
 
     /**
