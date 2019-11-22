@@ -99,11 +99,11 @@
             <tr>
                 <td>{{$ci->name}}</td>
                 <td>{{$ci->total_contact}}</td>
-                <td>{{($ci->inserted_in_db == 0) ? 'Finding .. ' : $ci->inserted_in_db}}</td>
-                <td>{{($ci->duplicate_in_sheet == 0) ? 'Finding .. ' : $ci->duplicate_in_sheet}}</td>
-                <td>{{($ci->already_exist_in_db == 0) ? 'Finding .. ' : $ci->already_exist_in_db}}</td>
-                <td>{{($ci->domain_not_exist == 0) ? 'Finding .. ' : $ci->domain_not_exist}}</td>
-                <td>{{($ci->junk_count == 0) ? 'Finding .. ' : $ci->junk_count}}</td>
+                <td>{{$ci->inserted_in_db}}</td>
+                <td>{{$ci->duplicate_in_sheet}}</td>
+                <td>{{$ci->already_exist_in_db}}</td>
+                <td>{{$ci->domain_not_exist}}</td>
+                <td>{{$ci->junk_count}}</td>
                 <td>{{$ci->status}}</td>
             </tr>
             @endforeach
