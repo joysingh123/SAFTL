@@ -60,15 +60,7 @@ class ProcessCompanyImportFile extends Command {
                     $junk_count = 0;
                     $insert = array();
                     $duplicate = array();
-//                    $data = Excel::load($uploadfilepath, function($reader) {
-//                                
-//                            })->get();
-                    $data = [];
-                    Excel::filter('chunk')->load($uploadfilepath)->chunk(1000, function ($results) use (&$data) {
-                        foreach ($results as $row) {
-                            $data[] = $row;
-                        }
-                    }, $shouldQueue = false);
+                    $data = Excel::load($uploadfilepath, function($reader) {})->get();
                     foreach ($data as $key => $value) {
                         if (UtilString::is_empty_string($value->company_domain) && UtilString::is_empty_string($value->linkedin_id) && UtilString::is_empty_string($value->company_name)) {
                         } else {
