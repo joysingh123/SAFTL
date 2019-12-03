@@ -61,9 +61,9 @@ class ValidateEmailCron8 extends Command
         if ($emails->count() > 0) {
             $plucked_email = $emails->pluck('matched_contact_id');
             $plucked_email_array = $plucked_email->all();
-            $result = Emails::whereIn('matched_contact_id', $plucked_email_array)->update(['status' => 'cron8']);
             $validation_api = EmailValidationApi::where('active','yes')->where('status','enable')->orderBy('cron_count','ASC')->get();
             if($validation_api->count() > 0){
+                $result = Emails::whereIn('matched_contact_id', $plucked_email_array)->update(['status' => 'cron8']);
                 $validation_api = $validation_api->first();
                 $validation_api->cron_count = $validation_api->cron_count + 1;
                 $validation_api->save();
