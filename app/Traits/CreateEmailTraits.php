@@ -57,7 +57,7 @@ trait CreateEmailTraits {
                     $mt->save();
                     $found_in_available_email ++;
                 } else {
-                    $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->orderBY('format_percentage', 'DESC')->take(2)->get();
+                    $available_format_for_domain = EmailFormat::where("company_domain", $mt->domain)->where('format_percentage', '>',0)->orderBY('format_percentage', 'DESC')->take(2)->get();
                     echo $available_format_for_domain;
                     if ($available_format_for_domain->count() > 0) {
                         if (!UtilString::is_empty_string($first_name) && !UtilString::is_empty_string($last_name) && !UtilString::is_empty_string($matched_contact_domain)) {
